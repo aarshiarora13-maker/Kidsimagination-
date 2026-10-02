@@ -1,0 +1,1 @@
+KidsImagination redesigned with a colorful, playful children's-book theme, rainbow gradients, rounded cards, playful typography, colorful pricing, responsive mobile layout and whimsical visual decorations.

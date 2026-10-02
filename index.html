@@ -3,58 +3,600 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 <title>KidsImagination — Personalized Storybooks</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&display=swap">
+<link rel="stylesheet"
+href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&display=swap">
+
 <style>
-:root{--purple:#7654e8;--purple-dark:#5439a8;--pink:#ff69a9;--yellow:#ffd85a;--blue:#63c9ff;--ink:#30264d;--cream:#fffaf0}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;color:var(--ink);font-family:Nunito,Arial,sans-serif;background:var(--cream);overflow-x:hidden;font-size:16px}
-a{color:inherit}
-h1,h2,h3,.logo,.btn{font-family:"Baloo 2",sans-serif}
-.container{width:min(1120px,92%);margin:0 auto}
-.navbar{background:#fff;position:sticky;top:0;z-index:50;box-shadow:0 4px 20px rgba(48,38,77,.08)}
-.nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.logo{font-size:25px;font-weight:800;color:var(--purple);white-space:nowrap}.logo span{margin-right:6px}
-.nav-links{display:flex;align-items:center;gap:24px}.nav-links a{text-decoration:none;font-weight:800;font-size:15px}.nav-cta{background:var(--purple);color:#fff!important;padding:10px 18px;border-radius:14px;box-shadow:0 4px 0 var(--purple-dark)}
-.hero{position:relative;overflow:hidden;padding:70px 0 85px;background:linear-gradient(135deg,#fff1a4 0%,#ffe0ee 52%,#dff5ff 100%)}
-.hero:before{content:"✨  ⭐  🌈  ⭐  ✨";position:absolute;right:5%;top:28px;font-size:22px;letter-spacing:5px}
-.hero-grid{display:grid;grid-template-columns:1.05fr .75fr;align-items:center;gap:50px}
-.badge{display:inline-block;background:var(--pink);color:#fff;padding:7px 16px;border-radius:999px;font-weight:800;font-size:15px;box-shadow:0 4px 0 rgba(84,57,168,.18)}
-.hero h1{font-size:clamp(44px,6vw,70px);line-height:1.02;margin:18px 0 20px;color:var(--purple);text-shadow:3px 3px #fff}
-.hero p{font-size:19px;line-height:1.65;max-width:680px;margin:0 0 26px}
-.actions{display:flex;gap:14px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:0;cursor:pointer;border-radius:16px;padding:13px 20px;font-weight:800;font-size:17px;box-shadow:0 5px 0 var(--purple-dark);min-height:50px}.primary{background:var(--purple);color:#fff}.soft{background:#fff;color:var(--purple);border:2px solid #e1d9ff;box-shadow:0 5px 0 #d0c4f8}
-.book-demo{background:#fff;border-radius:28px;padding:25px;box-shadow:0 18px 45px rgba(48,38,77,.14);transform:rotate(2deg);max-width:330px;margin:auto;text-align:center}.book-demo h3{font-size:29px;color:var(--purple);margin:0 0 14px}.book-face{font-size:105px;line-height:1}.book-demo p{font-size:17px;margin:15px 0 0}
-.section{padding:72px 0}.section-head{text-align:center;max-width:720px;margin:0 auto 38px}.section-head h2{font-size:42px;line-height:1.1;color:var(--purple);margin:0 0 10px}.section-head p{font-size:18px;line-height:1.6;margin:0}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.step{background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 12px 30px rgba(48,38,77,.08)}.num{display:flex;width:52px;height:52px;margin:0 auto 12px;align-items:center;justify-content:center;border-radius:50%;background:var(--yellow);font:800 25px "Baloo 2"}.step h3{font-size:22px;margin:8px 0}.step p{line-height:1.5;margin:0}
-.example-section{background:linear-gradient(135deg,#fff3bd,#ffe4f0,#e3f7ff)}.example-card{display:grid;grid-template-columns:.9fr 1.1fr;gap:32px;align-items:center;background:#fff;border-radius:28px;padding:28px;box-shadow:0 16px 40px rgba(48,38,77,.1)}.example-copy h3{font-size:35px;line-height:1.1;color:var(--purple);margin:14px 0 10px}.example-copy p{font-size:17px;line-height:1.65;margin:0 0 22px}.example-image{background:#faf8ff;border-radius:20px;padding:10px}.example-image img{display:block;width:100%;height:auto;border-radius:14px}.example-copy .btn{width:max-content}.story-link{margin-top:14px;display:block;font-weight:800;color:var(--purple);text-decoration:none}
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.price-card{background:#fff;border-radius:26px;padding:26px;box-shadow:0 12px 32px rgba(48,38,77,.08);border:2px solid #eee;text-align:center}.price-card.featured{border-color:var(--blue);background:#f2fbff}.price-card h3{font-size:22px;margin:0 0 5px}.cost{font:800 38px "Baloo 2";color:var(--purple);margin:8px 0}.price-card ul{text-align:left;line-height:1.75;margin:16px 0;padding-left:20px}.price-card .btn{width:100%}
-.create-section{background:linear-gradient(135deg,#eee6ff,#ffe8f2)}.wizard{width:min(820px,100%);margin:auto;background:#fff;border-radius:28px;padding:30px;box-shadow:0 15px 40px rgba(48,38,77,.1)}.field{margin-bottom:18px}.field label{display:block;font-weight:800;font-size:16px;margin-bottom:7px}.field input,.field select,.field textarea{display:block;width:100%;padding:12px 14px;border:2px solid #e5e0f0;border-radius:13px;background:#fff;color:var(--ink);font:600 16px Nunito;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--purple)}.upload{border:2px dashed #cfc3f5;border-radius:18px;background:#fbf9ff;padding:18px}.upload input{margin-top:12px;width:100%}.wizard .btn{width:100%;margin-top:3px}
-.identity{text-align:center}.identity p{max-width:760px;margin:0 auto;font-size:17px;line-height:1.65}.note{background:#fff7d7;border:1px solid #f0df99;border-radius:15px;padding:12px 15px;margin-top:18px;font-size:14px;line-height:1.5}
-footer{background:var(--ink);color:#fff;padding:38px 0;text-align:center}footer .logo{color:#fff}footer p{margin:8px 0;opacity:.85}
-@media(max-width:850px){.nav-links a:not(.nav-cta){display:none}.hero{padding:55px 0 65px}.hero-grid{grid-template-columns:1fr;gap:35px}.hero:before{position:static;display:block;text-align:center;margin-bottom:5px}.hero h1{font-size:clamp(42px,12vw,58px)}.hero p{font-size:17px}.book-demo{transform:none}.steps,.pricing-grid{grid-template-columns:1fr 1fr}.example-card{grid-template-columns:1fr}.example-copy{text-align:center}.example-copy .btn{width:100%}.section{padding:58px 0}.section-head h2{font-size:35px}}
-@media(max-width:560px){body{font-size:15px}.nav-inner{min-height:64px}.logo{font-size:22px}.nav-cta{padding:9px 14px;font-size:15px}.hero h1{font-size:44px}.hero p{font-size:16px}.actions{display:grid;grid-template-columns:1fr}.actions .btn{width:100%}.section-head h2{font-size:31px}.section-head p{font-size:16px}.steps,.pricing-grid{grid-template-columns:1fr}.step,.price-card{padding:22px}.example-card{padding:18px}.example-copy h3{font-size:30px}.wizard{padding:20px;border-radius:22px}.field input,.field select,.field textarea{font-size:16px}.upload{padding:15px}.price-card .cost{font-size:34px}}
-</style>
-</head>
-<body>
-<nav class="navbar"><div class="container nav-inner"><div class="logo"><span>🌈✨</span>KidsImagination</div><div class="nav-links"><a href="#example">Example</a><a href="#pricing">Pricing</a><a href="#create" class="nav-cta">Create a Story</a></div></div></nav>
+:root{
+  --purple:#7654e8;
+  --purple-dark:#5439a8;
+  --pink:#ff69a9;
+  --yellow:#ffd85a;
+  --blue:#63c9ff;
+  --ink:#30264d;
+  --cream:#fffaf0
+}
 
-<header class="hero"><div class="container hero-grid"><div><span class="badge">Personalized • Illustrated • Magical</span><h1>Every child deserves to be the hero.</h1><p>Turn your child's photo, personality and imagination into a beautiful personalized storybook — with an optional audiobook they can listen to again and again.</p><div class="actions"><a href="#create" class="btn primary">Create My Story ✨</a><a href="#example" class="btn soft">See Bhavik's Example</a></div></div><div class="book-demo"><h3>My Magical Adventure</h3><div class="book-face">🧒✨</div><p><b>Your child.</b> Their name.<br>Their adventure.</p></div></div></header>
+*{
+  box-sizing:border-box
+}
 
-<section class="section" id="how"><div class="container"><div class="section-head"><h2>How KidsImagination works</h2><p>From one photo to a story made specially for your child.</p></div><div class="steps"><div class="step"><div class="num">1</div><h3>Upload a photo</h3><p>Choose a clear photo of your child.</p></div><div class="step"><div class="num">2</div><h3>Personalize</h3><p>Add their name, age, interests and family message.</p></div><div class="step"><div class="num">3</div><h3>AI creates</h3><p>The story and illustrated pages are generated around their character.</p></div><div class="step"><div class="num">4</div><h3>Read & listen</h3><p>Get the digital book, PDF and optional audiobook.</p></div></div></div></section>
+html{
+  scroll-behavior:smooth
+}
 
-<section class="section example-section" id="example"><div class="container"><div class="section-head"><h2>✨ Bhavik's Example Story</h2><p>This is the sample story you wanted customers to see before creating their own.</p></div><div class="example-card"><div class="example-copy"><span class="badge">Customer Example</span><h3>Bhavik’s Little Acts of Kindness</h3><p>See how a child can become the main character of a colorful personalized story. Bhavik helps a hungry puppy, cares for a little bird and discovers how small acts of kindness can make the world brighter.</p><a class="btn primary" href="/examples/bhavik-story.html">Read the full example →</a><a class="story-link" href="/examples/bhavik-story.html">Open storybook preview</a></div><div class="example-image"><img src="/examples/bhaviks-little-acts-of-kindness.png" alt="Bhavik’s Little Acts of Kindness example storybook"></div></div></div></section>
+body{
+  margin:0;
+  color:var(--ink);
+  font-family:Nunito,Arial,sans-serif;
+  background:var(--cream);
+  overflow-x:hidden;
+  font-size:16px
+}
 
-<section class="section" id="pricing"><div class="container"><div class="section-head"><h2>Choose your story package</h2><p>Start with a personalized digital storybook, or add narration and premium pages.</p></div><div class="pricing-grid"><div class="price-card"><h3>📖 Digital Storybook</h3><div class="cost">₹399</div><ul><li>Personalized story</li><li>Illustrated pages</li><li>Child-photo character</li><li>PDF download</li></ul><a href="#create" class="btn soft">Choose ₹399</a></div><div class="price-card featured"><h3>🎧 Storybook + Audiobook</h3><div class="cost">₹599</div><ul><li>Everything in Digital</li><li>Full narrated audiobook</li><li>Listen online</li><li>Audio download</li></ul><a href="#create" class="btn primary">Choose ₹599</a></div><div class="price-card"><h3>🌟 Premium</h3><div class="cost">₹799</div><ul><li>Everything in Audiobook</li><li>Extra illustrated pages</li><li>Premium story length</li><li>Digital keepsake bundle</li></ul><a href="#create" class="btn soft">Choose ₹799</a></div></div></div></section>
+a{
+  color:inherit
+}
 
-<section class="section create-section" id="create"><div class="container"><div class="section-head"><h2>Create your child's story</h2><p>Photo → personalization → secure payment → AI story → PDF/audiobook.</p></div><form class="wizard" onsubmit="startCheckout(event)"><div class="field"><label for="childName">Child's name</label><input required id="childName" placeholder="e.g. Aarav"></div><div class="field"><label for="age">Child's age</label><input required id="age" type="number" min="1" max="12" placeholder="e.g. 5"></div><div class="field"><label for="theme">Story theme</label><select id="theme"><option>Magical Adventure</option><option>Animal Friends</option><option>Little Hero</option><option>Space Adventure</option><option>Bedtime Dream</option><option>Birthday Adventure</option></select></div><div class="field"><label for="favorite">Favorite things</label><input id="favorite" placeholder="e.g. cars, dinosaurs, unicorns"></div><div class="field"><label for="dedication">Special message</label><textarea id="dedication" rows="4" placeholder="A message from the family"></textarea></div><div class="field"><label for="photo">Child's photo</label><div class="upload">📸 <b>Upload a clear photo of your child</b><br><input type="file" id="photo" accept="image/jpeg,image/png,image/webp" required></div></div><div class="field"><label for="package">Package</label><select id="package"><option value="Digital Storybook — ₹399">Digital Storybook — ₹399</option><option value="Storybook + Audiobook — ₹599">Storybook + Audiobook — ₹599</option><option value="Premium — ₹799">Premium — ₹799</option></select></div><button class="btn primary" type="submit">Continue to secure payment →</button></form></div></section>
+h1,h2,h3,.logo,.btn{
+  font-family:"Baloo 2",sans-serif
+}
 
-<section class="section identity"><div class="container"><div class="section-head"><h2>Built around your child's identity</h2></div><p>The uploaded reference photo is used as the identity reference for the illustrated character throughout the book. The workflow is designed to preserve recognizable facial features and consistent character details instead of creating a completely different child on every page.</p><div class="note">Important: AI image generation can improve consistency but cannot guarantee a pixel-for-pixel identical face in every illustration.</div></div></section>
+.container{
+  width:min(1120px,92%);
+  margin:0 auto
+}
 
-<footer><div class="container"><div class="logo"><span>🌈✨</span>KidsImagination</div><p>Where every child becomes the hero of their story.</p><p style="opacity:.6">© KidsImagination • Personalized digital stories</p></div></footer>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-async function startCheckout(e){e.preventDefault();const f=document.querySelector('#photo').files[0];if(!f)return alert('Please upload your child’s photo.');try{let r=await fetch('/api/upload-photo',{method:'POST',body:(()=>{const fd=new FormData();fd.append('photo',f);return fd})()});let u=await r.json();if(!r.ok)throw Error(u.error||'Photo upload failed');const p=document.querySelector('#package').value;const a=p.includes('₹599')?59900:p.includes('₹799')?79900:39900;r=await fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({childName:childName.value,age:age.value,email:'',theme:theme.value,favorite:favorite.value,dedication:dedication.value,photoId:u.photoId,amount:a})});const o=await r.json();if(!r.ok)throw Error(o.error||'Could not create payment');new Razorpay({key:o.keyId,amount:o.amount,currency:'INR',name:'KidsImagination',description:p,order_id:o.orderId,handler:async x=>{const v=await fetch('/api/verify-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...x,orderId:o.orderId})}),q=await v.json();if(v.ok)location='/story.html?order='+q.orderId;else alert(q.error||'Payment verification failed')}}).open()}catch(err){alert(err.message)}}
-</script>
-</body></html>
+/* NAVIGATION */
+
+.navbar{
+  background:#fff;
+  position:sticky;
+  top:0;
+  z-index:50;
+  box-shadow:0 4px 20px rgba(48,38,77,.08)
+}
+
+.nav-inner{
+  min-height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px
+}
+
+.logo{
+  font-size:25px;
+  font-weight:800;
+  color:var(--purple);
+  white-space:nowrap
+}
+
+.logo span{
+  margin-right:6px
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:24px
+}
+
+.nav-links a{
+  text-decoration:none;
+  font-weight:800;
+  font-size:15px
+}
+
+.nav-cta{
+  background:var(--purple);
+  color:#fff!important;
+  padding:10px 18px;
+  border-radius:14px;
+  box-shadow:0 4px 0 var(--purple-dark)
+}
+
+/* HERO */
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  padding:70px 0 85px;
+  background:linear-gradient(
+    135deg,
+    #fff1a4 0%,
+    #ffe0ee 52%,
+    #dff5ff 100%
+  )
+}
+
+.hero:before{
+  content:"✨  ⭐  🌈  ⭐  ✨";
+  position:absolute;
+  right:5%;
+  top:28px;
+  font-size:22px;
+  letter-spacing:5px
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.05fr .75fr;
+  align-items:center;
+  gap:50px
+}
+
+.badge{
+  display:inline-block;
+  background:var(--pink);
+  color:#fff;
+  padding:7px 16px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:15px;
+  box-shadow:0 4px 0 rgba(84,57,168,.18)
+}
+
+.hero h1{
+  font-size:clamp(44px,6vw,70px);
+  line-height:1.02;
+  margin:18px 0 20px;
+  color:var(--purple);
+  text-shadow:3px 3px #fff
+}
+
+.hero p{
+  font-size:19px;
+  line-height:1.65;
+  max-width:680px;
+  margin:0 0 26px
+}
+
+.actions{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  border:0;
+  cursor:pointer;
+  border-radius:16px;
+  padding:13px 20px;
+  font-weight:800;
+  font-size:17px;
+  box-shadow:0 5px 0 var(--purple-dark);
+  min-height:50px
+}
+
+.primary{
+  background:var(--purple);
+  color:#fff
+}
+
+.soft{
+  background:#fff;
+  color:var(--purple);
+  border:2px solid #e1d9ff;
+  box-shadow:0 5px 0 #d0c4f8
+}
+
+.book-demo{
+  background:#fff;
+  border-radius:28px;
+  padding:25px;
+  box-shadow:0 18px 45px rgba(48,38,77,.14);
+  transform:rotate(2deg);
+  max-width:330px;
+  margin:auto;
+  text-align:center
+}
+
+.book-demo h3{
+  font-size:29px;
+  color:var(--purple);
+  margin:0 0 14px
+}
+
+.book-face{
+  font-size:105px;
+  line-height:1
+}
+
+.book-demo p{
+  font-size:17px;
+  margin:15px 0 0
+}
+
+/* SECTIONS */
+
+.section{
+  padding:72px 0
+}
+
+.section-head{
+  text-align:center;
+  max-width:720px;
+  margin:0 auto 38px
+}
+
+.section-head h2{
+  font-size:42px;
+  line-height:1.1;
+  color:var(--purple);
+  margin:0 0 10px
+}
+
+.section-head p{
+  font-size:18px;
+  line-height:1.6;
+  margin:0
+}
+
+/* STEPS */
+
+.steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px
+}
+
+.step{
+  background:#fff;
+  border-radius:24px;
+  padding:24px;
+  text-align:center;
+  box-shadow:0 12px 30px rgba(48,38,77,.08)
+}
+
+.num{
+  display:flex;
+  width:52px;
+  height:52px;
+  margin:0 auto 12px;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:var(--yellow);
+  font:800 25px "Baloo 2"
+}
+
+.step h3{
+  font-size:22px;
+  margin:8px 0
+}
+
+.step p{
+  line-height:1.5;
+  margin:0
+}
+
+/* EXAMPLE STORY */
+
+.example-section{
+  background:linear-gradient(
+    135deg,
+    #fff3bd,
+    #ffe4f0,
+    #e3f7ff
+  )
+}
+
+.example-card{
+  display:grid;
+  grid-template-columns:.9fr 1.1fr;
+  gap:32px;
+  align-items:center;
+  background:#fff;
+  border-radius:28px;
+  padding:28px;
+  box-shadow:0 16px 40px rgba(48,38,77,.1)
+}
+
+.example-copy h3{
+  font-size:35px;
+  line-height:1.1;
+  color:var(--purple);
+  margin:14px 0 10px
+}
+
+.example-copy p{
+  font-size:17px;
+  line-height:1.65;
+  margin:0 0 22px
+}
+
+.example-copy .btn{
+  width:max-content
+}
+
+.story-link{
+  margin-top:14px;
+  display:block;
+  font-weight:800;
+  color:var(--purple);
+  text-decoration:none
+}
+
+/* IMPORTANT:
+   We are not using the old /examples/ path.
+   Bhavik's story is in the root folder.
+*/
+
+.example-story-buttons{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start
+}
+
+/* STORY PREVIEW */
+
+.story-preview{
+  background:#faf8ff;
+  border-radius:20px;
+  padding:20px;
+  text-align:center
+}
+
+.story-preview-icon{
+  font-size:100px;
+  line-height:1
+}
+
+.story-preview h4{
+  font-family:"Baloo 2",sans-serif;
+  font-size:25px;
+  color:var(--purple);
+  margin:10px 0
+}
+
+.story-preview p{
+  margin:0;
+  font-size:15px
+}
+
+/* PRICING */
+
+.pricing-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px
+}
+
+.price-card{
+  background:#fff;
+  border-radius:26px;
+  padding:26px;
+  box-shadow:0 12px 32px rgba(48,38,77,.08);
+  border:2px solid #eee;
+  text-align:center
+}
+
+.price-card.featured{
+  border-color:var(--blue);
+  background:#f2fbff
+}
+
+.price-card h3{
+  font-size:22px;
+  margin:0 0 5px
+}
+
+.cost{
+  font:800 38px "Baloo 2";
+  color:var(--purple);
+  margin:8px 0
+}
+
+.price-card ul{
+  text-align:left;
+  line-height:1.75;
+  margin:16px 0;
+  padding-left:20px
+}
+
+.price-card .btn{
+  width:100%
+}
+
+/* CREATE */
+
+.create-section{
+  background:linear-gradient(
+    135deg,
+    #eee6ff,
+    #ffe8f2
+  )
+}
+
+.wizard{
+  width:min(820px,100%);
+  margin:auto;
+  background:#fff;
+  border-radius:28px;
+  padding:30px;
+  box-shadow:0 15px 40px rgba(48,38,77,.1)
+}
+
+.field{
+  margin-bottom:18px
+}
+
+.field label{
+  display:block;
+  font-weight:800;
+  font-size:16px;
+  margin-bottom:7px
+}
+
+.field input,
+.field select,
+.field textarea{
+  display:block;
+  width:100%;
+  padding:12px 14px;
+  border:2px solid #e5e0f0;
+  border-radius:13px;
+  background:#fff;
+  color:var(--ink);
+  font:600 16px Nunito;
+  outline:none
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:var(--purple)
+}
+
+.upload{
+  border:2px dashed #cfc3f5;
+  border-radius:18px;
+  background:#fbf9ff;
+  padding:18px
+}
+
+.upload input{
+  margin-top:12px;
+  width:100%
+}
+
+.wizard .btn{
+  width:100%;
+  margin-top:3px
+}
+
+/* IDENTITY */
+
+.identity{
+  text-align:center
+}
+
+.identity p{
+  max-width:760px;
+  margin:0 auto;
+  font-size:17px;
+  line-height:1.65
+}
+
+.note{
+  background:#fff7d7;
+  border:1px solid #f0df99;
+  border-radius:15px;
+  padding:12px 15px;
+  margin-top:18px;
+  font-size:14px;
+  line-height:1.5
+}
+
+/* FOOTER */
+
+footer{
+  background:var(--ink);
+  color:#fff;
+  padding:38px 0;
+  text-align:center
+}
+
+footer .logo{
+  color:#fff
+}
+
+footer p{
+  margin:8px 0;
+  opacity:.85
+}
+
+/* TABLET */
+
+@media(max-width:850px){
+
+  .nav-links a:not(.nav-cta){
+    display:none
+  }
+
+  .hero{
+    padding:55px 0 65px
+  }
+
+  .hero-grid{
+    grid-template-columns:1fr;
+    gap:35px
+  }
+
+  .hero:before{
+    position:static;
+    display:block;
+    text-align:center;
+    margin-bottom:5px
+  }
+
+  .hero h1{
+    font-size:clamp(42px,12vw,58px)
+  }
+
+  .hero p{
+    font-size:17px
+  }
+
+  .book-demo{
+    transform:none
+  }
+
+  .steps,
+  .pricing-grid{
+    grid-template-columns:1fr 1fr
+  }
+
+  .example-card{
+    grid-template-columns:1fr
+  }
+
+  .example-copy{
+    text-align:center
+  }
+
+  .example-copy .btn{
+    width:100%
+  }
+
+  .example-story-buttons{
+    align-items:stretch
+  }
+
+  .section{
+    padding:58px 0
+  }
+
+  .section-head h2{
+    font-size:35px
+  }
+}
+
+/* MOBILE */
+
+@media(max-width:560px){
+
+  body{
+    font-size:15px
+  }
+
+  .nav-inner{
+    min-height:64px
+  }
+
+  .logo{
+    font-size:22px
+  }
+
+  .nav-cta{
+    padding:9px 14px;
+    font-size:15

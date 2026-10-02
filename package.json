@@ -1,0 +1,17 @@
+{
+  "name": "kidsimagination",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "razorpay": "^2.9.6",
+    "dotenv": "^17.2.2",
+    "cors": "^2.8.5",
+    "multer": "^2.0.2",
+    "pdfkit": "^0.17.2"
+  }
+}

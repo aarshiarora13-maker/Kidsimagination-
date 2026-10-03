@@ -52,7 +52,23 @@ app.use(
     path.join(root, 'public')
   )
 );
+// Serve story illustration images stored in the repository root
+app.get('/story-assets/:filename', (req, res) => {
+  const filename = path.basename(req.params.filename);
 
+  // Only allow PNG/JPG/JPEG image files
+  if (!/\.(png|jpg|jpeg)$/i.test(filename)) {
+    return res.status(404).end();
+  }
+
+  const filePath = path.join(root, filename);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).end();
+  }
+
+  res.sendFile(filePath);
+});
 // ===============================
 // WEBSITE PAGES
 // ===============================

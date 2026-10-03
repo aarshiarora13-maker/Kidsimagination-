@@ -1,1 +1,369 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bhavik’s Little Acts of Kindness — KidsImagination</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap"><style>body{margin:0;background:#fffaf0;color:#30264d;font-family:Nunito,Arial,sans-serif}.wrap{max-width:1000px;margin:auto;padding:24px}.card{background:#fff;border-radius:28px;padding:26px;box-shadow:0 15px 40px #563b8415}.back{display:inline-block;margin-bottom:18px;color:#7654e8;text-decoration:none;font-weight:800}.title{text-align:center;font:800 42px 'Baloo 2';color:#7654e8;margin:8px 0}.intro{text-align:center;font-size:17px;line-height:1.6;max-width:700px;margin:0 auto 25px}.story{width:100%;border-radius:20px;display:block}.cta{text-align:center;margin-top:25px}.btn{display:inline-block;background:#7654e8;color:#fff;text-decoration:none;padding:14px 22px;border-radius:16px;font-weight:800;box-shadow:0 5px 0 #5439a8}</style></head><body><main class="wrap"><a class="back" href="/">← Back to KidsImagination</a><div class="card"><h1 class="title">Bhavik’s Little Acts of Kindness 💛</h1><p class="intro">This is an example of how KidsImagination turns a child into the hero of a colorful personalized story. Bhavik learns that helping others with small acts of kindness can make someone’s day brighter.</p><img class="story" src="/examples/bhaviks-little-acts-of-kindness.png" alt="Bhavik’s Little Acts of Kindness storybook example"><div class="cta"><a class="btn" href="/#create">Create your child’s story ✨</a></div></div></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bhavik's Little Acts of Kindness</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:#eee8f8;
+  font-family:Arial,sans-serif;
+  color:#29243b;
+  overflow:hidden;
+}
+
+.book-wrapper{
+  width:100vw;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+}
+
+.top-bar{
+  width:min(94vw,700px);
+  display:flex;
+  justify-content:flex-start;
+  margin-bottom:10px;
+}
+
+.home{
+  text-decoration:none;
+  background:white;
+  color:#7156d8;
+  padding:9px 15px;
+  border-radius:25px;
+  font-weight:bold;
+  box-shadow:0 4px 12px rgba(0,0,0,.12);
+}
+
+.book{
+  width:min(92vw,700px);
+  height:min(76vh,900px);
+  position:relative;
+  perspective:1800px;
+}
+
+.page{
+  position:absolute;
+  inset:0;
+  background:white;
+  border-radius:8px 18px 18px 8px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.20),
+    inset 8px 0 15px rgba(0,0,0,.04);
+
+  overflow:hidden;
+
+  transform-origin:left center;
+
+  transition:
+    transform .75s cubic-bezier(.65,.05,.36,1);
+
+  backface-visibility:hidden;
+}
+
+.page img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.page.flipped{
+  transform:rotateY(-180deg);
+  pointer-events:none;
+}
+
+.page.active{
+  z-index:100;
+}
+
+.page-number{
+  position:absolute;
+  bottom:12px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(255,255,255,.9);
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:13px;
+}
+
+.controls{
+  margin-top:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+button{
+  border:0;
+  background:#7156d8;
+  color:white;
+  padding:12px 19px;
+  border-radius:30px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 5px 15px rgba(0,0,0,.15);
+}
+
+button:disabled{
+  opacity:.4;
+}
+
+.counter{
+  background:white;
+  padding:10px 15px;
+  border-radius:20px;
+  font-weight:bold;
+}
+
+.instruction{
+  margin-top:9px;
+  font-size:13px;
+  color:#666;
+}
+
+@media(max-width:600px){
+
+  .book{
+    width:94vw;
+    height:74vh;
+  }
+
+  .controls button{
+    padding:10px 15px;
+    font-size:14px;
+  }
+
+  .counter{
+    padding:8px 11px;
+    font-size:13px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="book-wrapper">
+
+  <!-- BACK TO MAIN WEBSITE -->
+  <div class="top-bar">
+    <a class="home" href="index.html">
+      🏠 KidsImagination
+    </a>
+  </div>
+
+  <div class="book" id="book">
+
+    <!-- COVER -->
+    <div class="page active">
+      <img src="./20260923_122332.png" alt="Bhavik book cover">
+      <div class="page-number">Cover</div>
+    </div>
+
+    <!-- PAGE 1 -->
+    <div class="page">
+      <img src="./20260923_122039.png" alt="Bhavik story page 1">
+      <div class="page-number">1</div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page">
+      <img src="./20260923_122156.png" alt="Bhavik story page 2">
+      <div class="page-number">2</div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page">
+      <img src="./20260923_122437.png" alt="Bhavik story page 3">
+      <div class="page-number">3</div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="page">
+      <img src="./20260923_122543.png" alt="Bhavik story page 4">
+      <div class="page-number">4</div>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div class="page">
+      <img src="./20260924_142218.png" alt="Bhavik story page 5">
+      <div class="page-number">5</div>
+    </div>
+
+    <!-- PAGE 6 -->
+    <div class="page">
+      <img src="./20260924_142315.png" alt="Bhavik story page 6">
+      <div class="page-number">6</div>
+    </div>
+
+    <!-- PAGE 7 -->
+    <div class="page">
+      <img src="./20260924_142408.png" alt="Bhavik story page 7">
+      <div class="page-number">7</div>
+    </div>
+
+  </div>
+
+  <div class="controls">
+
+    <button id="prev">← Back</button>
+
+    <div class="counter" id="counter">
+      Cover
+    </div>
+
+    <button id="next">Next →</button>
+
+  </div>
+
+  <div class="instruction">
+    👆 Swipe left/right or use the buttons to turn the pages
+  </div>
+
+</div>
+
+<script>
+
+const pages = document.querySelectorAll(".page");
+const nextButton = document.getElementById("next");
+const prevButton = document.getElementById("prev");
+const counter = document.getElementById("counter");
+
+let currentPage = 0;
+
+function updateBook(){
+
+  pages.forEach((page,index)=>{
+
+    if(index < currentPage){
+
+      page.classList.add("flipped");
+      page.classList.remove("active");
+
+    }else if(index === currentPage){
+
+      page.classList.remove("flipped");
+      page.classList.add("active");
+
+    }else{
+
+      page.classList.remove("flipped");
+      page.classList.remove("active");
+
+    }
+
+    page.style.zIndex = pages.length - index;
+
+  });
+
+  if(currentPage === 0){
+
+    counter.textContent = "Cover";
+
+  }else{
+
+    counter.textContent =
+      "Page " + currentPage + " / " + (pages.length - 1);
+
+  }
+
+  prevButton.disabled = currentPage === 0;
+  nextButton.disabled = currentPage === pages.length - 1;
+
+}
+
+nextButton.addEventListener("click",()=>{
+
+  if(currentPage < pages.length - 1){
+
+    currentPage++;
+    updateBook();
+
+  }
+
+});
+
+prevButton.addEventListener("click",()=>{
+
+  if(currentPage > 0){
+
+    currentPage--;
+    updateBook();
+
+  }
+
+});
+
+let startX = 0;
+
+const book = document.getElementById("book");
+
+book.addEventListener("touchstart",(e)=>{
+
+  startX = e.touches[0].clientX;
+
+},{passive:true});
+
+book.addEventListener("touchend",(e)=>{
+
+  const endX = e.changedTouches[0].clientX;
+  const difference = startX - endX;
+
+  if(difference > 50){
+
+    if(currentPage < pages.length - 1){
+
+      currentPage++;
+      updateBook();
+
+    }
+
+  }
+
+  if(difference < -50){
+
+    if(currentPage > 0){
+
+      currentPage--;
+      updateBook();
+
+    }
+
+  }
+
+},{passive:true});
+
+document.addEventListener("keydown",(e)=>{
+
+  if(e.key === "ArrowRight"){
+    nextButton.click();
+  }
+
+  if(e.key === "ArrowLeft"){
+    prevButton.click();
+  }
+
+});
+
+updateBook();
+
+</script>
+
+</body>
+  </html>

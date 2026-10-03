@@ -267,17 +267,25 @@ app.post(
       } = req.body;
 
       const order =
-        orders[
-          orderId ||
-          razorpay_order_id
-        ];
+  orders[
+    orderId ||
+    razorpay_order_id
+  ];
 
-      if (!order) {
-        return res.status(404).json({
-          error:
-            'Order not found'
-        });
-      }
+if (!order) {
+  return res.status(404).json({
+    error:
+      'Order not found'
+  });
+}
+
+if (order.id !== razorpay_order_id) {
+  return res.status(400).json({
+    error:
+      'Order ID mismatch'
+  });
+}
+
 
       const expectedSignature =
         crypto

@@ -419,3 +419,49 @@ Favorite things: ${
     data.favorite || 'none'
   }
 Dedication
+: ${d.dedication || 'none'}.
+
+Return ONLY JSON:
+{
+  "title":"...",
+  "pages":[
+    {
+      "title":"...",
+      "text":"...",
+      "imagePrompt":"..."
+    }
+  ]
+}
+
+Exactly 6 pages.
+
+Warm simple language.
+
+Each image prompt must preserve the uploaded child's recognizable facial identity,
+proportions, eyes, nose, mouth, hair and skin tone as the same animated character
+on every page.
+
+No text or watermark.
+`;
+
+  const r = await ai(
+    'responses',
+    JSON.stringify({
+      model:
+        process.env.OPENAI_TEXT_MODEL ||
+        'gpt-5.6-luna',
+      input: prompt
+    }),
+    {
+      'Content-Type': 'application/json'
+    }
+  );
+
+  const j = await r.json();
+
+  return JSON.parse(
+    j.output_text
+      .replace(/^```json\s*/, '')
+      .replace(/\s*```$/, '')
+  );
+}

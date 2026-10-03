@@ -471,6 +471,7 @@ text: {
   format: {
     type: 'json_object'
   }
+  }
     }),
     {
       'Content-Type': 'application/json'

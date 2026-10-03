@@ -9,48 +9,122 @@ import { fileURLToPath } from 'url';
 import multer from 'multer';
 import PDFDocument from 'pdfkit';
 
-const root = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  '..'
-);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const root = path.join(__dirname, '..');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 const data = path.join(root, 'data');
 const uploads = path.join(data, 'uploads');
 const books = path.join(root, 'public', 'books');
 
-[data, uploads, books].forEach(x =>
-  fs.mkdirSync(x, { recursive: true })
-);
+[data, uploads, books].forEach(dir => {
+  fs.mkdirSync(dir, { recursive: true });
+});
 
 const db = path.join(data, 'orders.json');
 
-const orders = fs.existsSync(db)
-  ? JSON.parse(fs.readFileSync(db))
-  : {};
+let orders = {};
 
-const save = () =>
-  fs.writeFileSync(db, JSON.stringify(orders, null, 2));
+if (fs.existsSync(db)) {
+  try {
+    orders = JSON.parse(fs.readFileSync(db, 'utf8'));
+  } catch {
+    orders = {};
+  }
+}
 
-const app = express();
+function save() {
+  fs.writeFileSync(
+    db,
+    JSON.stringify(orders, null, 2)
+  );
+}
 
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
-// Serve files from public folder
-app.use(express.static(path.join(root, 'public')));
+// Serve public files
+app.use(
+  express.static(
+    path.join(root, 'public')
+  )
+);
 
-// Serve website pages from project root
+// ===============================
+// WEBSITE PAGES
+// ===============================
+
 app.get('/', (req, res) => {
-  res.sendFile(path.join(root, 'index.html'));
+  res.sendFile(
+    path.join(root, 'index.html')
+  );
+});
+
+app.get('/index.html', (req, res) => {
+  res.sendFile(
+    path.join(root, 'index.html')
+  );
 });
 
 app.get('/bhavik-story.html', (req, res) => {
-  res.sendFile(path.join(root, 'bhavik-story.html'));
+  res.sendFile(
+    path.join(root, 'bhavik-story.html')
+  );
 });
 
 app.get('/story.html', (req, res) => {
-  res.sendFile(path.join(root, 'story.html'));
+  res.sendFile(
+    path.join(root, 'story.html')
+  );
 });
+
+// Test page
+app.get('/test', (req, res) => {
+  res.send(`
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>KidsImagination Test</title>
+      </head>
+
+      <body style="
+        font-family:Arial;
+        padding:40px;
+        background:#fffaf0;
+        color:#30264d;
+      ">
+
+        <h1>KidsImagination is working ✅</h1>
+
+        <p>
+          The Render server is running correctly.
+        </p>
+
+        <p>
+          <a href="/">
+            Open KidsImagination homepage
+          </a>
+        </p>
+
+        <p>
+          <a href="/bhavik-story.html">
+            Open Bhavik's story
+          </a>
+        </p>
+
+      </body>
+    </html>
+  `);
+});
+
+// ===============================
+// FILE UPLOAD
+// ===============================
 
 const upload = multer({
   dest: uploads,
@@ -59,462 +133,289 @@ const upload = multer({
   }
 });
 
-const rp =
-  process.env.RAZORPAY_KEY_ID &&
-  process.env.RAZORPAY_KEY_SECRET
-    ? new Razorpay({
-        key_id: process.env.RAZORPAY_KEY_ID,
-        key_secret: process.env.RAZORPAY_KEY_SECRET
-      })
-    : null;
-
-// Upload child photo
 app.post(
   '/api/upload-photo',
   upload.single('photo'),
-  (q, s) => {
-    if (!q.file) {
-      return s.status(400).json({
+  (req, res) => {
+
+    if (!req.file) {
+      return res.status(400).json({
         error: 'Photo required'
       });
     }
 
-    s.json({
-      photoId: q.file.filename
+    res.json({
+      photoId: req.file.filename
     });
   }
 );
 
-// Create Razorpay order
-app.post('/api/create-order', async (q, s) => {
-  try {
-    if (!rp) {
-      return s.status(503).json({
-        error: 'Razorpay is not configured'
-      });
-    }
+// ===============================
+// RAZORPAY
+// ===============================
 
-    const d = q.body;
-    const a = Number(d.amount);
+const razorpay =
+  process.env.RAZORPAY_KEY_ID &&
+  process.env.RAZORPAY_KEY_SECRET
+    ? new Razorpay({
+        key_id:
+          process.env.RAZORPAY_KEY_ID,
+        key_secret:
+          process.env.RAZORPAY_KEY_SECRET
+      })
+    : null;
 
-    if (![39900, 59900, 79900].includes(a)) {
-      return s.status(400).json({
-        error: 'Invalid package'
-      });
-    }
+app.post(
+  '/api/create-order',
+  async (req, res) => {
 
-    const o = await rp.orders.create({
-      amount: a,
-      currency: 'INR',
-      receipt: 'KI' + Date.now(),
-      payment_capture: 1
-    });
+    try {
 
-    orders[o.id] = {
-      id: o.id,
-      status: 'created',
-      amount: a,
-      data: d
-    };
+      if (!razorpay) {
+        return res.status(503).json({
+          error:
+            'Razorpay is not configured'
+        });
+      }
 
-    save();
+      const data = req.body;
+      const amount = Number(
+        data.amount
+      );
 
-    s.json({
-      keyId: process.env.RAZORPAY_KEY_ID,
-      orderId: o.id,
-      amount: o.amount
-    });
+      if (
+        ![
+          39900,
+          59900,
+          79900
+        ].includes(amount)
+      ) {
+        return res.status(400).json({
+          error:
+            'Invalid package'
+        });
+      }
 
-  } catch (e) {
-    console.error(e);
+      const order =
+        await razorpay.orders.create({
+          amount,
+          currency: 'INR',
+          receipt:
+            'KI' + Date.now(),
+          payment_capture: 1
+        });
 
-    s.status(500).json({
-      error: 'Order creation failed'
-    });
-  }
-});
-
-// Verify payment
-app.post('/api/verify-payment', async (q, s) => {
-  try {
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-      orderId
-    } = q.body;
-
-    const o =
-      orders[orderId || razorpay_order_id];
-
-    if (!o) {
-      return s.status(404).json({
-        error: 'Order not found'
-      });
-    }
-
-    const exp = crypto
-      .createHmac(
-        'sha256',
-        process.env.RAZORPAY_KEY_SECRET
-      )
-      .update(
-        `${razorpay_order_id}|${razorpay_payment_id}`
-      )
-      .digest('hex');
-
-    if (
-      !razorpay_signature ||
-      exp !== razorpay_signature
-    ) {
-      return s.status(400).json({
-        error: 'Payment verification failed'
-      });
-    }
-
-    o.status = 'generating';
-    o.paymentId = razorpay_payment_id;
-
-    save();
-
-    generate(o.id).catch(e => {
-      console.error(e);
-
-      o.status = 'failed';
-      o.error =
-        'Generation failed. Please contact support.';
+      orders[order.id] = {
+        id: order.id,
+        status: 'created',
+        amount,
+        data
+      };
 
       save();
-    });
 
-    s.json({
-      ok: true,
-      orderId: o.id
-    });
-
-  } catch (e) {
-    s.status(500).json({
-      error: 'Verification failed'
-    });
-  }
-});
-
-// Get story status
-app.get('/api/story/:id', (q, s) => {
-  const o = orders[q.params.id];
-
-  if (!o) {
-    return s.status(404).json({
-      error: 'Not found'
-    });
-  }
-
-  s.json({
-    status: o.status,
-    title: o.title,
-    pages: o.pages,
-    pdfUrl: o.pdfUrl,
-    audioUrl: o.audioUrl,
-    error: o.error
-  });
-});
-
-// OpenAI helper
-async function ai(ep, body, headers = {}) {
-  const r = await fetch(
-    'https://api.openai.com/v1/' + ep,
-    {
-      method: 'POST',
-      headers: {
-        Authorization:
-          `Bearer ${process.env.OPENAI_API_KEY}`,
-        ...headers
-      },
-      body
-    }
-  );
-
-  if (!r.ok) {
-    throw Error(
-      'OpenAI ' +
-      r.status +
-      ' ' +
-      (await r.text()).slice(0, 500)
-    );
-  }
-
-  return r;
-}
-
-// Create story
-async function makeStory(d) {
-  const prompt = `
-Create a children's picture book for ${d.childName}, age ${d.age}.
-Theme: ${d.theme}.
-Favorite things: ${d.favorite || 'none'}.
-Dedication: ${d.dedication || 'none'}.
-
-Return ONLY JSON:
-{
-  "title":"...",
-  "pages":[
-    {
-      "title":"...",
-      "text":"...",
-      "imagePrompt":"..."
-    }
-  ]
-}
-
-Exactly 6 pages.
-
-Warm simple language.
-
-Each image prompt must preserve the uploaded child's recognizable facial identity,
-proportions, eyes, nose, mouth, hair and skin tone as the same animated character
-on every page.
-
-No text or watermark.
-`;
-
-  const r = await ai(
-    'responses',
-    JSON.stringify({
-      model:
-        process.env.OPENAI_TEXT_MODEL ||
-        'gpt-5.6-luna',
-      input: prompt
-    })
-  );
-
-  const j = await r.json();
-
-  return JSON.parse(
-    j.output_text
-      .replace(/^```json\s*/, '')
-      .replace(/\s*```$/, '')
-  );
-}
-
-// Create image
-async function makeImage(prompt, photo) {
-  const f = new FormData();
-
-  f.append(
-    'model',
-    process.env.OPENAI_IMAGE_MODEL ||
-      'gpt-image-2'
-  );
-
-  f.append(
-    'prompt',
-    prompt +
-      ' Use the uploaded child photo as identity reference. Keep the same recognizable face; animate the child without redesigning facial features.'
-  );
-
-  f.append('size', '1024x1024');
-
-  f.append(
-    'image',
-    new Blob([
-      fs.readFileSync(photo)
-    ]),
-    'child.jpg'
-  );
-
-  const r = await ai(
-    'images/edits',
-    f
-  );
-
-  const j = await r.json();
-
-  return Buffer.from(
-    j.data[0].b64_json,
-    'base64'
-  );
-}
-
-// Create audio
-async function makeAudio(text) {
-  const r = await ai(
-    'audio/speech',
-    JSON.stringify({
-      model:
-        process.env.OPENAI_TTS_MODEL ||
-        'gpt-4o-mini-tts',
-      voice: 'alloy',
-      input: text,
-      format: 'mp3'
-    }),
-    {
-      'Content-Type':
-        'application/json'
-    }
-  );
-
-  return Buffer.from(
-    await r.arrayBuffer()
-  );
-}
-
-// Create PDF
-function makePdf(id, st, imgs) {
-  return new Promise(
-    (resolve, reject) => {
-      const f = path.join(
-        books,
-        id + '.pdf'
-      );
-
-      const d = new PDFDocument({
-        size: 'A4',
-        margin: 40
+      res.json({
+        keyId:
+          process.env.RAZORPAY_KEY_ID,
+        orderId: order.id,
+        amount: order.amount
       });
 
-      const w =
-        fs.createWriteStream(f);
+    } catch (error) {
 
-      w.on('finish', () =>
-        resolve(
-          '/books/' +
-          id +
-          '.pdf'
-        )
-      );
+      console.error(error);
 
-      w.on('error', reject);
-
-      d.pipe(w);
-
-      d.fontSize(30).text(
-        st.title,
-        {
-          align: 'center'
-        }
-      );
-
-      st.pages.forEach(
-        (p, i) => {
-          d.addPage();
-
-          d.fontSize(24)
-            .text(
-              p.title,
-              {
-                align: 'center'
-              }
-            )
-            .moveDown();
-
-          d.image(
-            imgs[i],
-            {
-              fit: [500, 500],
-              align: 'center'
-            }
-          ).moveDown();
-
-          d.fontSize(15)
-            .text(p.text);
-        }
-      );
-
-      d.end();
+      res.status(500).json({
+        error:
+          'Order creation failed'
+      });
     }
-  );
-}
-
-// Generate complete book
-async function generate(id) {
-  if (!process.env.OPENAI_API_KEY) {
-    throw Error(
-      'OPENAI_API_KEY missing'
-    );
   }
+);
 
-  const o = orders[id];
+// ===============================
+// PAYMENT VERIFICATION
+// ===============================
 
-  const st = await makeStory(
-    o.data
-  );
+app.post(
+  '/api/verify-payment',
+  async (req, res) => {
 
-  const photo = path.join(
-    uploads,
-    o.data.photoId
-  );
+    try {
 
-  const imgs = [];
-  const pages = [];
+      const {
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+        orderId
+      } = req.body;
 
-  for (
-    let i = 0;
-    i < st.pages.length;
-    i++
-  ) {
-    const b =
-      await makeImage(
-        st.pages[i].imagePrompt,
-        photo
-      );
+      const order =
+        orders[
+          orderId ||
+          razorpay_order_id
+        ];
 
-    const f = path.join(
-      books,
-      `${id}-${i + 1}.png`
-    );
+      if (!order) {
+        return res.status(404).json({
+          error:
+            'Order not found'
+        });
+      }
 
-    fs.writeFileSync(f, b);
+      const expectedSignature =
+        crypto
+          .createHmac(
+            'sha256',
+            process.env
+              .RAZORPAY_KEY_SECRET
+          )
+          .update(
+            `${razorpay_order_id}|${razorpay_payment_id}`
+          )
+          .digest('hex');
 
-    imgs.push(f);
+      if (
+        !razorpay_signature ||
+        expectedSignature !==
+          razorpay_signature
+      ) {
+        return res.status(400).json({
+          error:
+            'Payment verification failed'
+        });
+      }
 
-    pages.push({
-      ...st.pages[i],
-      imageUrl:
-        `/books/${id}-${i + 1}.png`
+      order.status =
+        'generating';
+
+      order.paymentId =
+        razorpay_payment_id;
+
+      save();
+
+      generate(order.id)
+        .catch(error => {
+
+          console.error(error);
+
+          order.status =
+            'failed';
+
+          order.error =
+            'Generation failed. Please contact support.';
+
+          save();
+        });
+
+      res.json({
+        ok: true,
+        orderId:
+          order.id
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      res.status(500).json({
+        error:
+          'Verification failed'
+      });
+    }
+  }
+);
+
+// ===============================
+// STORY STATUS
+// ===============================
+
+app.get(
+  '/api/story/:id',
+  (req, res) => {
+
+    const order =
+      orders[
+        req.params.id
+      ];
+
+    if (!order) {
+      return res.status(404).json({
+        error:
+          'Not found'
+      });
+    }
+
+    res.json({
+      status:
+        order.status,
+      title:
+        order.title,
+      pages:
+        order.pages,
+      pdfUrl:
+        order.pdfUrl,
+      audioUrl:
+        order.audioUrl,
+      error:
+        order.error
     });
   }
+);
 
-  o.title = st.title;
-  o.pages = pages;
+// ===============================
+// OPENAI
+// ===============================
 
-  o.pdfUrl =
-    await makePdf(
-      id,
-      st,
-      imgs
+async function ai(
+  endpoint,
+  body,
+  headers = {}
+) {
+
+  const response =
+    await fetch(
+      'https://api.openai.com/v1/' +
+        endpoint,
+      {
+        method: 'POST',
+        headers: {
+          Authorization:
+            `Bearer ${process.env.OPENAI_API_KEY}`,
+          ...headers
+        },
+        body
+      }
     );
 
-  if (o.amount >= 59900) {
-    const b =
-      await makeAudio(
-        st.pages
-          .map(p => p.text)
-          .join(' ')
-      );
+  if (!response.ok) {
 
-    const f = path.join(
-      books,
-      id + '.mp3'
+    throw new Error(
+      'OpenAI ' +
+        response.status +
+        ' ' +
+        (
+          await response.text()
+        ).slice(0, 500)
     );
-
-    fs.writeFileSync(f, b);
-
-    o.audioUrl =
-      '/books/' +
-      id +
-      '.mp3';
   }
 
-  o.status = 'ready';
-
-  save();
+  return response;
 }
 
-// Start server
-app.listen(
-  process.env.PORT || 3000,
-  () =>
-    console.log(
-      'KidsImagination running'
-    )
-);
+// ===============================
+// CREATE STORY
+// ===============================
+
+async function makeStory(data) {
+
+  const prompt = `
+Create a children's picture book.
+
+Child name: ${data.childName}
+Age: ${data.age}
+Theme: ${data.theme}
+Favorite things: ${
+    data.favorite || 'none'
+  }
+Dedication

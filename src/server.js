@@ -425,17 +425,20 @@ async function ai(
 
 async function makeStory(data) {
 
-  const prompt = `
+const prompt = `
 Create a children's picture book.
 
 Child name: ${data.childName}
 Age: ${data.age}
 Theme: ${data.theme}
-Favorite things: ${
-    data.favorite || 'none'
+Favorite things: ${data.favorite || 'none'}
+Favorite color: ${data.favoriteColor || 'none'}
+Favorite animal: ${data.animal || 'none'}
+Personality: ${data.personality || 'none'}
+Dedication: ${data.dedication || 'none'}.
   }
 Dedication
-: ${d.dedication || 'none'}.
+: ${data.dedication || 'none'}.
 
 Return ONLY JSON:
 {

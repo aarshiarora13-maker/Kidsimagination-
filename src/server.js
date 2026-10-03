@@ -465,3 +465,40 @@ No text or watermark.
       .replace(/\s*```$/, '')
   );
 }
+// CREATE IMAGE
+async function makeImage(prompt, photo) {
+  const f = new FormData();
+
+  f.append(
+    'model',
+    process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2'
+  );
+
+  f.append(
+    'prompt',
+    prompt +
+      ' Use the uploaded child photo as identity reference. Keep the same recognizable face, hair, skin tone and facial features. Create a warm colorful children’s book illustration. No text or watermark.'
+  );
+
+  f.append('size', '1024x1024');
+
+  f.append(
+    'image',
+    new Blob([
+      fs.readFileSync(photo)
+    ]),
+    'child.jpg'
+  );
+
+  const r = await ai(
+    'images/edits',
+    f
+  );
+
+  const j = await r.json();
+
+  return Buffer.from(
+    j.data[0].b64_json,
+    'base64'
+  );
+}

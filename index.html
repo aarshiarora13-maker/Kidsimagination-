@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>KidsImagination — Personalized Kids Stories</title>
+<title>KidsImagination | Personalized Children's Storybooks</title>
 
 <style>
 *{
@@ -19,341 +19,338 @@ body{
   margin:0;
   font-family:Arial, sans-serif;
   background:#fff8f0;
-  color:#29243b;
+  color:#302746;
 }
-
-/* HEADER */
 
 header{
-  background:linear-gradient(135deg,#7b5cff,#ff7eb6);
+  background:linear-gradient(135deg,#7657e8,#ff6fbe);
   color:white;
-  padding:18px 22px;
-  position:sticky;
-  top:0;
-  z-index:100;
-  box-shadow:0 5px 20px rgba(0,0,0,.12);
-}
-
-.nav{
-  max-width:1100px;
-  margin:auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-}
-
-.logo{
-  font-size:23px;
-  font-weight:800;
-}
-
-.logo span{
-  color:#ffe66d;
-}
-
-.nav a{
-  color:white;
-  text-decoration:none;
-  font-weight:bold;
-  font-size:14px;
-}
-
-/* HERO */
-
-.hero{
-  max-width:1100px;
-  margin:auto;
-  padding:55px 20px 35px;
+  padding:25px 18px 32px;
   text-align:center;
 }
 
-.badge{
-  display:inline-block;
-  background:#ffe66d;
-  color:#493d73;
-  padding:7px 14px;
-  border-radius:30px;
-  font-size:12px;
-  font-weight:bold;
+.logo{
+  font-size:34px;
+  font-weight:900;
+}
+
+.tagline{
+  font-size:17px;
+  margin-top:8px;
+}
+
+.hero{
+  padding:35px 18px;
+  text-align:center;
+  background:linear-gradient(180deg,#fff4fb,#fffaf3);
 }
 
 .hero h1{
-  margin:15px auto 10px;
-  max-width:750px;
-  font-size:clamp(30px,7vw,52px);
-  line-height:1.08;
-  color:#493d73;
-}
-
-.hero h1 span{
-  color:#ff609c;
+  font-size:38px;
+  margin:5px 0 12px;
+  color:#3d315d;
 }
 
 .hero p{
   max-width:650px;
   margin:0 auto 22px;
-  color:#665f75;
-  font-size:16px;
+  font-size:18px;
   line-height:1.6;
-}
-
-.hero-buttons{
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-  gap:10px;
+  color:#666;
 }
 
 .btn{
   display:inline-block;
-  padding:12px 19px;
-  border-radius:25px;
-  text-decoration:none;
-  font-weight:bold;
-  font-size:14px;
-}
-
-.btn-primary{
+  border:0;
   background:#7156d8;
   color:white;
+  padding:14px 23px;
+  border-radius:30px;
+  text-decoration:none;
+  font-weight:bold;
+  font-size:16px;
+  cursor:pointer;
+  box-shadow:0 6px 15px rgba(80,50,150,.18);
 }
 
-.btn-secondary{
-  background:white;
-  color:#7156d8;
-  border:2px solid #7156d8;
+.btn.yellow{
+  background:#ffe56b;
+  color:#463b25;
 }
-
-/* STORIES */
 
 .section{
-  max-width:1100px;
+  max-width:1050px;
   margin:auto;
-  padding:30px 20px 60px;
+  padding:55px 18px;
 }
 
 .section-title{
   text-align:center;
-  margin-bottom:25px;
+  font-size:30px;
+  margin-bottom:10px;
 }
 
-.section-title h2{
-  margin:0 0 7px;
-  font-size:28px;
-  color:#493d73;
-}
-
-.section-title p{
-  margin:0;
+.section-subtitle{
+  text-align:center;
   color:#777;
-  font-size:14px;
+  margin-bottom:30px;
+  font-size:16px;
 }
 
-/* STORY GRID */
+/* EXAMPLE BOOK */
 
-.story-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:20px;
-}
-
-.story-card{
+.example-card{
+  max-width:430px;
+  margin:auto;
   background:white;
-  border-radius:24px;
+  border-radius:28px;
   overflow:hidden;
-  box-shadow:0 8px 25px rgba(76,55,110,.13);
-  transition:.25s ease;
-  border:3px solid transparent;
+  box-shadow:0 12px 35px rgba(60,40,90,.15);
+  border:4px solid #ffe06a;
 }
 
-.story-card:hover{
-  transform:translateY(-5px);
-  border-color:#ffd166;
-}
-
-.story-card img{
+.example-card img{
   width:100%;
-  aspect-ratio:1/1.05;
-  object-fit:cover;
   display:block;
+  aspect-ratio:3/4;
+  object-fit:cover;
 }
 
-.story-content{
-  padding:16px;
+.example-content{
+  padding:22px;
 }
 
-.story-content h3{
-  margin:0 0 7px;
-  color:#493d73;
-  font-size:18px;
+.example-content h3{
+  margin:0 0 10px;
+  font-size:22px;
 }
 
-.story-content p{
-  margin:0 0 14px;
+.example-content p{
   color:#777;
-  font-size:13px;
   line-height:1.5;
 }
 
-.story-actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
+/* TEMPLATES */
+
+.templates{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:18px;
 }
 
-.story-btn{
-  flex:1;
-  min-width:100px;
+.template{
+  background:white;
+  border-radius:22px;
+  padding:22px;
   text-align:center;
-  padding:9px 10px;
-  border-radius:18px;
-  text-decoration:none;
-  font-size:12px;
+  box-shadow:0 8px 25px rgba(60,40,90,.10);
+  border:2px solid transparent;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.template:hover{
+  transform:translateY(-4px);
+  border-color:#b89cff;
+}
+
+.template.selected{
+  border-color:#7156d8;
+  background:#f5f0ff;
+}
+
+.template-icon{
+  font-size:42px;
+}
+
+.template h3{
+  margin:10px 0 7px;
+}
+
+.template p{
+  color:#777;
+  font-size:14px;
+  line-height:1.45;
+}
+
+/* FORM */
+
+.form-box{
+  background:white;
+  max-width:750px;
+  margin:auto;
+  padding:28px;
+  border-radius:28px;
+  box-shadow:0 12px 35px rgba(60,40,90,.13);
+}
+
+.form-group{
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:7px;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:13px 14px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  font-size:15px;
+  font-family:inherit;
+  background:#fff;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.selected-template{
+  background:#f4efff;
+  border-radius:14px;
+  padding:13px;
+  margin-bottom:20px;
   font-weight:bold;
 }
 
-.read{
-  background:#7156d8;
-  color:white;
+.checkbox{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:15px 0;
 }
 
-.audio{
-  background:#ffe66d;
-  color:#493d73;
+.checkbox input{
+  width:auto;
 }
 
-/* HOW IT WORKS */
+/* PRICING */
 
-.how{
-  background:linear-gradient(135deg,#f1ebff,#fff0f7);
-  border-radius:30px;
-  padding:30px 20px;
-  margin-top:20px;
+.pricing{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
 }
+
+.price-card{
+  background:white;
+  border-radius:25px;
+  padding:27px 20px;
+  text-align:center;
+  box-shadow:0 8px 25px rgba(60,40,90,.10);
+  border:2px solid #eee;
+}
+
+.price-card.featured{
+  border:3px solid #ffca4b;
+  transform:scale(1.02);
+}
+
+.price{
+  font-size:34px;
+  font-weight:900;
+  color:#7156d8;
+  margin:15px 0;
+}
+
+.price-card ul{
+  padding:0;
+  list-style:none;
+  line-height:2;
+  color:#666;
+}
+
+/* PROCESS */
 
 .steps{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  grid-template-columns:repeat(4,1fr);
   gap:15px;
 }
 
 .step{
+  text-align:center;
   background:white;
-  padding:20px;
   border-radius:20px;
-  text-align:center;
-  box-shadow:0 5px 18px rgba(0,0,0,.07);
+  padding:20px;
 }
 
-.step-icon{
-  font-size:30px;
-}
-
-.step h3{
-  font-size:16px;
-  margin:8px 0;
-}
-
-.step p{
-  margin:0;
-  font-size:13px;
-  line-height:1.5;
-  color:#777;
-}
-
-/* CTA */
-
-.cta{
-  margin-top:35px;
-  padding:35px 20px;
-  border-radius:30px;
-  text-align:center;
-  background:linear-gradient(135deg,#7156d8,#ff6fae);
+.step-number{
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:auto;
+  border-radius:50%;
+  background:#7156d8;
   color:white;
+  font-weight:bold;
 }
 
-.cta h2{
-  margin:0 0 8px;
-  font-size:27px;
-}
+/* RESULT */
 
-.cta p{
-  margin:0 auto 18px;
-  max-width:600px;
-  font-size:14px;
-  line-height:1.5;
-}
-
-.cta .btn{
-  background:white;
-  color:#7156d8;
+#orderResult{
+  display:none;
+  margin-top:20px;
+  padding:18px;
+  background:#ecfff1;
+  border-radius:16px;
+  color:#246138;
+  line-height:1.6;
 }
 
 /* FOOTER */
 
 footer{
+  background:#29233d;
+  color:white;
   text-align:center;
-  padding:25px 15px;
-  background:#29243b;
-  color:#ddd;
-  font-size:12px;
+  padding:35px 18px;
 }
 
-footer strong{
-  color:white;
+footer p{
+  color:#c9c4d5;
 }
 
 /* MOBILE */
 
-@media(max-width:600px){
+@media(max-width:700px){
 
-  .nav a{
-    display:none;
-  }
-
-  .hero{
-    padding-top:38px;
+  .logo{
+    font-size:28px;
   }
 
   .hero h1{
-    font-size:34px;
+    font-size:30px;
   }
 
-  .hero p{
-    font-size:14px;
+  .row{
+    grid-template-columns:1fr;
   }
 
-  .story-grid{
-    grid-template-columns:repeat(2,1fr);
-    gap:12px;
-  }
-
-  .story-card{
-    border-radius:18px;
-  }
-
-  .story-content{
-    padding:11px;
-  }
-
-  .story-content h3{
-    font-size:14px;
-  }
-
-  .story-content p{
-    font-size:11px;
-  }
-
-  .story-btn{
-    min-width:0;
-    font-size:10px;
-    padding:8px 5px;
+  .steps{
+    grid-template-columns:1fr 1fr;
   }
 
   .section{
-    padding-left:12px;
-    padding-right:12px;
+    padding:40px 15px;
+  }
+
+  .form-box{
+    padding:20px;
   }
 }
 </style>
@@ -361,231 +358,601 @@ footer strong{
 
 <body>
 
+<!-- HEADER -->
+
 <header>
-  <div class="nav">
-    <div class="logo">✨ Kids<span>Imagination</span></div>
-    <a href="#stories">Stories</a>
+  <div class="logo">✨ KidsImagination</div>
+  <div class="tagline">
+    Personalized storybooks made especially for your little one 💕
   </div>
 </header>
 
+
+<!-- HERO -->
+
 <section class="hero">
 
-  <div class="badge">📚 PERSONALIZED STORYBOOKS</div>
-
-  <h1>
-    Every child deserves
-    <span>their own story.</span>
-  </h1>
+  <h1>Every Child Deserves Their Own Story 📖✨</h1>
 
   <p>
-    Beautiful personalized children's stories where little ones
-    become the heroes of their own adventures.
+    Create a magical personalized children's story featuring
+    your child's name, personality, interests and imagination.
   </p>
 
-  <div class="hero-buttons">
-    <a href="#stories" class="btn btn-primary">
-      📖 Explore Stories
-    </a>
+  <a href="#templates" class="btn">
+    🪄 Create My Story
+  </a>
 
-    <a href="#how" class="btn btn-secondary">
-      ✨ How It Works
-    </a>
+</section>
+
+
+<!-- HOW IT WORKS -->
+
+<section class="section">
+
+  <h2 class="section-title">How It Works 🌈</h2>
+
+  <p class="section-subtitle">
+    Creating your child's personalized book is simple.
+  </p>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-number">1</div>
+      <h3>Choose</h3>
+      <p>Pick your favorite story template.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-number">2</div>
+      <h3>Customize</h3>
+      <p>Tell us about your child.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <h3>Create</h3>
+      <p>Your personalized story is prepared.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-number">4</div>
+      <h3>Enjoy</h3>
+      <p>Read and listen to the adventure.</p>
+    </div>
+
   </div>
 
 </section>
 
 
-<section class="section" id="stories">
+<!-- ONE EXAMPLE BOOK -->
 
-  <div class="section-title">
-    <h2>🌈 Choose a Story</h2>
-    <p>Open a story and start the adventure.</p>
-  </div>
+<section class="section">
 
+  <h2 class="section-title">📖 See an Example</h2>
 
-  <div class="story-grid">
+  <p class="section-subtitle">
+    Here's one example of what your finished personalized book can look like.
+  </p>
 
+  <div class="example-card">
 
-    <!-- BHAVIK STORY -->
+    <img
+      src="20260923_122332.png"
+      alt="Bhavik's Little Acts of Kindness"
+      onerror="this.style.display='none';"
+    >
 
-    <div class="story-card">
+    <div class="example-content">
 
-      <img
-        src="20260923_122332.png"
-        alt="Bhavik's Little Acts of Kindness"
-      >
+      <h3>💛 Bhavik's Little Acts of Kindness</h3>
 
-      <div class="story-content">
+      <p>
+        A sweet personalized story about kindness,
+        caring and helping others.
+      </p>
 
-        <h3>💛 Bhavik's Little Acts of Kindness</h3>
+      <a href="bhavik-story.html" class="btn">
+        📖 Read Example Book
+      </a>
 
-        <p>
-          A sweet story about kindness, caring and helping others.
-        </p>
-
-        <div class="story-actions">
-
-          <a
-            class="story-btn read"
-            href="bhavik-story.html"
-          >
-            📖 Read Story
-          </a>
-
-          <a
-            class="story-btn audio"
-            href="#audio"
-          >
-            🎧 Audiobook
-          </a>
-
-        </div>
-
-      </div>
+      <a href="#templates" class="btn yellow">
+        ✨ Create Yours
+      </a>
 
     </div>
-
-
-    <!-- SECOND STORY -->
-
-    <div class="story-card">
-
-      <img
-        src="20260923_122039.png"
-        alt="Bhavik story"
-      >
-
-      <div class="story-content">
-
-        <h3>⭐ Bhavik's Big Adventure</h3>
-
-        <p>
-          A cheerful adventure filled with curiosity and imagination.
-        </p>
-
-        <div class="story-actions">
-
-          <a
-            class="story-btn read"
-            href="story.html"
-          >
-            📖 Read Story
-          </a>
-
-          <a
-            class="story-btn audio"
-            href="#audio"
-          >
-            🎧 Audiobook
-          </a>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- COMING SOON -->
-
-    <div class="story-card">
-
-      <img
-        src="20260923_122156.png"
-        alt="KidsImagination story"
-      >
-
-      <div class="story-content">
-
-        <h3>🌈 More Adventures</h3>
-
-        <p>
-          More personalized stories are coming soon.
-        </p>
-
-        <div class="story-actions">
-
-          <a
-            class="story-btn read"
-            href="#stories"
-          >
-            Coming Soon
-          </a>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-  </div>
-
-
-  <div class="how" id="how">
-
-    <div class="section-title">
-      <h2>✨ How KidsImagination Works</h2>
-      <p>Three simple steps to a magical story.</p>
-    </div>
-
-    <div class="steps">
-
-      <div class="step">
-        <div class="step-icon">👶</div>
-        <h3>1. Choose</h3>
-        <p>
-          Choose a personalized story for your little one.
-        </p>
-      </div>
-
-      <div class="step">
-        <div class="step-icon">📖</div>
-        <h3>2. Read</h3>
-        <p>
-          Open the beautiful digital storybook and turn the pages.
-        </p>
-      </div>
-
-      <div class="step">
-        <div class="step-icon">🎧</div>
-        <h3>3. Listen</h3>
-        <p>
-          Enjoy the story with an audiobook option.
-        </p>
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div class="cta">
-
-    <h2>💫 A story made especially for your child</h2>
-
-    <p>
-      Imagine seeing your little one become the hero
-      of a beautiful storybook.
-    </p>
-
-    <a href="#stories" class="btn">
-      📚 Explore Stories
-    </a>
 
   </div>
 
 </section>
 
+
+<!-- STORY TEMPLATES -->
+
+<section class="section" id="templates">
+
+  <h2 class="section-title">🧩 Choose Your Story Template</h2>
+
+  <p class="section-subtitle">
+    Bhavik's book is our example. Your child can have a completely different adventure.
+  </p>
+
+  <div class="templates">
+
+    <div class="template" data-template="Little Acts of Kindness">
+      <div class="template-icon">💛</div>
+      <h3>Little Acts of Kindness</h3>
+      <p>
+        A heartwarming story about kindness,
+        sharing and helping others.
+      </p>
+    </div>
+
+    <div class="template" data-template="Big Adventure">
+      <div class="template-icon">🚀</div>
+      <h3>Big Adventure</h3>
+      <p>
+        A fun adventure filled with curiosity,
+        exploration and imagination.
+      </p>
+    </div>
+
+    <div class="template" data-template="Magical World">
+      <div class="template-icon">🦄</div>
+      <h3>Magical World</h3>
+      <p>
+        Enter a magical world filled with
+        fairies, unicorns and surprises.
+      </p>
+    </div>
+
+    <div class="template" data-template="Animal Friends">
+      <div class="template-icon">🐻</div>
+      <h3>Animal Friends</h3>
+      <p>
+        A sweet adventure where your child
+        meets wonderful animal friends.
+      </p>
+    </div>
+
+    <div class="template" data-template="Fairy Tale Adventure">
+      <div class="template-icon">🏰</div>
+      <h3>Fairy Tale Adventure</h3>
+      <p>
+        A magical fairy-tale adventure
+        starring your little one.
+      </p>
+    </div>
+
+    <div class="template" data-template="My Dream World">
+      <div class="template-icon">🌈</div>
+      <h3>My Dream World</h3>
+      <p>
+        A completely imaginative story
+        built around your child's dreams.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- CUSTOMIZATION FORM -->
+
+<section class="section" id="customize">
+
+  <h2 class="section-title">👨‍👩‍👧 Create Your Child's Story</h2>
+
+  <p class="section-subtitle">
+    Tell us a little about your child and we'll personalize the adventure.
+  </p>
+
+  <div class="form-box">
+
+    <div class="selected-template" id="selectedTemplate">
+      🧩 Please choose a story template above.
+    </div>
+
+    <form id="storyForm">
+
+      <div class="row">
+
+        <div class="form-group">
+          <label>Child's Name *</label>
+          <input
+            type="text"
+            id="childName"
+            placeholder="e.g. Bhavik"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Child's Age *</label>
+          <input
+            type="number"
+            id="childAge"
+            min="1"
+            max="12"
+            placeholder="e.g. 5"
+            required
+          >
+        </div>
+
+      </div>
+
+
+      <div class="row">
+
+        <div class="form-group">
+
+          <label>Child's Gender</label>
+
+          <select id="gender">
+
+            <option value="">Select</option>
+            <option>Boy</option>
+            <option>Girl</option>
+            <option>Prefer not to say</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Favorite Color</label>
+
+          <input
+            type="text"
+            id="favoriteColor"
+            placeholder="e.g. Blue"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Favorite Animal 🐻</label>
+
+        <input
+          type="text"
+          id="animal"
+          placeholder="e.g. Puppy"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Favorite Toy / Thing 🧸</label>
+
+        <input
+          type="text"
+          id="favoriteThing"
+          placeholder="e.g. Teddy bear"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Tell us about your child's personality 💕</label>
+
+        <textarea
+          id="personality"
+          placeholder="e.g. Happy, curious, loves animals and dancing..."
+        ></textarea>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Special Message / Dedication 💌</label>
+
+        <textarea
+          id="dedication"
+          placeholder="e.g. We love you so much!"
+        ></textarea>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Upload Child's Photo 📸</label>
+
+        <input
+          type="file"
+          id="childPhoto"
+          accept="image/*"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Choose Your Package 💰</label>
+
+        <select id="package" required>
+
+          <option value="">
+            Select a package
+          </option>
+
+          <option value="Digital Story - ₹399">
+            Digital Story — ₹399
+          </option>
+
+          <option value="Story + Audiobook - ₹599">
+            Story + Audiobook — ₹599
+          </option>
+
+          <option value="Premium Personalized Book - ₹799">
+            Premium Personalized Book — ₹799
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <label class="checkbox">
+
+        <input
+          type="checkbox"
+          id="audiobook"
+        >
+
+        🎧 I want an audiobook version
+
+      </label>
+
+
+      <button
+        type="submit"
+        class="btn"
+        style="width:100%;"
+      >
+        ✨ Create My Personalized Story
+      </button>
+
+
+      <div id="orderResult"></div>
+
+    </form>
+
+  </div>
+
+</section>
+
+
+<!-- PRICING -->
+
+<section class="section" id="pricing">
+
+  <h2 class="section-title">💰 Pricing</h2>
+
+  <p class="section-subtitle">
+    Choose the version you want for your little storyteller.
+  </p>
+
+  <div class="pricing">
+
+    <div class="price-card">
+
+      <h3>📖 Digital Story</h3>
+
+      <div class="price">₹399</div>
+
+      <ul>
+        <li>✨ Personalized story</li>
+        <li>🎨 Illustrated pages</li>
+        <li>📱 Digital reading</li>
+        <li>📥 Digital delivery</li>
+      </ul>
+
+      <a href="#customize" class="btn">
+        Choose
+      </a>
+
+    </div>
+
+
+    <div class="price-card featured">
+
+      <h3>🎧 Story + Audiobook</h3>
+
+      <div class="price">₹599</div>
+
+      <ul>
+        <li>✨ Personalized story</li>
+        <li>🎨 Illustrated pages</li>
+        <li>🎧 Audiobook</li>
+        <li>📱 Digital reading</li>
+      </ul>
+
+      <a href="#customize" class="btn">
+        Choose
+      </a>
+
+    </div>
+
+
+    <div class="price-card">
+
+      <h3>🌟 Premium Book</h3>
+
+      <div class="price">₹799</div>
+
+      <ul>
+        <li>✨ Personalized story</li>
+        <li>🎨 Illustrated pages</li>
+        <li>🎧 Audiobook</li>
+        <li>📚 Premium version</li>
+      </ul>
+
+      <a href="#customize" class="btn">
+        Choose
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- FOOTER -->
 
 <footer>
 
-  <strong>✨ KidsImagination</strong>
-  <br><br>
-  Personalized stories for little dreamers.
+  <h2>✨ KidsImagination</h2>
+
+  <p>
+    Turning little imaginations into big adventures. 💕
+  </p>
+
+  <p>
+    © 2026 KidsImagination
+  </p>
 
 </footer>
 
+
+<script>
+
+let selectedTemplate = "";
+
+const templates =
+  document.querySelectorAll(".template");
+
+const selectedBox =
+  document.getElementById("selectedTemplate");
+
+
+templates.forEach(template => {
+
+  template.addEventListener("click", () => {
+
+    templates.forEach(t =>
+      t.classList.remove("selected")
+    );
+
+    template.classList.add("selected");
+
+    selectedTemplate =
+      template.dataset.template;
+
+    selectedBox.innerHTML =
+      "🧩 Selected template: <strong>" +
+      selectedTemplate +
+      "</strong>";
+
+    document.getElementById("customize")
+      .scrollIntoView({
+        behavior:"smooth"
+      });
+
+  });
+
+});
+
+
+/* FORM */
+
+document
+.getElementById("storyForm")
+.addEventListener("submit", function(e){
+
+  e.preventDefault();
+
+  if(!selectedTemplate){
+
+    alert(
+      "Please choose a story template first."
+    );
+
+    document
+      .getElementById("templates")
+      .scrollIntoView({
+        behavior:"smooth"
+      });
+
+    return;
+  }
+
+
+  const name =
+    document.getElementById("childName").value;
+
+  const age =
+    document.getElementById("childAge").value;
+
+  const packageName =
+    document.getElementById("package").value;
+
+  const audiobook =
+    document.getElementById("audiobook").checked;
+
+
+  const result =
+    document.getElementById("orderResult");
+
+
+  result.style.display = "block";
+
+  result.innerHTML =
+
+    "🎉 <strong>Story details saved!</strong><br><br>" +
+
+    "👧 Child: " + escapeHTML(name) +
+    "<br>" +
+
+    "🎂 Age: " + escapeHTML(age) +
+    "<br>" +
+
+    "📖 Template: " +
+    escapeHTML(selectedTemplate) +
+    "<br>" +
+
+    "💰 Package: " +
+    escapeHTML(packageName) +
+    "<br>" +
+
+    "🎧 Audiobook: " +
+    (audiobook ? "Yes" : "No") +
+
+    "<br><br>" +
+
+    "Your customization is ready to be connected to the story-generation/order system.";
+
+});
+
+
+function escapeHTML(text){
+
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+</script>
 
 </body>
 </html>

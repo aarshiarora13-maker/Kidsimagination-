@@ -502,3 +502,200 @@ async function makeImage(prompt, photo) {
     'base64'
   );
 }
+// Create audio
+async function makeAudio(text) {
+  const r = await ai(
+    'audio/speech',
+    JSON.stringify({
+      model:
+        process.env.OPENAI_TTS_MODEL ||
+        'gpt-4o-mini-tts',
+      voice: 'alloy',
+      input: text,
+      format: 'mp3'
+    }),
+    {
+      'Content-Type': 'application/json'
+    }
+  );
+
+  return Buffer.from(
+    await r.arrayBuffer()
+  );
+}
+
+
+// Create PDF
+function makePdf(id, st, imgs) {
+  return new Promise((resolve, reject) => {
+
+    const f = path.join(
+      books,
+      id + '.pdf'
+    );
+
+    const d = new PDFDocument({
+      size: 'A4',
+      margin: 40
+    });
+
+    const w = fs.createWriteStream(f);
+
+    w.on('finish', () =>
+      resolve(
+        '/books/' +
+        id +
+        '.pdf'
+      )
+    );
+
+    w.on('error', reject);
+
+    d.pipe(w);
+
+    d.fontSize(30).text(
+      st.title,
+      {
+        align: 'center'
+      }
+    );
+
+    st.pages.forEach((p, i) => {
+
+      d.addPage();
+
+      d.fontSize(24)
+        .text(
+          p.title,
+          {
+            align: 'center'
+          }
+        )
+        .moveDown();
+
+      d.image(
+        imgs[i],
+        {
+          fit: [500, 500],
+          align: 'center'
+        }
+      )
+      .moveDown();
+
+      d.fontSize(15)
+        .text(p.text);
+    });
+
+    d.end();
+  });
+}
+
+
+// Generate complete book
+async function generate(id) {
+
+  if (!process.env.OPENAI_API_KEY) {
+    throw Error(
+      'OPENAI_API_KEY missing'
+    );
+  }
+
+  const o = orders[id];
+
+  const st = await makeStory(
+    o.data
+  );
+
+  const photo = path.join(
+    uploads,
+    o.data.photoId
+  );
+
+  const imgs = [];
+  const pages = [];
+
+  for (
+    let i = 0;
+    i < st.pages.length;
+    i++
+  ) {
+
+    const b =
+      await makeImage(
+        st.pages[i].imagePrompt,
+        photo
+      );
+
+    const f = path.join(
+      books,
+      `${id}-${i + 1}.png`
+    );
+
+    fs.writeFileSync(
+      f,
+      b
+    );
+
+    imgs.push(f);
+
+    pages.push({
+      ...st.pages[i],
+      imageUrl:
+        `/books/${id}-${i + 1}.png`
+    });
+  }
+
+  o.title = st.title;
+
+  o.pages = pages;
+
+  o.pdfUrl =
+    await makePdf(
+      id,
+      st,
+      imgs
+    );
+
+  if (o.amount >= 59900) {
+
+    const b =
+      await makeAudio(
+        st.pages
+          .map(p => p.text)
+          .join(' ')
+      );
+
+    const f = path.join(
+      books,
+      id + '.mp3'
+    );
+
+    fs.writeFileSync(
+      f,
+      b
+    );
+
+    o.audioUrl =
+      '/books/' +
+      id +
+      '.mp3';
+  }
+
+  o.status = 'ready';
+
+  save();
+}
+
+
+// Start server
+const PORT =
+  process.env.PORT || 3000;
+
+app.listen(
+  PORT,
+  () => {
+    console.log(
+      `KidsImagination running on port ${PORT}`
+    );
+  }
+);

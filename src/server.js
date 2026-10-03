@@ -436,9 +436,6 @@ Favorite color: ${data.favoriteColor || 'none'}
 Favorite animal: ${data.animal || 'none'}
 Personality: ${data.personality || 'none'}
 Dedication: ${data.dedication || 'none'}.
-  }
-Dedication
-: ${data.dedication || 'none'}.
 
 Return ONLY JSON:
 {

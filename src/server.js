@@ -464,9 +464,13 @@ No text or watermark.
     'responses',
     JSON.stringify({
       model:
-        process.env.OPENAI_TEXT_MODEL ||
-        'gpt-5.6-luna',
-      input: prompt
+  process.env.OPENAI_TEXT_MODEL ||
+  'gpt-5.6-sol',
+input: prompt,
+text: {
+  format: {
+    type: 'json_object'
+  }
     }),
     {
       'Content-Type': 'application/json'
@@ -487,7 +491,7 @@ async function makeImage(prompt, photo) {
 
   f.append(
     'model',
-    process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2'
+    process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2.5-sunburst'
   );
 
   f.append(
@@ -499,11 +503,12 @@ async function makeImage(prompt, photo) {
   f.append('size', '1024x1024');
 
   f.append(
-    'image',
-    new Blob([
-      fs.readFileSync(photo)
-    ]),
-    'child.jpg'
+  'image',
+  new Blob(
+    [fs.readFileSync(photo)],
+    { type: 'image/jpeg' }
+  ),
+  'child.jpg'
   );
 
   const r = await ai(
@@ -528,7 +533,7 @@ async function makeAudio(text) {
         'gpt-4o-mini-tts',
       voice: 'alloy',
       input: text,
-      format: 'mp3'
+      response_format: 'mp3'
     }),
     {
       'Content-Type': 'application/json'

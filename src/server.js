@@ -194,10 +194,22 @@ app.post(
         });
       }
 
-      const data = req.body;
-      const amount = Number(
-        data.amount
-      );
+      const data = req.body || {};
+
+if (
+  !data.childName ||
+  !data.age ||
+  !data.theme
+) {
+  return res.status(400).json({
+    error:
+      'Child name, age and theme are required'
+  });
+}
+
+const amount = Number(
+  data.amount
+);
 
       if (
         ![
@@ -211,8 +223,15 @@ app.post(
             'Invalid package'
         });
       }
+      
+const packageName =
+  amount === 39900
+    ? 'story'
+    : amount === 59900
+      ? 'story-audio'
+      : 'premium';
 
-      const order =
+const order =
         await razorpay.orders.create({
           amount,
           currency: 'INR',
@@ -225,6 +244,7 @@ app.post(
         id: order.id,
         status: 'created',
         amount,
+        package name,
         data
       };
 
@@ -434,7 +454,7 @@ async function ai(
 async function makeStory(data) {
 
 const prompt = `
-Create a children's picture book.
+Create a personalized children's picture book for a child aged 1–5.
 
 Child name: ${data.childName}
 Age: ${data.age}
@@ -443,37 +463,82 @@ Favorite things: ${data.favorite || 'none'}
 Favorite color: ${data.favoriteColor || 'none'}
 Favorite animal: ${data.animal || 'none'}
 Personality: ${data.personality || 'none'}
-Dedication: ${data.dedication || 'none'}.
+Dedication: ${data.dedication || 'none'}
 
-Return ONLY JSON:
+STORY REQUIREMENTS:
+
+Create exactly 6 pages.
+
+The child must be the main character and must appear as the central character throughout the entire story.
+
+Write a warm, playful, positive and age-appropriate story that parents will enjoy reading aloud.
+
+Use very simple vocabulary suitable for ages 1–5.
+
+Each page must contain only 1–3 short sentences.
+
+Every page should have a clear action or event so that the illustration can visually show what is happening.
+
+Create a beginning, a small adventure or problem, and a happy ending.
+
+Do not create scary, violent, dangerous or sad situations.
+
+Keep the story imaginative, colorful and emotionally positive.
+
+CHARACTER CONSISTENCY:
+
+The uploaded child photo will be used as the visual identity reference.
+
+Every imagePrompt must instruct the image generator to keep the same recognizable child character throughout the entire book.
+
+Keep consistent:
+- facial identity
+- face shape
+- eyes
+- nose
+- mouth
+- hairstyle
+- hair color
+- skin tone
+- age appearance
+- body proportions
+
+Do not make the child look like a different child from one page to another.
+
+IMAGE PROMPTS:
+
+Each page must have a detailed imagePrompt describing:
+- the child's pose
+- facial expression
+- clothing
+- location/environment
+- lighting
+- important objects
+- other characters
+- the action taking place
+- colorful children's picture-book illustration style
+
+The imagePrompt must NOT contain written text, letters, captions, logos or watermarks.
+
+RETURN ONLY VALID JSON in exactly this structure:
+
 {
-  "title":"...",
-  "pages":[
+  "title": "Story title",
+  "pages": [
     {
-      "title":"...",
-      "text":"...",
-      "imagePrompt":"..."
+      "title": "Page title",
+      "text": "Short story text",
+      "imagePrompt": "Detailed illustration prompt"
     }
   ]
 }
-
-Exactly 6 pages.
-
-Warm simple language.
-
-Each image prompt must preserve the uploaded child's recognizable facial identity,
-proportions, eyes, nose, mouth, hair and skin tone as the same animated character
-on every page.
-
-No text or watermark.
-`;
-
+';
   const r = await ai(
     'responses',
     JSON.stringify({
       model:
   process.env.OPENAI_TEXT_MODEL ||
-  'gpt-5.6-sol',
+  'gpt-6.1-sol',
 input: prompt,
 text: {
   format: {
@@ -500,14 +565,47 @@ async function makeImage(prompt, photo) {
 
   f.append(
     'model',
-    process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2.5-sunburst'
+    process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2'
   );
 
   f.append(
-    'prompt',
-    prompt +
-      ' Use the uploaded child photo as identity reference. Keep the same recognizable face, hair, skin tone and facial features. Create a warm colorful children’s book illustration. No text or watermark.'
-  );
+  'prompt',
+  prompt +
+    `
+
+IMPORTANT CHARACTER CONSISTENCY:
+Use the uploaded child photo as the primary identity reference.
+
+The child in the illustration must remain the same child across every page of the book.
+
+Preserve the child's recognizable:
+- face shape
+- eyes
+- nose
+- mouth
+- hairstyle
+- hair color
+- skin tone
+- age appearance
+- facial proportions
+
+Do not redesign the child's face.
+Do not create a different child.
+Do not make the child older or younger.
+Do not change the child's skin tone or facial structure.
+
+Create a polished, colorful children's picture-book illustration.
+Keep the child's identity recognizable while adapting the photo into a friendly illustrated character.
+
+Use expressive poses and natural facial expressions appropriate to the story.
+
+No written text.
+No letters.
+No captions.
+No logos.
+No watermark.
+`
+);
 
   f.append('size', '1024x1024');
 

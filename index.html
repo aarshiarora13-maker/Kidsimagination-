@@ -4,144 +4,356 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bhavik's Little Acts of Kindness</title>
+<title>KidsImagination — Personalized Kids Stories</title>
 
 <style>
 *{
   box-sizing:border-box;
 }
 
+html{
+  scroll-behavior:smooth;
+}
+
 body{
   margin:0;
-  background:#eee8f8;
-  font-family:Arial,sans-serif;
+  font-family:Arial, sans-serif;
+  background:#fff8f0;
   color:#29243b;
-  overflow:hidden;
 }
 
-.book-wrapper{
-  width:100vw;
-  height:100vh;
+/* HEADER */
+
+header{
+  background:linear-gradient(135deg,#7b5cff,#ff7eb6);
+  color:white;
+  padding:18px 22px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 5px 20px rgba(0,0,0,.12);
+}
+
+.nav{
+  max-width:1100px;
+  margin:auto;
   display:flex;
-  flex-direction:column;
   align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.logo{
+  font-size:23px;
+  font-weight:800;
+}
+
+.logo span{
+  color:#ffe66d;
+}
+
+.nav a{
+  color:white;
+  text-decoration:none;
+  font-weight:bold;
+  font-size:14px;
+}
+
+/* HERO */
+
+.hero{
+  max-width:1100px;
+  margin:auto;
+  padding:55px 20px 35px;
+  text-align:center;
+}
+
+.badge{
+  display:inline-block;
+  background:#ffe66d;
+  color:#493d73;
+  padding:7px 14px;
+  border-radius:30px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.hero h1{
+  margin:15px auto 10px;
+  max-width:750px;
+  font-size:clamp(30px,7vw,52px);
+  line-height:1.08;
+  color:#493d73;
+}
+
+.hero h1 span{
+  color:#ff609c;
+}
+
+.hero p{
+  max-width:650px;
+  margin:0 auto 22px;
+  color:#665f75;
+  font-size:16px;
+  line-height:1.6;
+}
+
+.hero-buttons{
+  display:flex;
   justify-content:center;
-  padding:15px;
+  flex-wrap:wrap;
+  gap:10px;
 }
 
-.book{
-  width:min(92vw,700px);
-  height:min(78vh,900px);
-  position:relative;
-  perspective:1800px;
+.btn{
+  display:inline-block;
+  padding:12px 19px;
+  border-radius:25px;
+  text-decoration:none;
+  font-weight:bold;
+  font-size:14px;
 }
 
-/* Every page */
-.page{
-  position:absolute;
-  inset:0;
+.btn-primary{
+  background:#7156d8;
+  color:white;
+}
+
+.btn-secondary{
   background:white;
-  border-radius:8px 18px 18px 8px;
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.20),
-    inset 8px 0 15px rgba(0,0,0,.04);
-
-  overflow:hidden;
-
-  transform-origin:left center;
-  transition:
-    transform .75s cubic-bezier(.65,.05,.36,1),
-    opacity .3s ease;
-
-  backface-visibility:hidden;
+  color:#7156d8;
+  border:2px solid #7156d8;
 }
 
-/* page image */
-.page img{
+/* STORIES */
+
+.section{
+  max-width:1100px;
+  margin:auto;
+  padding:30px 20px 60px;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.section-title h2{
+  margin:0 0 7px;
+  font-size:28px;
+  color:#493d73;
+}
+
+.section-title p{
+  margin:0;
+  color:#777;
+  font-size:14px;
+}
+
+/* STORY GRID */
+
+.story-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:20px;
+}
+
+.story-card{
+  background:white;
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 8px 25px rgba(76,55,110,.13);
+  transition:.25s ease;
+  border:3px solid transparent;
+}
+
+.story-card:hover{
+  transform:translateY(-5px);
+  border-color:#ffd166;
+}
+
+.story-card img{
   width:100%;
-  height:100%;
+  aspect-ratio:1/1.05;
   object-fit:cover;
   display:block;
 }
 
-/* Pages that have been turned */
-.page.flipped{
-  transform:rotateY(-180deg);
-  pointer-events:none;
+.story-content{
+  padding:16px;
 }
 
-/* Current page */
-.page.active{
-  z-index:20;
+.story-content h3{
+  margin:0 0 7px;
+  color:#493d73;
+  font-size:18px;
 }
 
-/* page number */
-.page-number{
-  position:absolute;
-  bottom:12px;
-  left:50%;
-  transform:translateX(-50%);
-  background:rgba(255,255,255,.88);
-  padding:6px 12px;
-  border-radius:20px;
+.story-content p{
+  margin:0 0 14px;
+  color:#777;
   font-size:13px;
+  line-height:1.5;
 }
 
-/* Buttons */
-.controls{
-  margin-top:18px;
+.story-actions{
   display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:12px;
+  flex-wrap:wrap;
+  gap:7px;
 }
 
-button{
-  border:0;
+.story-btn{
+  flex:1;
+  min-width:100px;
+  text-align:center;
+  padding:9px 10px;
+  border-radius:18px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.read{
   background:#7156d8;
   color:white;
-  padding:12px 20px;
+}
+
+.audio{
+  background:#ffe66d;
+  color:#493d73;
+}
+
+/* HOW IT WORKS */
+
+.how{
+  background:linear-gradient(135deg,#f1ebff,#fff0f7);
   border-radius:30px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-  box-shadow:0 5px 15px rgba(0,0,0,.15);
+  padding:30px 20px;
+  margin-top:20px;
 }
 
-button:disabled{
-  opacity:.4;
+.steps{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
 }
 
-.counter{
+.step{
   background:white;
-  padding:10px 15px;
+  padding:20px;
   border-radius:20px;
-  font-weight:bold;
+  text-align:center;
+  box-shadow:0 5px 18px rgba(0,0,0,.07);
 }
 
-/* Swipe instruction */
-.instruction{
-  margin-top:10px;
+.step-icon{
+  font-size:30px;
+}
+
+.step h3{
+  font-size:16px;
+  margin:8px 0;
+}
+
+.step p{
+  margin:0;
   font-size:13px;
-  color:#666;
+  line-height:1.5;
+  color:#777;
 }
 
-/* Mobile */
+/* CTA */
+
+.cta{
+  margin-top:35px;
+  padding:35px 20px;
+  border-radius:30px;
+  text-align:center;
+  background:linear-gradient(135deg,#7156d8,#ff6fae);
+  color:white;
+}
+
+.cta h2{
+  margin:0 0 8px;
+  font-size:27px;
+}
+
+.cta p{
+  margin:0 auto 18px;
+  max-width:600px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.cta .btn{
+  background:white;
+  color:#7156d8;
+}
+
+/* FOOTER */
+
+footer{
+  text-align:center;
+  padding:25px 15px;
+  background:#29243b;
+  color:#ddd;
+  font-size:12px;
+}
+
+footer strong{
+  color:white;
+}
+
+/* MOBILE */
+
 @media(max-width:600px){
 
-  .book{
-    width:94vw;
-    height:76vh;
+  .nav a{
+    display:none;
   }
 
-  .controls button{
-    padding:10px 15px;
+  .hero{
+    padding-top:38px;
+  }
+
+  .hero h1{
+    font-size:34px;
+  }
+
+  .hero p{
     font-size:14px;
   }
 
-  .counter{
-    padding:8px 11px;
-    font-size:13px;
+  .story-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+  }
+
+  .story-card{
+    border-radius:18px;
+  }
+
+  .story-content{
+    padding:11px;
+  }
+
+  .story-content h3{
+    font-size:14px;
+  }
+
+  .story-content p{
+    font-size:11px;
+  }
+
+  .story-btn{
+    min-width:0;
+    font-size:10px;
+    padding:8px 5px;
+  }
+
+  .section{
+    padding-left:12px;
+    padding-right:12px;
   }
 }
 </style>
@@ -149,208 +361,231 @@ button:disabled{
 
 <body>
 
-<div class="book-wrapper">
+<header>
+  <div class="nav">
+    <div class="logo">✨ Kids<span>Imagination</span></div>
+    <a href="#stories">Stories</a>
+  </div>
+</header>
 
-  <div class="book" id="book">
+<section class="hero">
 
-    <!-- COVER -->
-    <div class="page active">
-      <img src="20260923_122332.png">
-      <div class="page-number">Cover</div>
+  <div class="badge">📚 PERSONALIZED STORYBOOKS</div>
+
+  <h1>
+    Every child deserves
+    <span>their own story.</span>
+  </h1>
+
+  <p>
+    Beautiful personalized children's stories where little ones
+    become the heroes of their own adventures.
+  </p>
+
+  <div class="hero-buttons">
+    <a href="#stories" class="btn btn-primary">
+      📖 Explore Stories
+    </a>
+
+    <a href="#how" class="btn btn-secondary">
+      ✨ How It Works
+    </a>
+  </div>
+
+</section>
+
+
+<section class="section" id="stories">
+
+  <div class="section-title">
+    <h2>🌈 Choose a Story</h2>
+    <p>Open a story and start the adventure.</p>
+  </div>
+
+
+  <div class="story-grid">
+
+
+    <!-- BHAVIK STORY -->
+
+    <div class="story-card">
+
+      <img
+        src="20260923_122332.png"
+        alt="Bhavik's Little Acts of Kindness"
+      >
+
+      <div class="story-content">
+
+        <h3>💛 Bhavik's Little Acts of Kindness</h3>
+
+        <p>
+          A sweet story about kindness, caring and helping others.
+        </p>
+
+        <div class="story-actions">
+
+          <a
+            class="story-btn read"
+            href="bhavik-story.html"
+          >
+            📖 Read Story
+          </a>
+
+          <a
+            class="story-btn audio"
+            href="#audio"
+          >
+            🎧 Audiobook
+          </a>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <!-- PAGE 1 -->
-    <div class="page">
-      <img src="20260923_122039.png">
-      <div class="page-number">1</div>
+
+    <!-- SECOND STORY -->
+
+    <div class="story-card">
+
+      <img
+        src="20260923_122039.png"
+        alt="Bhavik story"
+      >
+
+      <div class="story-content">
+
+        <h3>⭐ Bhavik's Big Adventure</h3>
+
+        <p>
+          A cheerful adventure filled with curiosity and imagination.
+        </p>
+
+        <div class="story-actions">
+
+          <a
+            class="story-btn read"
+            href="story.html"
+          >
+            📖 Read Story
+          </a>
+
+          <a
+            class="story-btn audio"
+            href="#audio"
+          >
+            🎧 Audiobook
+          </a>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <!-- PAGE 2 -->
-    <div class="page">
-      <img src="20260923_122156.png">
-      <div class="page-number">2</div>
+
+    <!-- COMING SOON -->
+
+    <div class="story-card">
+
+      <img
+        src="20260923_122156.png"
+        alt="KidsImagination story"
+      >
+
+      <div class="story-content">
+
+        <h3>🌈 More Adventures</h3>
+
+        <p>
+          More personalized stories are coming soon.
+        </p>
+
+        <div class="story-actions">
+
+          <a
+            class="story-btn read"
+            href="#stories"
+          >
+            Coming Soon
+          </a>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <!-- PAGE 3 -->
-    <div class="page">
-      <img src="20260923_122437.png">
-      <div class="page-number">3</div>
+
+  </div>
+
+
+  <div class="how" id="how">
+
+    <div class="section-title">
+      <h2>✨ How KidsImagination Works</h2>
+      <p>Three simple steps to a magical story.</p>
     </div>
 
-    <!-- PAGE 4 -->
-    <div class="page">
-      <img src="20260923_122543.png">
-      <div class="page-number">4</div>
-    </div>
+    <div class="steps">
 
-    <!-- PAGE 5 -->
-    <div class="page">
-      <img src="20260924_142218.png">
-      <div class="page-number">5</div>
-    </div>
+      <div class="step">
+        <div class="step-icon">👶</div>
+        <h3>1. Choose</h3>
+        <p>
+          Choose a personalized story for your little one.
+        </p>
+      </div>
 
-    <!-- PAGE 6 -->
-    <div class="page">
-      <img src="20260924_142315.png">
-      <div class="page-number">6</div>
-    </div>
+      <div class="step">
+        <div class="step-icon">📖</div>
+        <h3>2. Read</h3>
+        <p>
+          Open the beautiful digital storybook and turn the pages.
+        </p>
+      </div>
 
-    <!-- PAGE 7 -->
-    <div class="page">
-      <img src="20260924_142408.png">
-      <div class="page-number">7</div>
+      <div class="step">
+        <div class="step-icon">🎧</div>
+        <h3>3. Listen</h3>
+        <p>
+          Enjoy the story with an audiobook option.
+        </p>
+      </div>
+
     </div>
 
   </div>
 
-  <div class="controls">
 
-    <button id="prev">← Back</button>
+  <div class="cta">
 
-    <div class="counter" id="counter">
-      Cover
-    </div>
+    <h2>💫 A story made especially for your child</h2>
 
-    <button id="next">Next →</button>
+    <p>
+      Imagine seeing your little one become the hero
+      of a beautiful storybook.
+    </p>
+
+    <a href="#stories" class="btn">
+      📚 Explore Stories
+    </a>
 
   </div>
 
-  <div class="instruction">
-    👆 Swipe left/right or use the buttons to turn the pages
-  </div>
-
-</div>
+</section>
 
 
-<script>
+<footer>
 
-const pages = document.querySelectorAll(".page");
-const nextButton = document.getElementById("next");
-const prevButton = document.getElementById("prev");
-const counter = document.getElementById("counter");
+  <strong>✨ KidsImagination</strong>
+  <br><br>
+  Personalized stories for little dreamers.
 
-let currentPage = 0;
+</footer>
 
-function updateBook(){
-
-  pages.forEach((page,index)=>{
-
-    if(index < currentPage){
-      page.classList.add("flipped");
-      page.classList.remove("active");
-    }
-
-    else if(index === currentPage){
-      page.classList.remove("flipped");
-      page.classList.add("active");
-    }
-
-    else{
-      page.classList.remove("flipped");
-      page.classList.remove("active");
-    }
-
-    /*
-      Higher pages stay behind the current page.
-    */
-    page.style.zIndex = pages.length - index;
-  });
-
-  if(currentPage === 0){
-    counter.textContent = "Cover";
-  }else{
-    counter.textContent =
-      "Page " + currentPage + " / " + (pages.length - 1);
-  }
-
-  prevButton.disabled = currentPage === 0;
-  nextButton.disabled = currentPage === pages.length - 1;
-}
-
-
-/* NEXT */
-nextButton.addEventListener("click",()=>{
-
-  if(currentPage < pages.length - 1){
-    currentPage++;
-    updateBook();
-  }
-
-});
-
-
-/* PREVIOUS */
-prevButton.addEventListener("click",()=>{
-
-  if(currentPage > 0){
-    currentPage--;
-    updateBook();
-  }
-
-});
-
-
-/* SWIPE SUPPORT */
-
-let startX = 0;
-let endX = 0;
-
-const book = document.getElementById("book");
-
-book.addEventListener("touchstart",(e)=>{
-
-  startX = e.touches[0].clientX;
-
-});
-
-
-book.addEventListener("touchend",(e)=>{
-
-  endX = e.changedTouches[0].clientX;
-
-  const difference = startX - endX;
-
-  /* Swipe left = next page */
-  if(difference > 50){
-
-    if(currentPage < pages.length - 1){
-      currentPage++;
-      updateBook();
-    }
-
-  }
-
-  /* Swipe right = previous page */
-  else if(difference < -50){
-
-    if(currentPage > 0){
-      currentPage--;
-      updateBook();
-    }
-
-  }
-
-});
-
-
-/* Keyboard support */
-
-document.addEventListener("keydown",(e)=>{
-
-  if(e.key === "ArrowRight"){
-    nextButton.click();
-  }
-
-  if(e.key === "ArrowLeft"){
-    prevButton.click();
-  }
-
-});
-
-
-updateBook();
-
-</script>
 
 </body>
 </html>

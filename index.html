@@ -598,5 +598,300 @@ footer p{
   }
 
   .nav-cta{
-    padding:9px 14px;
-    font-size:15
+  padding:9px 14px;
+  font-size:15px
+}
+
+}
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="container nav-inner">
+    <div class="logo">📚 KidsImagination</div>
+
+    <div class="nav-links">
+      <a href="#how">How It Works</a>
+      <a href="#stories">Stories</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#create" class="nav-cta">Create a Book</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container hero-grid">
+
+    <div>
+      <span class="badge">✨ Personalized Children's Stories</span>
+
+      <h1>
+        Turn Your Child<br>
+        Into a Storybook Hero!
+      </h1>
+
+      <p>
+        Create magical personalized storybooks featuring your child's
+        name, imagination and adventures.
+      </p>
+
+      <div class="actions">
+        <a href="#create" class="btn primary">Create Your Storybook 📖</a>
+        <a href="#stories" class="btn soft">See an Example</a>
+      </div>
+    </div>
+
+    <div class="book-demo">
+      <div class="book-face">📖✨🧸</div>
+      <h3>Bhavik's Big Adventure</h3>
+      <p>A magical story made especially for your little one.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="container">
+
+    <div class="section-head">
+      <h2>How It Works</h2>
+      <p>Create a special story for your child in just a few simple steps.</p>
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Tell Us About Your Child</h3>
+        <p>Add your child's name, age and interests.</p>
+      </div>
+
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Choose a Story</h3>
+        <p>Select a magical adventure your child will love.</p>
+      </div>
+
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Personalize</h3>
+        <p>Add your child's photo and special details.</p>
+      </div>
+
+      <div class="step">
+        <div class="num">4</div>
+        <h3>Enjoy the Book</h3>
+        <p>Receive your personalized storybook.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section example-section" id="stories">
+  <div class="container">
+
+    <div class="section-head">
+      <h2>See a Magical Story</h2>
+      <p>Here's an example of a personalized KidsImagination story.</p>
+    </div>
+
+    <div class="example-card">
+
+      <div class="example-copy">
+        <h3>Bhavik's Big Dream 🌟</h3>
+
+        <p>
+          Follow Bhavik on a magical adventure where his imagination
+          takes him to wonderful new places.
+        </p>
+
+        <div class="example-story-buttons">
+          <a href="/" class="btn primary">Read the Story 📖</a>
+        </div>
+      </div>
+
+      <div class="story-preview">
+        <div class="story-preview-icon">👦📚🌈</div>
+        <h4>Bhavik's World of Adventure</h4>
+        <p>A personalized story created for little dreamers.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="container">
+
+    <div class="section-head">
+      <h2>Choose Your Storybook</h2>
+      <p>Simple options for creating magical memories.</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <div class="price-card">
+        <h3>Digital Story</h3>
+        <div class="cost">₹299</div>
+        <ul>
+          <li>Personalized story</li>
+          <li>Child's name</li>
+          <li>Digital book</li>
+        </ul>
+        <a href="#create" class="btn primary">Create Now</a>
+      </div>
+
+      <div class="price-card featured">
+        <h3>Magical Book</h3>
+        <div class="cost">₹499</div>
+        <ul>
+          <li>Personalized story</li>
+          <li>Child's name</li>
+          <li>Child's photo</li>
+          <li>Beautiful illustrations</li>
+        </ul>
+        <a href="#create" class="btn primary">Create Now</a>
+      </div>
+
+      <div class="price-card">
+        <h3>Premium</h3>
+        <div class="cost">₹799</div>
+        <ul>
+          <li>Multiple stories</li>
+          <li>Personalized character</li>
+          <li>Beautiful illustrations</li>
+          <li>Digital delivery</li>
+        </ul>
+        <a href="#create" class="btn primary">Create Now</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section create-section" id="create">
+  <div class="container">
+
+    <div class="section-head">
+      <h2>Create Your Storybook ✨</h2>
+      <p>Tell us about your little hero.</p>
+    </div>
+
+    <div class="wizard">
+
+      <form id="bookForm">
+
+        <div class="field">
+          <label for="childName">Child's Name</label>
+          <input
+            id="childName"
+            name="childName"
+            type="text"
+            placeholder="Enter child's name"
+            required>
+        </div>
+
+        <div class="field">
+          <label for="age">Child's Age</label>
+          <select id="age" name="age" required>
+            <option value="">Select age</option>
+            <option>1 year</option>
+            <option>2 years</option>
+            <option>3 years</option>
+            <option>4 years</option>
+            <option>5 years</option>
+            <option>6 years</option>
+            <option>7 years</option>
+            <option>8 years</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="interest">Favourite Thing</label>
+          <input
+            id="interest"
+            name="interest"
+            type="text"
+            placeholder="For example: animals, cars, space...">
+        </div>
+
+        <div class="field">
+          <label for="story">Choose a Story</label>
+          <select id="story" name="story">
+            <option>Magical Adventure</option>
+            <option>Big Dream</option>
+            <option>Animal Adventure</option>
+            <option>Space Adventure</option>
+          </select>
+        </div>
+
+        <div class="field upload">
+          <label for="photo">Child's Photo</label>
+          <input
+            id="photo"
+            name="photo"
+            type="file"
+            accept="image/*">
+        </div>
+
+        <button class="btn primary" type="submit">
+          Create My Storybook ✨
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+</section>
+
+<section class="section identity">
+  <div class="container">
+
+    <div class="section-head">
+      <h2>Made for Little Dreamers 💜</h2>
+    </div>
+
+    <p>
+      KidsImagination helps parents create fun, memorable stories
+      where their own child becomes the hero of the adventure.
+    </p>
+
+    <div class="note">
+      Your child's information and photos should only be uploaded
+      with appropriate parental or guardian permission.
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="logo">📚 KidsImagination</div>
+    <p>Personalized stories for little dreamers.</p>
+    <p>© 2026 KidsImagination</p>
+  </div>
+</footer>
+
+<script>
+const form = document.getElementById("bookForm");
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById("childName").value.trim();
+
+  if (name) {
+    alert(
+      "Wonderful! " + name +
+      "'s personalized storybook request has been received."
+    );
+  }
+});
+</script>
+
+</body>
+</html>

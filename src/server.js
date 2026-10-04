@@ -244,7 +244,7 @@ const order =
         id: order.id,
         status: 'created',
         amount,
-        packagename,
+        packageName,
         data
       };
 

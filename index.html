@@ -354,6 +354,7 @@ footer p{
   }
 }
 </style>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
@@ -874,15 +875,13 @@ templates.forEach(template => {
 
 document
 .getElementById("storyForm")
-.addEventListener("submit", function(e){
+.addEventListener("submit", async function(e){
 
   e.preventDefault();
 
   if(!selectedTemplate){
 
-    alert(
-      "Please choose a story template first."
-    );
+    alert("Please choose a story template first.");
 
     document
       .getElementById("templates")
@@ -893,12 +892,29 @@ document
     return;
   }
 
-
   const name =
-    document.getElementById("childName").value;
+    document.getElementById("childName").value.trim();
 
   const age =
     document.getElementById("childAge").value;
+
+  const gender =
+    document.getElementById("gender").value;
+
+  const favoriteColor =
+    document.getElementById("favoriteColor").value.trim();
+
+  const animal =
+    document.getElementById("animal").value.trim();
+
+  const favoriteThing =
+    document.getElementById("favoriteThing").value.trim();
+
+  const personality =
+    document.getElementById("personality").value.trim();
+
+  const dedication =
+    document.getElementById("dedication").value.trim();
 
   const packageName =
     document.getElementById("package").value;
@@ -906,37 +922,376 @@ document
   const audiobook =
     document.getElementById("audiobook").checked;
 
+  const photoInput =
+    document.getElementById("childPhoto");
 
   const result =
     document.getElementById("orderResult");
 
+  const button =
+    document.querySelector(
+      '#storyForm button[type="submit"]'
+    );
 
-  result.style.display = "block";
+  const originalText =
+    button.innerHTML;
 
-  result.innerHTML =
+  const packageAmounts = {
+    "Digital Story - ₹399": 39900,
+    "Story + Audiobook - ₹599": 59900,
+    "Premium Personalized Book - ₹799": 79900
+  };
 
-    "🎉 <strong>Story details saved!</strong><br><br>" +
+  const amount =
+    packageAmounts[packageName];
 
-    "👧 Child: " + escapeHTML(name) +
-    "<br>" +
+  if(!amount){
 
-    "🎂 Age: " + escapeHTML(age) +
-    "<br>" +
+    alert("Please choose a package.");
 
-    "📖 Template: " +
-    escapeHTML(selectedTemplate) +
-    "<br>" +
+    return;
+  }
 
-    "💰 Package: " +
-    escapeHTML(packageName) +
-    "<br>" +
+  if(!photoInput.files.length){
 
-    "🎧 Audiobook: " +
-    (audiobook ? "Yes" : "No") +
+    alert("Please upload your child's photo.");
 
-    "<br><br>" +
+    return;
+  }
 
-    "Your customization is ready to be connected to the story-generation/order system.";
+  try {
+
+    button.disabled = true;
+
+    button.innerHTML =
+      "⏳ Preparing your story...";
+
+    result.style.display = "block";
+
+    result.innerHTML =
+      "⏳ Uploading your child's photo...";
+
+    /* UPLOAD PHOTO */
+
+    const photoForm =
+      new FormData();
+
+    photoForm.append(
+      "photo",
+      photoInput.files[0]
+    );
+
+    const uploadResponse =
+      await fetch(
+        "/api/upload-photo",
+        {
+          method:"POST",
+          body:photoForm
+        }
+      );
+
+    const uploadData =
+      await uploadResponse.json();
+
+    if(!uploadResponse.ok){
+
+      throw new Error(
+        uploadData.error ||
+        "Photo upload failed."
+      );
+
+    }
+
+    /* CREATE RAZORPAY ORDER */
+
+    result.innerHTML =
+      "⏳ Creating secure payment...";
+
+    const orderResponse =
+      await fetch(
+        "/api/create-order",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            childName:name,
+
+            age:age,
+
+            theme:selectedTemplate,
+
+            gender:gender,
+
+            favoriteColor:
+              favoriteColor,
+
+            animal:animal,
+
+            favoriteThing:
+              favoriteThing,
+
+            personality:
+              personality,
+
+            dedication:
+              dedication,
+
+            audiobook:audiobook,
+
+            packageName:
+              packageName,
+
+            amount:amount,
+
+            photoId:
+              uploadData.photoId
+
+          })
+        }
+      );
+
+    const orderData =
+      await orderResponse.json();
+
+    if(!orderResponse.ok){
+
+      throw new Error(
+        orderData.error ||
+        "Could not create payment order."
+      );
+
+    }
+
+    /* RAZORPAY CHECKOUT */
+
+    const options = {
+
+      key:
+        orderData.keyId,
+
+      amount:
+        orderData.amount,
+
+      currency:
+        "INR",
+
+      name:
+        "KidsImagination",
+
+      description:
+        packageName,
+
+      order_id:
+        orderData.orderId,
+
+      handler:
+        async function(payment){
+
+          try {
+
+            result.innerHTML =
+              "⏳ Payment successful. Verifying...";
+
+            const verifyResponse =
+              await fetch(
+                "/api/verify-payment",
+                {
+                  method:"POST",
+
+                  headers:{
+                    "Content-Type":
+                      "application/json"
+                  },
+
+                  body:JSON.stringify({
+
+                    razorpay_order_id:
+                      payment.razorpay_order_id,
+
+                    razorpay_payment_id:
+                      payment.razorpay_payment_id,
+
+                    razorpay_signature:
+                      payment.razorpay_signature,
+
+                    orderId:
+                      orderData.orderId
+
+                  })
+                }
+              );
+
+            const verifyData =
+              await verifyResponse.json();
+
+            if(!verifyResponse.ok){
+
+              throw new Error(
+                verifyData.error ||
+                "Payment verification failed."
+              );
+
+            }
+
+            result.innerHTML =
+              "🎉 <strong>Payment successful!</strong><br><br>" +
+              "⏳ Your personalized story is now being created...";
+
+            let attempts = 0;
+
+            async function checkStory(){
+
+              attempts++;
+
+              const statusResponse =
+                await fetch(
+                  "/api/story/" +
+                  encodeURIComponent(
+                    orderData.orderId
+                  )
+                );
+
+              const statusData =
+                await statusResponse.json();
+
+              if(statusData.status === "ready"){
+
+                result.innerHTML =
+                  "🎉 <strong>Your personalized story is ready!</strong><br><br>" +
+
+                  (
+                    statusData.pdfUrl
+                      ?
+                      '📖 <a href="' +
+                      statusData.pdfUrl +
+                      '" target="_blank">Open Story PDF</a><br>'
+                      :
+                      ""
+                  ) +
+
+                  (
+                    statusData.audioUrl
+                      ?
+                      '🎧 <a href="' +
+                      statusData.audioUrl +
+                      '" target="_blank">Listen to Audiobook</a>'
+                      :
+                      ""
+                  );
+
+                button.disabled = false;
+
+                button.innerHTML =
+                  originalText;
+
+                return;
+              }
+
+              if(statusData.status === "failed"){
+
+                throw new Error(
+                  statusData.error ||
+                  "Story generation failed."
+                );
+
+              }
+
+              if(attempts >= 60){
+
+                throw new Error(
+                  "Story generation is taking longer than expected."
+                );
+
+              }
+
+              setTimeout(
+                checkStory,
+                5000
+              );
+
+            }
+
+            checkStory();
+
+          } catch(error){
+
+            result.innerHTML =
+              "❌ " +
+              escapeHTML(
+                error.message
+              );
+
+            button.disabled = false;
+
+            button.innerHTML =
+              originalText;
+
+          }
+
+        },
+
+      modal:{
+        ondismiss:function(){
+
+          result.innerHTML =
+            "Payment window closed. You can try again.";
+
+          button.disabled = false;
+
+          button.innerHTML =
+            originalText;
+
+        }
+      },
+
+      theme:{
+        color:"#7156d8"
+      }
+
+    };
+
+    const razorpay =
+      new Razorpay(options);
+
+    razorpay.on(
+      "payment.failed",
+      function(response){
+
+        result.innerHTML =
+          "❌ Payment failed. Please try again.";
+
+        button.disabled = false;
+
+        button.innerHTML =
+          originalText;
+
+      }
+    );
+
+    razorpay.open();
+
+  } catch(error){
+
+    console.error(error);
+
+    result.innerHTML =
+      "❌ " +
+      escapeHTML(
+        error.message
+      );
+
+    button.disabled = false;
+
+    button.innerHTML =
+      originalText;
+
+  }
 
 });
 

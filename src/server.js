@@ -554,11 +554,24 @@ text: {
 
   const j = await r.json();
 
-  return JSON.parse(
-    j.output_text
-      .replace(/^```json\s*/, '')
-      .replace(/\s*```$/, '')
-  );
+  if (!r.ok) {
+  throw new Error(`OpenAI ${r.status}: ${JSON.stringify(j)}`);
+}
+
+const outputText =
+  j.output_text ||
+  j.choices?.[0]?.message?.content;
+
+if (!outputText) {
+  throw new Error(`OpenAI returned no story text: ${JSON.stringify(j)}`);
+}
+
+return JSON.parse(
+  outputText
+    .replace(/^```json\s*/, '')
+    .replace(/\s*```$/, '')
+    .trim()
+);
 }
 // CREATE IMAGE
 async function makeImage(prompt, photo) {

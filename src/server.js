@@ -535,22 +535,26 @@ RETURN ONLY VALID JSON in exactly this structure:
 `
   
   const r = await ai(
-    'responses',
-    JSON.stringify({
-      model:
-  process.env.OPENAI_TEXT_MODEL ||
-  'gpt-6.1-sol',
-input: prompt,
-text: {
-  format: {
-    type: 'json_object'
-  }
-  }
-    }),
-    {
-      'Content-Type': 'application/json'
+  'responses',
+  JSON.stringify({
+    model:
+      process.env.OPENAI_TEXT_MODEL ||
+      'gpt-6-luna',
+
+    input: prompt,
+
+    max_output_tokens: 4000,
+
+    reasoning: {
+      effort: 'low'
+    },
+
+    text: {
+      format: {
+        type: 'json_object'
+      }
     }
-  );
+  }),
 
   const j = await r.json();
 
@@ -560,10 +564,22 @@ text: {
 
 const outputText =
   j.output_text ||
+  j.output
+    ?.filter(item => item.type === 'message')
+    ?.flatMap(item => item.content || [])
+    ?.find(item => item.type === 'output_text')
+    ?.text ||
   j.choices?.[0]?.message?.content;
 
 if (!outputText) {
-  throw new Error(`OpenAI returned no story text: ${JSON.stringify(j)}`);
+  console.error(
+    'FULL OPENAI RESPONSE:',
+    JSON.stringify(j, null, 2)
+  );
+
+  throw new Error(
+    'OpenAI returned no story text'
+  );
 }
 
 return JSON.parse(

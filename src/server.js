@@ -531,8 +531,9 @@ RETURN ONLY VALID JSON in exactly this structure:
       "imagePrompt": "Detailed illustration prompt"
     }
   ]
-}
-';
+  }
+`
+  
   const r = await ai(
     'responses',
     JSON.stringify({

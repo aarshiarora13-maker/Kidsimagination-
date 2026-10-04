@@ -453,7 +453,7 @@ async function ai(
 
 async function makeStory(data) {
 
-const prompt = `
+  const prompt = `
 Create a personalized children's picture book for a child aged 1–5.
 
 Child name: ${data.childName}
@@ -531,69 +531,91 @@ RETURN ONLY VALID JSON in exactly this structure:
       "imagePrompt": "Detailed illustration prompt"
     }
   ]
-  }
-`
-  
+}
+`;
+
   const r = await ai(
-  'responses',
-  JSON.stringify({
-    model:
-      process.env.OPENAI_TEXT_MODEL ||
-      'gpt-6-luna',
+    'chat/completions',
+    JSON.stringify({
+      model: 'gpt-4.1-mini',
 
-    input: prompt,
+      messages: [
+        {
+          role: 'system',
+          content:
+            'You create simple, warm, age-appropriate personalized childrens picture books. Always return valid JSON only.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
 
-    max_output_tokens: 4000,
+      temperature: 0.8,
 
-    reasoning: {
-      effort: 'low'
-    },
-
-    text: {
-      format: {
+      response_format: {
         type: 'json_object'
       }
+    }),
+    {
+      'Content-Type': 'application/json'
     }
-      }),
-  {
-    'Content-Type': 'application/json'
-  }
-);
+  );
 
   const j = await r.json();
 
   if (!r.ok) {
-  throw new Error(`OpenAI ${r.status}: ${JSON.stringify(j)}`);
+    console.error(
+      'OPENAI STORY ERROR:',
+      JSON.stringify(j, null, 2)
+    );
+
+    throw new Error(
+      `OpenAI story generation failed: ${r.status} ${j.error?.message || 'Unknown error'}`
+    );
+  }
+
+  const outputText =
+    j.choices?.[0]?.message?.content;
+
+  if (!outputText) {
+    console.error(
+      'OPENAI STORY RESPONSE:',
+      JSON.stringify(j, null, 2)
+    );
+
+    throw new Error(
+      'OpenAI returned no story content'
+    );
+  }
+
+  let story;
+
+  try {
+    story = JSON.parse(outputText);
+  } catch (error) {
+    console.error(
+      'INVALID STORY JSON:',
+      outputText
+    );
+
+    throw new Error(
+      'OpenAI returned invalid story JSON'
+    );
+  }
+
+  if (
+    !story.title ||
+    !Array.isArray(story.pages) ||
+    story.pages.length !== 6
+  ) {
+    throw new Error(
+      'OpenAI returned an invalid 6-page story'
+    );
+  }
+
+  return story;
 }
-
-const outputText =
-  j.output_text ||
-  j.output
-    ?.filter(item => item.type === 'message')
-    ?.flatMap(item => item.content || [])
-    ?.find(item => item.type === 'output_text')
-    ?.text ||
-  j.choices?.[0]?.message?.content;
-
-if (!outputText) {
-  console.error(
-    'FULL OPENAI RESPONSE:',
-    JSON.stringify(j, null, 2)
-  );
-
-  throw new Error(
-    'OpenAI returned no story text'
-  );
-}
-
-return JSON.parse(
-  outputText
-    .replace(/^```json\s*/, '')
-    .replace(/\s*```$/, '')
-    .trim()
-);
-}
-// CREATE IMAGE
 async function makeImage(prompt, photo) {
   const f = new FormData();
 

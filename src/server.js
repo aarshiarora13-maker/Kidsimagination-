@@ -554,7 +554,10 @@ RETURN ONLY VALID JSON in exactly this structure:
         type: 'json_object'
       }
     }
-    })
+      }),
+  {
+    'Content-Type': 'application/json'
+  }
 );
 
   const j = await r.json();

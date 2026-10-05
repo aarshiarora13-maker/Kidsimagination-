@@ -996,7 +996,7 @@ async function makeAudio(
 }
 
 // =====================================================
-// CREATE PDF
+// CREATE PDF - TEXT OVER ILLUSTRATION
 // =====================================================
 
 function makePdf(
@@ -1017,21 +1017,16 @@ function makePdf(
       const d =
         new PDFDocument({
 
-          size:
-            'A4',
+          size: 'A4',
 
-          margin:
-            40
+          margin: 0
         });
 
       const w =
-        fs.createWriteStream(
-          f
-        );
+        fs.createWriteStream(f);
 
       w.on(
         'finish',
-
         () =>
           resolve(
             '/books/' +
@@ -1047,50 +1042,194 @@ function makePdf(
 
       d.pipe(w);
 
-      d.fontSize(
-        30
-      ).text(
-        st.title,
-        {
-          align:
-            'center'
-        }
-      );
+      // -------------------------------------------------
+      // COVER PAGE
+      // -------------------------------------------------
+
+      d.rect(
+        0,
+        0,
+        d.page.width,
+        d.page.height
+      )
+        .fill('#fff8f0');
+
+      d.fontSize(34)
+        .fillColor('#3d315d')
+        .font('Helvetica-Bold')
+        .text(
+          st.title,
+          50,
+          100,
+          {
+            width:
+              d.page.width - 100,
+
+            align:
+              'center'
+          }
+        );
+
+      d.fontSize(16)
+        .fillColor('#777777')
+        .font('Helvetica')
+        .text(
+          'A personalized story created especially for your little one ✨',
+          60,
+          170,
+          {
+            width:
+              d.page.width - 120,
+
+            align:
+              'center'
+          }
+        );
+
+      // -------------------------------------------------
+      // STORY PAGES
+      // -------------------------------------------------
 
       st.pages.forEach(
         (p, i) => {
 
-          d.addPage();
+          d.addPage({
+            size: 'A4',
+            margin: 0
+          });
 
-          d.fontSize(
-            24
-          )
-            .text(
-              p.title,
-              {
-                align:
-                  'center'
-              }
-            )
-            .moveDown();
+          const pageWidth =
+            d.page.width;
+
+          const pageHeight =
+            d.page.height;
+
+          // -------------------------------------------------
+          // FULL PAGE ILLUSTRATION
+          // -------------------------------------------------
 
           d.image(
             imgs[i],
+            0,
+            0,
             {
-              fit:
-                [500, 500],
-
-              align:
-                'center'
+              cover: [
+                pageWidth,
+                pageHeight
+              ],
+              align: 'center',
+              valign: 'center'
             }
-          )
-            .moveDown();
+          );
 
-          d.fontSize(
+          // -------------------------------------------------
+          // WHITE TRANSPARENT TEXT PANEL
+          // -------------------------------------------------
+
+          const panelX = 28;
+          const panelY = 28;
+
+          const panelWidth =
+            pageWidth - 56;
+
+          const panelHeight = 175;
+
+          d.save();
+
+          d.roundedRect(
+            panelX,
+            panelY,
+            panelWidth,
+            panelHeight,
+            18
+          )
+            .fillOpacity(0.90)
+            .fill('#ffffff');
+
+          d.restore();
+
+          // -------------------------------------------------
+          // PAGE TITLE
+          // -------------------------------------------------
+
+          if (p.title) {
+
+            d.font(
+              'Helvetica-Bold'
+            )
+              .fontSize(19)
+              .fillColor('#7156d8')
+              .text(
+                p.title,
+                panelX + 20,
+                panelY + 16,
+                {
+                  width:
+                    panelWidth - 40,
+
+                  align:
+                    'center'
+                }
+              );
+          }
+
+          // -------------------------------------------------
+          // STORY TEXT ON ILLUSTRATION
+          // -------------------------------------------------
+
+          d.font(
+            'Helvetica'
+          )
+            .fontSize(16)
+            .fillColor('#302746')
+            .text(
+              p.text,
+              panelX + 22,
+              panelY + 55,
+              {
+                width:
+                  panelWidth - 44,
+
+                height:
+                  panelHeight - 70,
+
+                align:
+                  'center',
+
+                lineGap:
+                  5
+              }
+            );
+
+          // -------------------------------------------------
+          // SMALL PAGE NUMBER
+          // -------------------------------------------------
+
+          d.save();
+
+          d.circle(
+            pageWidth - 38,
+            pageHeight - 38,
             15
           )
+            .fillOpacity(0.85)
+            .fill('#ffffff');
+
+          d.restore();
+
+          d.font(
+            'Helvetica-Bold'
+          )
+            .fontSize(10)
+            .fillColor('#7156d8')
             .text(
-              p.text
+              String(i + 1),
+              pageWidth - 43,
+              pageHeight - 43,
+              {
+                width: 10,
+                align: 'center'
+              }
             );
         }
       );

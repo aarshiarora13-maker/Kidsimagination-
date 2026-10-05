@@ -1199,9 +1199,9 @@ function makePdf(
 
       d.pipe(w);
 
-      // -------------------------------------------------
+      // =================================================
       // COVER PAGE
-      // -------------------------------------------------
+      // =================================================
 
       d.rect(
         0,
@@ -1216,11 +1216,11 @@ function makePdf(
         .font('Helvetica-Bold')
         .text(
           st.title,
-          50,
-          100,
+          45,
+          90,
           {
             width:
-              d.page.width - 100,
+              d.page.width - 90,
 
             align:
               'center'
@@ -1232,20 +1232,21 @@ function makePdf(
         .font('Helvetica')
         .text(
           'A personalized story created especially for your little one ✨',
-          60,
-          170,
+          55,
+          155,
           {
             width:
-              d.page.width - 120,
+              d.page.width - 110,
 
             align:
               'center'
           }
         );
 
-      // -------------------------------------------------
+      // =================================================
       // STORY PAGES
-      // -------------------------------------------------
+      // TEXT FIRST + ILLUSTRATION BELOW
+      // =================================================
 
       st.pages.forEach(
         (p, i) => {
@@ -1261,133 +1262,136 @@ function makePdf(
           const pageHeight =
             d.page.height;
 
-          // -------------------------------------------------
-          // FULL PAGE ILLUSTRATION
-          // -------------------------------------------------
+          // Background
+          d.rect(
+            0,
+            0,
+            pageWidth,
+            pageHeight
+          )
+            .fill('#fffdf9');
+
+          // ---------------------------------------------
+          // PAGE NUMBER
+          // ---------------------------------------------
+
+          d.circle(
+            35,
+            35,
+            15
+          )
+            .fill('#7156d8');
+
+          d.font(
+            'Helvetica-Bold'
+          )
+            .fontSize(11)
+            .fillColor('#ffffff')
+            .text(
+              String(i + 1),
+              29,
+              30,
+              {
+                width: 12,
+                align: 'center'
+              }
+            );
+
+          // ---------------------------------------------
+          // STORY TEXT AREA
+          // ---------------------------------------------
+
+          const textX = 42;
+          const textWidth =
+            pageWidth - 84;
+
+          d.font(
+            'Helvetica-Bold'
+          )
+            .fontSize(19)
+            .fillColor('#7156d8')
+            .text(
+              p.title || '',
+              textX,
+              25,
+              {
+                width:
+                  textWidth,
+
+                align:
+                  'center'
+              }
+            );
+
+          d.font(
+            'Helvetica'
+          )
+            .fontSize(14)
+            .fillColor('#25213a')
+            .text(
+              p.text,
+              textX,
+              58,
+              {
+                width:
+                  textWidth,
+
+                align:
+                  'center',
+
+                lineGap:
+                  4
+              }
+            );
+
+          // ---------------------------------------------
+          // ILLUSTRATION
+          // ---------------------------------------------
+
+          const imageX = 18;
+          const imageY = 185;
+
+          const imageWidth =
+            pageWidth - 36;
+
+          const imageHeight =
+            pageHeight - imageY - 18;
+
+          d.roundedRect(
+            imageX,
+            imageY,
+            imageWidth,
+            imageHeight,
+            12
+          )
+            .fill('#ffffff');
+
+          d.save();
+
+          d.roundedRect(
+            imageX,
+            imageY,
+            imageWidth,
+            imageHeight,
+            12
+          )
+            .clip();
 
           d.image(
             imgs[i],
-            0,
-            0,
+            imageX,
+            imageY,
             {
               cover: [
-                pageWidth,
-                pageHeight
+                imageWidth,
+                imageHeight
               ],
               align: 'center',
               valign: 'center'
             }
           );
 
-          // -------------------------------------------------
-          // WHITE TRANSPARENT TEXT PANEL
-          // -------------------------------------------------
-
-          const panelX = 28;
-          const panelY = 28;
-
-          const panelWidth =
-            pageWidth - 56;
-
-          const panelHeight = 175;
-
-          d.save();
-
-          d.roundedRect(
-            panelX,
-            panelY,
-            panelWidth,
-            panelHeight,
-            18
-          )
-            .fillOpacity(0.90)
-            .fill('#ffffff');
-
           d.restore();
-
-          // -------------------------------------------------
-          // PAGE TITLE
-          // -------------------------------------------------
-
-          if (p.title) {
-
-            d.font(
-              'Helvetica-Bold'
-            )
-              .fontSize(19)
-              .fillColor('#7156d8')
-              .text(
-                p.title,
-                panelX + 20,
-                panelY + 16,
-                {
-                  width:
-                    panelWidth - 40,
-
-                  align:
-                    'center'
-                }
-              );
-          }
-
-          // -------------------------------------------------
-          // STORY TEXT ON ILLUSTRATION
-          // -------------------------------------------------
-
-          d.font(
-            'Helvetica'
-          )
-            .fontSize(16)
-            .fillColor('#302746')
-            .text(
-              p.text,
-              panelX + 22,
-              panelY + 55,
-              {
-                width:
-                  panelWidth - 44,
-
-                height:
-                  panelHeight - 70,
-
-                align:
-                  'center',
-
-                lineGap:
-                  5
-              }
-            );
-
-          // -------------------------------------------------
-          // SMALL PAGE NUMBER
-          // -------------------------------------------------
-
-          d.save();
-
-          d.circle(
-            pageWidth - 38,
-            pageHeight - 38,
-            15
-          )
-            .fillOpacity(0.85)
-            .fill('#ffffff');
-
-          d.restore();
-
-          d.font(
-            'Helvetica-Bold'
-          )
-            .fontSize(10)
-            .fillColor('#7156d8')
-            .text(
-              String(i + 1),
-              pageWidth - 43,
-              pageHeight - 43,
-              {
-                width: 10,
-                align: 'center'
-              }
-            );
         }
       );
 

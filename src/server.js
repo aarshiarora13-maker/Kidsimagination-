@@ -1538,7 +1538,7 @@ fs.writeFileSync(
   }
 
   console.log(
-    'ALL 6 IMAGES CREATED'
+    'ALL 7 IMAGES CREATED'
   );
 
   o.title =

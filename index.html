@@ -843,6 +843,10 @@ const selectedBox =
   document.getElementById("selectedTemplate");
 
 
+/* =========================
+   TEMPLATE SELECTION
+========================= */
+
 templates.forEach(template => {
 
   template.addEventListener("click", () => {
@@ -871,363 +875,1184 @@ templates.forEach(template => {
 });
 
 
-/* FORM */
+/* =========================
+   GENERATION SCREEN
+========================= */
 
-document
-.getElementById("storyForm")
-.addEventListener("submit", async function(e){
+function showGenerationScreen(result){
 
-  e.preventDefault();
+  result.style.display = "block";
 
-  if(!selectedTemplate){
+  result.innerHTML = `
 
-    alert("Please choose a story template first.");
+    <div id="generationBox"
+      style="
+        background:linear-gradient(135deg,#f5efff,#fff1f8);
+        border:3px solid #b99aff;
+        border-radius:24px;
+        padding:25px 20px;
+        margin-top:20px;
+        text-align:center;
+        box-shadow:0 10px 30px rgba(80,50,150,.15);
+      ">
 
-    document
-      .getElementById("templates")
-      .scrollIntoView({
-        behavior:"smooth"
-      });
+      <div
+        style="
+          font-size:55px;
+          margin-bottom:8px;
+          animation:magicFloat 1.5s ease-in-out infinite;
+        "
+      >
+        ✨
+      </div>
 
+      <h2
+        id="generationTitle"
+        style="
+          margin:5px 0 10px;
+          color:#4b367c;
+          font-size:25px;
+        "
+      >
+        Your magical story is being created!
+      </h2>
+
+      <p
+        id="generationMessage"
+        style="
+          color:#666;
+          font-size:16px;
+          line-height:1.6;
+          margin:8px 0 18px;
+        "
+      >
+        Please keep this page open while we create your personalized book. 💕
+      </p>
+
+      <div
+        style="
+          width:100%;
+          height:14px;
+          background:#e8defb;
+          border-radius:20px;
+          overflow:hidden;
+          margin:15px 0;
+        "
+      >
+        <div
+          id="generationProgress"
+          style="
+            width:8%;
+            height:100%;
+            background:linear-gradient(90deg,#7156d8,#ff6fbe);
+            border-radius:20px;
+            transition:width 1s ease;
+          "
+        ></div>
+      </div>
+
+      <div
+        id="generationPercent"
+        style="
+          font-weight:bold;
+          color:#7156d8;
+          margin-bottom:18px;
+        "
+      >
+        Preparing... 8%
+      </div>
+
+      <div
+        id="generationSteps"
+        style="
+          text-align:left;
+          max-width:450px;
+          margin:0 auto;
+        "
+      >
+
+        <div id="step1"
+          style="
+            padding:11px 13px;
+            border-radius:12px;
+            margin-bottom:8px;
+            background:#eee;
+          "
+        >
+          ⏳ Writing your personalized story
+        </div>
+
+        <div id="step2"
+          style="
+            padding:11px 13px;
+            border-radius:12px;
+            margin-bottom:8px;
+            background:#eee;
+          "
+        >
+          ⏳ Creating beautiful illustrations
+        </div>
+
+        <div id="step3"
+          style="
+            padding:11px 13px;
+            border-radius:12px;
+            margin-bottom:8px;
+            background:#eee;
+          "
+        >
+          ⏳ Creating your 6 story pages
+        </div>
+
+        <div id="step4"
+          style="
+            padding:11px 13px;
+            border-radius:12px;
+            margin-bottom:8px;
+            background:#eee;
+          "
+        >
+          ⏳ Assembling your personalized book
+        </div>
+
+      </div>
+
+      <div
+        style="
+          margin-top:20px;
+          padding:13px;
+          background:white;
+          border-radius:14px;
+          color:#555;
+          font-size:14px;
+        "
+      >
+        💕 <strong>Please don't close this page.</strong><br>
+        Your story is being created specially for your child.
+      </div>
+
+      <div
+        id="generationTimer"
+        style="
+          margin-top:15px;
+          color:#888;
+          font-size:13px;
+        "
+      >
+        Time elapsed: 0:00
+      </div>
+
+    </div>
+
+    <style>
+
+      @keyframes magicFloat {
+
+        0%,100%{
+          transform:translateY(0);
+        }
+
+        50%{
+          transform:translateY(-8px);
+        }
+
+      }
+
+    </style>
+
+  `;
+
+}
+
+
+/* =========================
+   UPDATE GENERATION UI
+========================= */
+
+function updateGenerationUI(seconds){
+
+  const progress =
+    document.getElementById("generationProgress");
+
+  const percent =
+    document.getElementById("generationPercent");
+
+  const message =
+    document.getElementById("generationMessage");
+
+  const step1 =
+    document.getElementById("step1");
+
+  const step2 =
+    document.getElementById("step2");
+
+  const step3 =
+    document.getElementById("step3");
+
+  const step4 =
+    document.getElementById("step4");
+
+  const timer =
+    document.getElementById("generationTimer");
+
+
+  if(!progress || !percent){
     return;
   }
 
-  const name =
-    document.getElementById("childName").value.trim();
 
-  const age =
-    document.getElementById("childAge").value;
+  /* TIMER */
 
-  const gender =
-    document.getElementById("gender").value;
+  const minutes =
+    Math.floor(seconds / 60);
 
-  const favoriteColor =
-    document.getElementById("favoriteColor").value.trim();
+  const secs =
+    seconds % 60;
 
-  const animal =
-    document.getElementById("animal").value.trim();
+  timer.innerHTML =
+    "Time elapsed: " +
+    minutes +
+    ":" +
+    String(secs).padStart(2,"0");
 
-  const favoriteThing =
-    document.getElementById("favoriteThing").value.trim();
 
-  const personality =
-    document.getElementById("personality").value.trim();
+  /*
+    This is an ESTIMATED visual progress.
+    The backend remains the source of truth.
+  */
 
-  const dedication =
-    document.getElementById("dedication").value.trim();
+  let estimated = 8;
 
-  const packageName =
-    document.getElementById("package").value;
+  if(seconds < 10){
 
-  const audiobook =
-    document.getElementById("audiobook").checked;
+    estimated = 12;
 
-  const photoInput =
-    document.getElementById("childPhoto");
+    message.innerHTML =
+      "✨ Writing a special story based on your child's details...";
 
-  const result =
-    document.getElementById("orderResult");
+  }
 
-  const button =
-    document.querySelector(
-      '#storyForm button[type="submit"]'
+  else if(seconds < 35){
+
+    estimated = 28;
+
+    step1.innerHTML =
+      "✅ Your personalized story is written";
+
+    step1.style.background =
+      "#e5f8ea";
+
+    step2.innerHTML =
+      "🔄 Creating beautiful illustrations...";
+
+    message.innerHTML =
+      "🎨 Now we're bringing the story to life with illustrations...";
+
+  }
+
+  else if(seconds < 75){
+
+    estimated = 50;
+
+    step1.innerHTML =
+      "✅ Your personalized story is written";
+
+    step1.style.background =
+      "#e5f8ea";
+
+    step2.innerHTML =
+      "🔄 Creating your story illustrations...";
+
+    step2.style.background =
+      "#f5efff";
+
+    message.innerHTML =
+      "🖼️ Your story pages are being illustrated. This can take a little time.";
+
+  }
+
+  else if(seconds < 120){
+
+    estimated = 68;
+
+    step1.innerHTML =
+      "✅ Your personalized story is written";
+
+    step1.style.background =
+      "#e5f8ea";
+
+    step2.innerHTML =
+      "🔄 Creating beautiful illustrations...";
+
+    step2.style.background =
+      "#f5efff";
+
+    step3.innerHTML =
+      "🔄 Creating your 6 illustrated pages...";
+
+    step3.style.background =
+      "#f5efff";
+
+    message.innerHTML =
+      "🌈 Almost there! We're creating the illustrated pages of your book.";
+
+  }
+
+  else if(seconds < 180){
+
+    estimated = 82;
+
+    step1.innerHTML =
+      "✅ Your personalized story is written";
+
+    step1.style.background =
+      "#e5f8ea";
+
+    step2.innerHTML =
+      "✅ Illustrations created";
+
+    step2.style.background =
+      "#e5f8ea";
+
+    step3.innerHTML =
+      "🔄 Finishing your illustrated pages...";
+
+    step3.style.background =
+      "#f5efff";
+
+    step4.innerHTML =
+      "⏳ Preparing your book";
+
+    message.innerHTML =
+      "📖 Your book is almost ready! We're putting everything together.";
+
+  }
+
+  else {
+
+    estimated = Math.min(
+      94,
+      82 +
+      Math.floor(
+        (seconds - 180) / 20
+      )
     );
 
-  const originalText =
-    button.innerHTML;
+    step1.innerHTML =
+      "✅ Your personalized story is written";
 
-  const packageAmounts = {
-    "Digital Story - ₹399": 39900,
-    "Story + Audiobook - ₹599": 59900,
-    "Premium Personalized Book - ₹799": 79900
-  };
+    step1.style.background =
+      "#e5f8ea";
 
-  const amount =
-    packageAmounts[packageName];
+    step2.innerHTML =
+      "✅ Illustrations created";
 
-  if(!amount){
+    step2.style.background =
+      "#e5f8ea";
 
-    alert("Please choose a package.");
+    step3.innerHTML =
+      "✅ Story pages completed";
 
+    step3.style.background =
+      "#e5f8ea";
+
+    step4.innerHTML =
+      "🔄 Finalizing your personalized book...";
+
+    step4.style.background =
+      "#f5efff";
+
+    message.innerHTML =
+      "💕 We're finishing the final touches. Thank you for waiting!";
+  }
+
+
+  progress.style.width =
+    estimated + "%";
+
+  percent.innerHTML =
+    "Creating your book... " +
+    estimated +
+    "%";
+
+
+}
+
+
+/* =========================
+   CHECK STORY
+========================= */
+
+async function checkStory(
+  orderId,
+  result,
+  button,
+  originalText,
+  startedAt
+){
+
+  try{
+
+    const statusResponse =
+      await fetch(
+        "/api/story/" +
+        encodeURIComponent(orderId) +
+        "?t=" +
+        Date.now()
+      );
+
+    const statusData =
+      await statusResponse.json();
+
+
+    if(statusData.status === "ready"){
+
+      localStorage.removeItem(
+        "kidsImaginationOrder"
+      );
+
+
+      result.innerHTML = `
+
+        <div
+          style="
+            background:#ecfff1;
+            border-radius:20px;
+            padding:25px;
+            text-align:center;
+          "
+        >
+
+          <div style="font-size:50px;">
+            🎉
+          </div>
+
+          <h2
+            style="
+              color:#246138;
+              margin:8px 0;
+            "
+          >
+            Your personalized story is ready!
+          </h2>
+
+          <p>
+            Your child's magical adventure has been created successfully. 💕
+          </p>
+
+          ${
+            statusData.pdfUrl
+            ?
+            `
+            <a
+              href="${statusData.pdfUrl}"
+              target="_blank"
+              class="btn"
+              style="margin:8px;"
+            >
+              📖 Open Story
+            </a>
+            `
+            :
+            ""
+          }
+
+          ${
+            statusData.audioUrl
+            ?
+            `
+            <a
+              href="${statusData.audioUrl}"
+              target="_blank"
+              class="btn yellow"
+              style="margin:8px;"
+            >
+              🎧 Listen to Audiobook
+            </a>
+            `
+            :
+            ""
+          }
+
+        </div>
+
+      `;
+
+      button.disabled = false;
+
+      button.innerHTML =
+        originalText;
+
+      return;
+
+    }
+
+
+    if(statusData.status === "failed"){
+
+      localStorage.removeItem(
+        "kidsImaginationOrder"
+      );
+
+      throw new Error(
+        statusData.error ||
+        "Story generation failed."
+      );
+
+    }
+
+
+    const elapsed =
+      Math.floor(
+        (Date.now() - startedAt) / 1000
+      );
+
+    updateGenerationUI(
+      elapsed
+    );
+
+
+    /*
+      Keep checking for up to 15 minutes.
+    */
+
+    if(elapsed >= 900){
+
+      throw new Error(
+        "Your story is taking longer than expected. The generation may still be running. Please contact support before making another payment."
+      );
+
+    }
+
+
+    setTimeout(
+      () => {
+
+        checkStory(
+          orderId,
+          result,
+          button,
+          originalText,
+          startedAt
+        );
+
+      },
+      3000
+    );
+
+
+  } catch(error){
+
+    console.error(
+      "Story status error:",
+      error
+    );
+
+    /*
+      Only show an error if the generation
+      really failed or timeout occurred.
+    */
+
+    if(
+      error.message &&
+      (
+        error.message.includes(
+          "failed"
+        ) ||
+        error.message.includes(
+          "longer than expected"
+        )
+      )
+    ){
+
+      result.innerHTML =
+        "❌ " +
+        escapeHTML(
+          error.message
+        );
+
+      button.disabled = false;
+
+      button.innerHTML =
+        originalText;
+
+    }
+
+    else{
+
+      /*
+        Temporary network error.
+        Continue checking.
+      */
+
+      setTimeout(
+        () => {
+
+          checkStory(
+            orderId,
+            result,
+            button,
+            originalText,
+            startedAt
+          );
+
+        },
+        5000
+      );
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   RESUME AFTER REFRESH
+========================= */
+
+async function resumeExistingOrder(){
+
+  const saved =
+    localStorage.getItem(
+      "kidsImaginationOrder"
+    );
+
+  if(!saved){
     return;
   }
 
-  if(!photoInput.files.length){
+  try{
 
-    alert("Please upload your child's photo.");
+    const data =
+      JSON.parse(saved);
 
-    return;
-  }
+    if(
+      !data.orderId ||
+      !data.startedAt
+    ){
 
-  try {
+      localStorage.removeItem(
+        "kidsImaginationOrder"
+      );
+
+      return;
+
+    }
+
+    const result =
+      document.getElementById(
+        "orderResult"
+      );
+
+    const button =
+      document.querySelector(
+        '#storyForm button[type="submit"]'
+      );
+
+    if(!result || !button){
+      return;
+    }
 
     button.disabled = true;
 
     button.innerHTML =
-      "⏳ Preparing your story...";
+      "⏳ Your story is being created...";
 
-    result.style.display = "block";
-
-    result.innerHTML =
-      "⏳ Uploading your child's photo...";
-
-    /* UPLOAD PHOTO */
-
-    const photoForm =
-      new FormData();
-
-    photoForm.append(
-      "photo",
-      photoInput.files[0]
+    showGenerationScreen(
+      result
     );
 
-    const uploadResponse =
-      await fetch(
-        "/api/upload-photo",
-        {
-          method:"POST",
-          body:photoForm
-        }
+    const elapsed =
+      Math.floor(
+        (Date.now() - data.startedAt) /
+        1000
       );
 
-    const uploadData =
-      await uploadResponse.json();
+    updateGenerationUI(
+      elapsed
+    );
 
-    if(!uploadResponse.ok){
+    result.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
 
-      throw new Error(
-        uploadData.error ||
-        "Photo upload failed."
+    checkStory(
+      data.orderId,
+      result,
+      button,
+      "✨ Create My Personalized Story",
+      data.startedAt
+    );
+
+  }catch(error){
+
+    console.error(
+      "Resume error:",
+      error
+    );
+
+    localStorage.removeItem(
+      "kidsImaginationOrder"
+    );
+
+  }
+
+}
+
+
+/* =========================
+   FORM SUBMISSION
+========================= */
+
+document
+.getElementById("storyForm")
+.addEventListener(
+  "submit",
+  async function(e){
+
+    e.preventDefault();
+
+
+    if(!selectedTemplate){
+
+      alert(
+        "Please choose a story template first."
       );
+
+      document
+        .getElementById("templates")
+        .scrollIntoView({
+          behavior:"smooth"
+        });
+
+      return;
 
     }
 
-    /* CREATE RAZORPAY ORDER */
 
-    result.innerHTML =
-      "⏳ Creating secure payment...";
+    const name =
+      document
+        .getElementById("childName")
+        .value
+        .trim();
 
-    const orderResponse =
-      await fetch(
-        "/api/create-order",
-        {
-          method:"POST",
+    const age =
+      document
+        .getElementById("childAge")
+        .value;
 
-          headers:{
-            "Content-Type":
-              "application/json"
+    const gender =
+      document
+        .getElementById("gender")
+        .value;
+
+    const favoriteColor =
+      document
+        .getElementById("favoriteColor")
+        .value
+        .trim();
+
+    const animal =
+      document
+        .getElementById("animal")
+        .value
+        .trim();
+
+    const favoriteThing =
+      document
+        .getElementById("favoriteThing")
+        .value
+        .trim();
+
+    const personality =
+      document
+        .getElementById("personality")
+        .value
+        .trim();
+
+    const dedication =
+      document
+        .getElementById("dedication")
+        .value
+        .trim();
+
+    const packageName =
+      document
+        .getElementById("package")
+        .value;
+
+    const audiobook =
+      document
+        .getElementById("audiobook")
+        .checked;
+
+    const photoInput =
+      document
+        .getElementById("childPhoto");
+
+    const result =
+      document
+        .getElementById("orderResult");
+
+    const button =
+      document.querySelector(
+        '#storyForm button[type="submit"]'
+      );
+
+    const originalText =
+      button.innerHTML;
+
+
+    const packageAmounts = {
+
+      "Digital Story - ₹399":
+        39900,
+
+      "Story + Audiobook - ₹599":
+        59900,
+
+      "Premium Personalized Book - ₹799":
+        79900
+
+    };
+
+
+    const amount =
+      packageAmounts[packageName];
+
+
+    if(!amount){
+
+      alert(
+        "Please choose a package."
+      );
+
+      return;
+
+    }
+
+
+    if(!photoInput.files.length){
+
+      alert(
+        "Please upload your child's photo."
+      );
+
+      return;
+
+    }
+
+
+    try{
+
+      button.disabled = true;
+
+      button.innerHTML =
+        "⏳ Preparing...";
+
+      result.style.display =
+        "block";
+
+      result.innerHTML =
+        "⏳ Uploading your child's photo...";
+
+
+      /* =====================
+         UPLOAD PHOTO
+      ===================== */
+
+      const photoForm =
+        new FormData();
+
+      photoForm.append(
+        "photo",
+        photoInput.files[0]
+      );
+
+
+      const uploadResponse =
+        await fetch(
+          "/api/upload-photo",
+          {
+            method:"POST",
+            body:photoForm
+          }
+        );
+
+
+      const uploadData =
+        await uploadResponse.json();
+
+
+      if(!uploadResponse.ok){
+
+        throw new Error(
+          uploadData.error ||
+          "Photo upload failed."
+        );
+
+      }
+
+
+      /* =====================
+         CREATE RAZORPAY ORDER
+      ===================== */
+
+      result.innerHTML =
+        "⏳ Creating secure payment...";
+
+
+      const orderResponse =
+        await fetch(
+          "/api/create-order",
+          {
+            method:"POST",
+
+            headers:{
+              "Content-Type":
+                "application/json"
+            },
+
+            body:JSON.stringify({
+
+              childName:name,
+
+              age:age,
+
+              theme:selectedTemplate,
+
+              gender:gender,
+
+              favoriteColor:
+                favoriteColor,
+
+              animal:animal,
+
+              favoriteThing:
+                favoriteThing,
+
+              personality:
+                personality,
+
+              dedication:
+                dedication,
+
+              audiobook:audiobook,
+
+              packageName:
+                packageName,
+
+              amount:amount,
+
+              photoId:
+                uploadData.photoId
+
+            })
+
+          }
+        );
+
+
+      const orderData =
+        await orderResponse.json();
+
+
+      if(!orderResponse.ok){
+
+        throw new Error(
+          orderData.error ||
+          "Could not create payment order."
+        );
+
+      }
+
+
+      /* =====================
+         RAZORPAY
+      ===================== */
+
+      const options = {
+
+        key:
+          orderData.keyId,
+
+        amount:
+          orderData.amount,
+
+        currency:
+          "INR",
+
+        name:
+          "KidsImagination",
+
+        description:
+          packageName,
+
+        order_id:
+          orderData.orderId,
+
+
+        handler:
+          async function(payment){
+
+            try{
+
+              result.innerHTML =
+                "⏳ Payment successful. Verifying...";
+
+
+              /* =================
+                 VERIFY PAYMENT
+              ================= */
+
+              const verifyResponse =
+                await fetch(
+                  "/api/verify-payment",
+                  {
+                    method:"POST",
+
+                    headers:{
+                      "Content-Type":
+                        "application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                      razorpay_order_id:
+                        payment.razorpay_order_id,
+
+                      razorpay_payment_id:
+                        payment.razorpay_payment_id,
+
+                      razorpay_signature:
+                        payment.razorpay_signature,
+
+                      orderId:
+                        orderData.orderId
+
+                    })
+
+                  }
+                );
+
+
+              const verifyData =
+                await verifyResponse.json();
+
+
+              if(!verifyResponse.ok){
+
+                throw new Error(
+                  verifyData.error ||
+                  "Payment verification failed."
+                );
+
+              }
+
+
+              /*
+                PAYMENT IS NOW CONFIRMED.
+                Save the order locally so the
+                frontend can resume after refresh.
+              */
+
+              const startedAt =
+                Date.now();
+
+
+              localStorage.setItem(
+
+                "kidsImaginationOrder",
+
+                JSON.stringify({
+
+                  orderId:
+                    orderData.orderId,
+
+                  startedAt:
+                    startedAt
+
+                })
+
+              );
+
+
+              /*
+                SHOW BIG GENERATION SCREEN
+              */
+
+              showGenerationScreen(
+                result
+              );
+
+
+              result.scrollIntoView({
+
+                behavior:"smooth",
+
+                block:"center"
+
+              });
+
+
+              updateGenerationUI(
+                0
+              );
+
+
+              /*
+                START CHECKING BACKEND
+              */
+
+              checkStory(
+
+                orderData.orderId,
+
+                result,
+
+                button,
+
+                originalText,
+
+                startedAt
+
+              );
+
+
+            }catch(error){
+
+              console.error(
+                error
+              );
+
+              result.innerHTML =
+                "❌ " +
+                escapeHTML(
+                  error.message
+                );
+
+              button.disabled =
+                false;
+
+              button.innerHTML =
+                originalText;
+
+            }
+
           },
 
-          body:JSON.stringify({
 
-            childName:name,
+        modal:{
 
-            age:age,
-
-            theme:selectedTemplate,
-
-            gender:gender,
-
-            favoriteColor:
-              favoriteColor,
-
-            animal:animal,
-
-            favoriteThing:
-              favoriteThing,
-
-            personality:
-              personality,
-
-            dedication:
-              dedication,
-
-            audiobook:audiobook,
-
-            packageName:
-              packageName,
-
-            amount:amount,
-
-            photoId:
-              uploadData.photoId
-
-          })
-        }
-      );
-
-    const orderData =
-      await orderResponse.json();
-
-    if(!orderResponse.ok){
-
-      throw new Error(
-        orderData.error ||
-        "Could not create payment order."
-      );
-
-    }
-
-    /* RAZORPAY CHECKOUT */
-
-    const options = {
-
-      key:
-        orderData.keyId,
-
-      amount:
-        orderData.amount,
-
-      currency:
-        "INR",
-
-      name:
-        "KidsImagination",
-
-      description:
-        packageName,
-
-      order_id:
-        orderData.orderId,
-
-      handler:
-        async function(payment){
-
-          try {
+          ondismiss:function(){
 
             result.innerHTML =
-              "⏳ Payment successful. Verifying...";
+              "Payment window closed. You can try again.";
 
-            const verifyResponse =
-              await fetch(
-                "/api/verify-payment",
-                {
-                  method:"POST",
-
-                  headers:{
-                    "Content-Type":
-                      "application/json"
-                  },
-
-                  body:JSON.stringify({
-
-                    razorpay_order_id:
-                      payment.razorpay_order_id,
-
-                    razorpay_payment_id:
-                      payment.razorpay_payment_id,
-
-                    razorpay_signature:
-                      payment.razorpay_signature,
-
-                    orderId:
-                      orderData.orderId
-
-                  })
-                }
-              );
-
-            const verifyData =
-              await verifyResponse.json();
-
-            if(!verifyResponse.ok){
-
-              throw new Error(
-                verifyData.error ||
-                "Payment verification failed."
-              );
-
-            }
-
-            result.innerHTML =
-              "🎉 <strong>Payment successful!</strong><br><br>" +
-              "⏳ Your personalized story is now being created...";
-
-            let attempts = 0;
-
-            async function checkStory(){
-
-              attempts++;
-
-              const statusResponse =
-                await fetch(
-                  "/api/story/" +
-                  encodeURIComponent(
-                    orderData.orderId
-                  )
-                );
-
-              const statusData =
-                await statusResponse.json();
-
-              if(statusData.status === "ready"){
-
-                result.innerHTML =
-                  "🎉 <strong>Your personalized story is ready!</strong><br><br>" +
-
-                  (
-                    statusData.pdfUrl
-                      ?
-                      '📖 <a href="' +
-                      statusData.pdfUrl +
-                      '" target="_blank">Open Story PDF</a><br>'
-                      :
-                      ""
-                  ) +
-
-                  (
-                    statusData.audioUrl
-                      ?
-                      '🎧 <a href="' +
-                      statusData.audioUrl +
-                      '" target="_blank">Listen to Audiobook</a>'
-                      :
-                      ""
-                  );
-
-                button.disabled = false;
-
-                button.innerHTML =
-                  originalText;
-
-                return;
-              }
-
-              if(statusData.status === "failed"){
-
-                throw new Error(
-                  statusData.error ||
-                  "Story generation failed."
-                );
-
-              }
-
-              if(attempts >= 60){
-
-                throw new Error(
-                  "Story generation is taking longer than expected."
-                );
-
-              }
-
-              setTimeout(
-                checkStory,
-                5000
-              );
-
-            }
-
-            checkStory();
-
-          } catch(error){
-
-            result.innerHTML =
-              "❌ " +
-              escapeHTML(
-                error.message
-              );
-
-            button.disabled = false;
+            button.disabled =
+              false;
 
             button.innerHTML =
               originalText;
@@ -1236,78 +2061,117 @@ document
 
         },
 
-      modal:{
-        ondismiss:function(){
+
+        theme:{
+
+          color:
+            "#7156d8"
+
+        }
+
+      };
+
+
+      const razorpay =
+        new Razorpay(
+          options
+        );
+
+
+      razorpay.on(
+        "payment.failed",
+        function(response){
 
           result.innerHTML =
-            "Payment window closed. You can try again.";
+            "❌ Payment failed. Please try again.";
 
-          button.disabled = false;
+          button.disabled =
+            false;
 
           button.innerHTML =
             originalText;
 
         }
-      },
-
-      theme:{
-        color:"#7156d8"
-      }
-
-    };
-
-    const razorpay =
-      new Razorpay(options);
-
-    razorpay.on(
-      "payment.failed",
-      function(response){
-
-        result.innerHTML =
-          "❌ Payment failed. Please try again.";
-
-        button.disabled = false;
-
-        button.innerHTML =
-          originalText;
-
-      }
-    );
-
-    razorpay.open();
-
-  } catch(error){
-
-    console.error(error);
-
-    result.innerHTML =
-      "❌ " +
-      escapeHTML(
-        error.message
       );
 
-    button.disabled = false;
 
-    button.innerHTML =
-      originalText;
+      razorpay.open();
+
+
+    }catch(error){
+
+      console.error(
+        error
+      );
+
+      result.innerHTML =
+        "❌ " +
+        escapeHTML(
+          error.message
+        );
+
+      button.disabled =
+        false;
+
+      button.innerHTML =
+        originalText;
+
+    }
 
   }
+);
 
-});
 
+/* =========================
+   ESCAPE HTML
+========================= */
 
 function escapeHTML(text){
 
   return String(text)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 
 }
 
-</script>
+
+/* =========================
+   STARTUP
+========================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function(){
+
+    resumeExistingOrder();
+
+  }
+);
+
+    </script>
 
 </body>
 </html>

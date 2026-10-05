@@ -1,2 +1,628 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KidsImagination Story</title><style>body{font-family:system-ui;background:#f7f3ff;margin:0;color:#25213a}.wrap{max-width:850px;margin:30px auto;padding:20px}.card{background:#fff;border-radius:25px;padding:28px;text-align:center;box-shadow:0 10px 35px #0001}.bar{height:10px;background:#ddd;border-radius:10px}.fill{height:100%;width:5%;background:#7156d8;border-radius:10px}.page{text-align:left;margin:30px 0}.page img{width:100%;border-radius:18px}.page p{font-size:18px;line-height:1.6}audio{width:100%}.btn{display:inline-block;background:#7156d8;color:#fff;padding:13px 18px;border-radius:12px;text-decoration:none;font-weight:bold;margin:5px}</style><div class="wrap"><div class="card"><h1>✨ KidsImagination</h1><h2 id="title">Creating your story…</h2><p id="msg">Please keep this page open.</p><div class="bar"><div id="fill" class="fill"></div></div><div id="book"></div></div></div><script>
-const id=new URLSearchParams(location.search).get('order'),msg=document.querySelector('#msg'),fill=document.querySelector('#fill'),book=document.querySelector('#book');let n=0;function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function poll(){n++;try{let r=await fetch('/api/story/'+encodeURIComponent(id)),d=await r.json();if(d.status==='ready'){title.textContent=d.title||'Your story is ready! 🎉';msg.textContent='Read, listen and download your personalized story.';fill.style.width='100%';book.innerHTML=d.pages.map(p=>`<section class="page"><img src="${p.imageUrl}"><h2>${esc(p.title)}</h2><p>${esc(p.text)}</p></section>`).join('')+`<a class="btn" href="${d.pdfUrl}" target="_blank">📥 Download PDF</a>`+(d.audioUrl?`<p><audio controls src="${d.audioUrl}"></audio></p><a class="btn" href="${d.audioUrl}" download>🎧 Download Audiobook</a>`:'');return}if(d.status==='failed'){msg.textContent=d.error||'Generation failed.';return}fill.style.width=Math.min(92,5+n*3)+'%';msg.textContent='Generating story, illustrations and audio…';setTimeout(poll,3000)}catch(e){setTimeout(poll,4000)}}poll();</script>
+<!doctype html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>KidsImagination Story</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,
+    "Segoe UI",sans-serif;
+  background:#f7f3ff;
+  color:#25213a;
+}
+
+.wrap{
+  max-width:900px;
+  margin:30px auto;
+  padding:20px;
+}
+
+.card{
+  background:#ffffff;
+  border-radius:25px;
+  padding:28px;
+  text-align:center;
+  box-shadow:0 10px 35px #0001;
+}
+
+.bar{
+  height:10px;
+  background:#ddd;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.fill{
+  height:100%;
+  width:5%;
+  background:#7156d8;
+  border-radius:10px;
+  transition:width .4s ease;
+}
+
+.book{
+  margin-top:30px;
+}
+
+.page{
+  background:#fffdf9;
+  margin:35px 0;
+  padding:20px;
+  border-radius:24px;
+  box-shadow:0 8px 30px #0001;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.page-number{
+  position:absolute;
+  left:18px;
+  top:18px;
+
+  width:34px;
+  height:34px;
+
+  border-radius:50%;
+
+  background:#7156d8;
+  color:#ffffff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:14px;
+  font-weight:800;
+}
+
+.page-text{
+  padding:
+    15px
+    20px
+    20px
+    45px;
+}
+
+.page-title{
+  margin:
+    0
+    0
+    15px;
+
+  color:#7156d8;
+
+  font-size:27px;
+  line-height:1.2;
+
+  font-weight:800;
+}
+
+.page-story{
+  margin:0;
+
+  font-size:19px;
+  line-height:1.65;
+
+  color:#25213a;
+
+  font-weight:500;
+}
+
+.page img{
+  display:block;
+
+  width:100%;
+
+  border-radius:18px;
+
+  margin-top:5px;
+
+  background:#ffffff;
+}
+
+.buttons{
+  margin:
+    25px
+    0
+    10px;
+
+  display:flex;
+
+  justify-content:center;
+
+  flex-wrap:wrap;
+
+  gap:10px;
+}
+
+.btn{
+  display:inline-block;
+
+  background:#7156d8;
+
+  color:#ffffff;
+
+  padding:
+    13px
+    20px;
+
+  border-radius:12px;
+
+  text-decoration:none;
+
+  font-weight:bold;
+
+  border:0;
+
+  cursor:pointer;
+}
+
+.btn:hover{
+  opacity:.9;
+}
+
+.btn.yellow{
+  background:#f0b429;
+  color:#302746;
+}
+
+.loading{
+  padding:20px;
+}
+
+audio{
+  width:100%;
+  margin-top:10px;
+}
+
+@media(max-width:600px){
+
+  .wrap{
+    padding:10px;
+    margin:15px auto;
+  }
+
+  .card{
+    padding:16px;
+    border-radius:20px;
+  }
+
+  .page{
+    padding:12px;
+    margin:25px 0;
+    border-radius:18px;
+  }
+
+  .page-number{
+    left:12px;
+    top:12px;
+    width:31px;
+    height:31px;
+  }
+
+  .page-text{
+    padding:
+      12px
+      8px
+      16px
+      42px;
+  }
+
+  .page-title{
+    font-size:23px;
+  }
+
+  .page-story{
+    font-size:17px;
+    line-height:1.55;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="wrap">
+
+  <div class="card">
+
+    <h1>
+      ✨ KidsImagination
+    </h1>
+
+    <h2 id="title">
+      Creating your story…
+    </h2>
+
+    <p id="msg">
+      Please keep this page open.
+    </p>
+
+    <div class="bar">
+
+      <div
+        id="fill"
+        class="fill"
+      ></div>
+
+    </div>
+
+    <div
+      id="book"
+      class="book"
+    >
+
+      <div class="loading">
+        📖 Your personalized story is being created...
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const id =
+  new URLSearchParams(
+    location.search
+  ).get('order');
+
+const msg =
+  document.querySelector(
+    '#msg'
+  );
+
+const fill =
+  document.querySelector(
+    '#fill'
+  );
+
+const book =
+  document.querySelector(
+    '#book'
+  );
+
+const title =
+  document.querySelector(
+    '#title'
+  );
+
+let n = 0;
+
+
+function esc(s){
+
+  return String(
+    s || ''
+  )
+  .replace(
+    /[&<>"']/g,
+    c =>
+      ({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
+      }[c])
+  );
+
+}
+
+
+async function poll(){
+
+  n++;
+
+  try{
+
+    const r =
+      await fetch(
+        '/api/story/' +
+        encodeURIComponent(id) +
+        '?t=' +
+        Date.now()
+      );
+
+    const d =
+      await r.json();
+
+
+    if(
+      d.status ===
+      'ready'
+    ){
+
+      title.textContent =
+        d.title ||
+        'Your story is ready! 🎉';
+
+      msg.textContent =
+        'Your complete personalized story is ready.';
+
+      fill.style.width =
+        '100%';
+
+
+      let pagesHtml =
+        '';
+
+
+      if(
+        Array.isArray(
+          d.pages
+        )
+      ){
+
+        pagesHtml =
+          d.pages
+            .map(
+              (p,index) => `
+
+                <section
+                  class="page"
+                >
+
+                  <div
+                    class="page-number"
+                  >
+                    ${index + 1}
+                  </div>
+
+                  <div
+                    class="page-text"
+                  >
+
+                    <h2
+                      class="page-title"
+                    >
+                      ${esc(
+                        p.title
+                      )}
+                    </h2>
+
+                    <p
+                      class="page-story"
+                    >
+                      ${esc(
+                        p.text
+                      )}
+                    </p>
+
+                  </div>
+
+                  <img
+                    src="${esc(
+                      p.imageUrl
+                    )}"
+                    alt="Story illustration page ${
+                      index + 1
+                    }"
+                    loading="lazy"
+                  >
+
+                </section>
+
+              `
+            )
+            .join('');
+
+      }
+
+
+      book.innerHTML = `
+
+        <div
+          class="buttons"
+        >
+
+          ${
+            d.pdfUrl
+              ? `
+
+                <a
+                  class="btn"
+                  href="${esc(
+                    d.pdfUrl
+                  )}"
+                  download
+                >
+                  📥 Download Storybook
+                </a>
+
+              `
+              : ''
+          }
+
+          ${
+            d.audioUrl
+              ? `
+
+                <a
+                  class="btn yellow"
+                  href="${esc(
+                    d.audioUrl
+                  )}"
+                  download
+                >
+                  🎧 Download Audiobook
+                </a>
+
+              `
+              : ''
+          }
+
+        </div>
+
+        ${pagesHtml}
+
+        ${
+          d.audioUrl
+            ? `
+
+              <div
+                style="
+                  margin-top:30px;
+                  padding:20px;
+                  background:#fff8dc;
+                  border-radius:18px;
+                "
+              >
+
+                <h3>
+                  🎧 Listen to your story
+                </h3>
+
+                <audio
+                  controls
+                  src="${esc(
+                    d.audioUrl
+                  )}"
+                ></audio>
+
+              </div>
+
+            `
+            : ''
+        }
+
+        <div
+          class="buttons"
+        >
+
+          ${
+            d.pdfUrl
+              ? `
+
+                <a
+                  class="btn"
+                  href="${esc(
+                    d.pdfUrl
+                  )}"
+                  download
+                >
+                  📥 Download Storybook
+                </a>
+
+              `
+              : ''
+          }
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    if(
+      d.status ===
+      'failed'
+    ){
+
+      msg.textContent =
+        d.error ||
+        'Story generation failed.';
+
+      fill.style.width =
+        '0%';
+
+      book.innerHTML = `
+        <div
+          style="
+            padding:20px;
+            color:#b42318;
+            background:#fff0f0;
+            border-radius:15px;
+          "
+        >
+          ❌ ${
+            esc(
+              d.error ||
+              'Story generation failed.'
+            )
+          }
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    fill.style.width =
+      Math.min(
+        92,
+        5 + n * 2
+      ) + '%';
+
+
+    msg.textContent =
+      'Creating your connected story and illustrations…';
+
+
+    setTimeout(
+      poll,
+      3000
+    );
+
+
+  }catch(e){
+
+    console.error(e);
+
+    setTimeout(
+      poll,
+      4000
+    );
+
+  }
+
+}
+
+
+if(id){
+
+  poll();
+
+}else{
+
+  title.textContent =
+    'Story not found';
+
+  msg.textContent =
+    'No story order was provided.';
+
+}
+
+</script>
+
+</body>
+
+</html>

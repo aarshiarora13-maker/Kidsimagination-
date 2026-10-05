@@ -8,6 +8,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import PDFDocument from 'pdfkit';
+import sharp from 'sharp';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -994,7 +995,163 @@ async function makeAudio(
     await r.arrayBuffer()
   );
 }
+// =====================================================
+// PUT STORY TEXT ON ILLUSTRATION
+// =====================================================
 
+async function addStoryTextToImage(
+  imageBuffer,
+  storyText,
+  pageNumber
+) {
+
+  console.log(
+    `ADDING STORY TEXT TO IMAGE ${pageNumber}...`
+  );
+
+  const width = 1024;
+  const height = 1024;
+
+  // Escape special XML characters
+  function escapeXml(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;');
+  }
+
+  // Break text into readable lines
+  function wrapText(text, maxChars) {
+
+    const words =
+      String(text)
+        .trim()
+        .split(/\s+/);
+
+    const lines = [];
+    let line = '';
+
+    for (const word of words) {
+
+      const test =
+        line
+          ? line + ' ' + word
+          : word;
+
+      if (test.length > maxChars) {
+
+        if (line) {
+          lines.push(line);
+        }
+
+        line = word;
+
+      } else {
+
+        line = test;
+      }
+    }
+
+    if (line) {
+      lines.push(line);
+    }
+
+    return lines;
+  }
+
+  const lines =
+    wrapText(
+      storyText,
+      48
+    );
+
+  const lineHeight = 46;
+
+  const textHeight =
+    lines.length * lineHeight;
+
+  const boxPadding = 28;
+
+  const boxHeight =
+    textHeight +
+    boxPadding * 2;
+
+  const boxY = 25;
+
+  const textStartY =
+    boxY +
+    boxPadding +
+    32;
+
+  const svgText =
+    lines
+      .map(
+        (line, index) => {
+
+          const y =
+            textStartY +
+            index * lineHeight;
+
+          return `
+            <text
+              x="512"
+              y="${y}"
+              text-anchor="middle"
+              font-family="Arial, Helvetica, sans-serif"
+              font-size="30"
+              font-weight="600"
+              fill="#222222"
+            >
+              ${escapeXml(line)}
+            </text>
+          `;
+        }
+      )
+      .join('');
+
+  const svg = `
+    <svg
+      width="${width}"
+      height="${height}"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+
+      <rect
+        x="28"
+        y="${boxY}"
+        width="${width - 56}"
+        height="${boxHeight}"
+        rx="28"
+        fill="white"
+        fill-opacity="0.90"
+      />
+
+      ${svgText}
+
+    </svg>
+  `;
+
+  const finalImage =
+    await sharp(imageBuffer)
+      .composite([
+        {
+          input:
+            Buffer.from(svg),
+          top: 0,
+          left: 0
+        }
+      ])
+      .png()
+      .toBuffer();
+
+  console.log(
+    `STORY TEXT ADDED TO IMAGE ${pageNumber}`
+  );
+
+  return finalImage;
+}
 // =====================================================
 // CREATE PDF - TEXT OVER ILLUSTRATION
 // =====================================================
@@ -1017,7 +1174,7 @@ function makePdf(
       const d =
         new PDFDocument({
 
-          size: 'A4',
+          size: 'A5',
 
           margin: 0
         });
@@ -1094,7 +1251,7 @@ function makePdf(
         (p, i) => {
 
           d.addPage({
-            size: 'A4',
+            size: 'A5',
             margin: 0
           });
 
@@ -1325,21 +1482,32 @@ async function generate(
     );
 
     const b =
-      await makeImage(
-        st.pages[i].imagePrompt,
-        photo
-      );
+  await makeImage(
+    st.pages[i].imagePrompt,
+    photo
+  );
 
-    const f =
-      path.join(
-        books,
-        `${id}-${i + 1}.png`
-      );
+console.log(
+  `ADDING STORY TEXT TO IMAGE ${i + 1}...`
+);
 
-    fs.writeFileSync(
-      f,
-      b
-    );
+const finalImage =
+  await addStoryTextToImage(
+    b,
+    st.pages[i].text,
+    i + 1
+  );
+
+const f =
+  path.join(
+    books,
+    `${id}-${i + 1}.png`
+  );
+
+fs.writeFileSync(
+  f,
+  finalImage
+);
 
     console.log(
       `IMAGE ${i + 1} CREATED`

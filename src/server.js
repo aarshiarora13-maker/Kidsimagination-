@@ -39,10 +39,7 @@ if (fs.existsSync(db)) {
 }
 
 function save() {
-  fs.writeFileSync(
-    db,
-    JSON.stringify(orders, null, 2)
-  );
+  fs.writeFileSync(db, JSON.stringify(orders, null, 2));
 }
 
 app.use(cors());
@@ -52,24 +49,16 @@ app.use(express.json({ limit: '2mb' }));
 // STATIC FILES
 // =====================================================
 
-app.use(
-  express.static(
-    path.join(root, 'public')
-  )
-);
+app.use(express.static(path.join(root, 'public')));
 
-// Serve story illustration images stored in repository root
 app.get('/story-assets/:filename', (req, res) => {
-
-  const filename =
-    path.basename(req.params.filename);
+  const filename = path.basename(req.params.filename);
 
   if (!/\.(png|jpg|jpeg)$/i.test(filename)) {
     return res.status(404).end();
   }
 
-  const filePath =
-    path.join(root, filename);
+  const filePath = path.join(root, filename);
 
   if (!fs.existsSync(filePath)) {
     return res.status(404).end();
@@ -83,27 +72,19 @@ app.get('/story-assets/:filename', (req, res) => {
 // =====================================================
 
 app.get('/', (req, res) => {
-  res.sendFile(
-    path.join(root, 'index.html')
-  );
+  res.sendFile(path.join(root, 'index.html'));
 });
 
 app.get('/index.html', (req, res) => {
-  res.sendFile(
-    path.join(root, 'index.html')
-  );
+  res.sendFile(path.join(root, 'index.html'));
 });
 
 app.get('/bhavik-story.html', (req, res) => {
-  res.sendFile(
-    path.join(root, 'bhavik-story.html')
-  );
+  res.sendFile(path.join(root, 'bhavik-story.html'));
 });
 
 app.get('/story.html', (req, res) => {
-  res.sendFile(
-    path.join(root, 'story.html')
-  );
+  res.sendFile(path.join(root, 'story.html'));
 });
 
 // =====================================================
@@ -111,16 +92,12 @@ app.get('/story.html', (req, res) => {
 // =====================================================
 
 app.get('/test', (req, res) => {
-
   res.send(`
     <!doctype html>
     <html>
       <head>
         <meta charset="utf-8">
-        <meta
-          name="viewport"
-          content="width=device-width,initial-scale=1"
-        >
+        <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>KidsImagination Test</title>
       </head>
 
@@ -133,21 +110,11 @@ app.get('/test', (req, res) => {
 
         <h1>KidsImagination is working ✅</h1>
 
-        <p>
-          The Render server is running correctly.
-        </p>
+        <p>The Render server is running correctly.</p>
 
-        <p>
-          <a href="/">
-            Open KidsImagination homepage
-          </a>
-        </p>
+        <p><a href="/">Open KidsImagination homepage</a></p>
 
-        <p>
-          <a href="/bhavik-story.html">
-            Open Bhavik's story
-          </a>
-        </p>
+        <p><a href="/bhavik-story.html">Open Bhavik's story</a></p>
 
       </body>
     </html>
@@ -160,35 +127,27 @@ app.get('/test', (req, res) => {
 
 const upload = multer({
   dest: uploads,
-
   limits: {
     fileSize: 10 * 1024 * 1024
   }
 });
 
-app.post(
-  '/api/upload-photo',
-  upload.single('photo'),
-  (req, res) => {
+app.post('/api/upload-photo', upload.single('photo'), (req, res) => {
 
-    console.log('PHOTO UPLOAD REQUEST');
+  console.log('PHOTO UPLOAD REQUEST');
 
-    if (!req.file) {
-      return res.status(400).json({
-        error: 'Photo required'
-      });
-    }
-
-    console.log(
-      'PHOTO UPLOADED:',
-      req.file.filename
-    );
-
-    res.json({
-      photoId: req.file.filename
+  if (!req.file) {
+    return res.status(400).json({
+      error: 'Photo required'
     });
   }
-);
+
+  console.log('PHOTO UPLOADED:', req.file.filename);
+
+  res.json({
+    photoId: req.file.filename
+  });
+});
 
 // =====================================================
 // RAZORPAY
@@ -198,11 +157,8 @@ const razorpay =
   process.env.RAZORPAY_KEY_ID &&
   process.env.RAZORPAY_KEY_SECRET
     ? new Razorpay({
-        key_id:
-          process.env.RAZORPAY_KEY_ID,
-
-        key_secret:
-          process.env.RAZORPAY_KEY_SECRET
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET
       })
     : null;
 
@@ -210,333 +166,287 @@ const razorpay =
 // CREATE ORDER
 // =====================================================
 
-app.post(
-  '/api/create-order',
-  async (req, res) => {
+app.post('/api/create-order', async (req, res) => {
 
-    console.log(
-      'CREATE ORDER REQUEST'
-    );
+  console.log('CREATE ORDER REQUEST');
 
-    try {
+  try {
 
-      if (!razorpay) {
-
-        return res.status(503).json({
-          error:
-            'Razorpay is not configured'
-        });
-      }
-
-      const data =
-        req.body || {};
-
-      if (
-        !data.childName ||
-        !data.age ||
-        !data.theme
-      ) {
-
-        return res.status(400).json({
-          error:
-            'Child name, age and theme are required'
-        });
-      }
-
-      const amount =
-        Number(data.amount);
-
-      if (
-        ![
-          39900,
-          59900,
-          79900
-        ].includes(amount)
-      ) {
-
-        return res.status(400).json({
-          error:
-            'Invalid package'
-        });
-      }
-
-      const packageName =
-        amount === 39900
-          ? 'story'
-          : amount === 59900
-            ? 'story-audio'
-            : 'premium';
-
-      console.log(
-        'CREATING RAZORPAY ORDER:',
-        amount,
-        packageName
-      );
-
-      const order =
-        await razorpay.orders.create({
-
-          amount,
-
-          currency: 'INR',
-
-          receipt:
-            'KI' + Date.now(),
-
-          payment_capture: 1
-        });
-
-      orders[order.id] = {
-
-        id: order.id,
-
-        status: 'created',
-
-        amount,
-
-        packageName,
-
-        data
-      };
-
-      save();
-
-      console.log(
-        'RAZORPAY ORDER CREATED:',
-        order.id
-      );
-
-      res.json({
-
-        keyId:
-          process.env.RAZORPAY_KEY_ID,
-
-        orderId:
-          order.id,
-
-        amount:
-          order.amount
-      });
-
-    } catch (error) {
-
-      console.error(
-        'ORDER CREATION ERROR:',
-        error
-      );
-
-      res.status(500).json({
-        error:
-          'Order creation failed'
+    if (!razorpay) {
+      return res.status(503).json({
+        error: 'Razorpay is not configured'
       });
     }
+
+    const data = req.body || {};
+
+    if (!data.childName || !data.age || !data.theme) {
+      return res.status(400).json({
+        error: 'Child name, age and theme are required'
+      });
+    }
+
+    const amount = Number(data.amount);
+
+    if (![39900, 59900, 79900].includes(amount)) {
+      return res.status(400).json({
+        error: 'Invalid package'
+      });
+    }
+
+    const packageName =
+      amount === 39900
+        ? 'story'
+        : amount === 59900
+          ? 'story-audio'
+          : 'premium';
+
+    console.log(
+      'CREATING RAZORPAY ORDER:',
+      amount,
+      packageName
+    );
+
+    const order = await razorpay.orders.create({
+
+      amount,
+
+      currency: 'INR',
+
+      receipt: 'KI' + Date.now(),
+
+      payment_capture: 1
+
+    });
+
+    orders[order.id] = {
+
+      id: order.id,
+
+      status: 'created',
+
+      amount,
+
+      packageName,
+
+      data
+
+    };
+
+    save();
+
+    console.log(
+      'RAZORPAY ORDER CREATED:',
+      order.id
+    );
+
+    res.json({
+
+      keyId:
+        process.env.RAZORPAY_KEY_ID,
+
+      orderId:
+        order.id,
+
+      amount:
+        order.amount
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      'ORDER CREATION ERROR:',
+      error
+    );
+
+    res.status(500).json({
+      error: 'Order creation failed'
+    });
   }
-);
+});
 
 // =====================================================
 // PAYMENT VERIFICATION
 // =====================================================
 
-app.post(
-  '/api/verify-payment',
-  async (req, res) => {
+app.post('/api/verify-payment', async (req, res) => {
+
+  console.log('VERIFY PAYMENT REQUEST');
+
+  try {
+
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      orderId
+    } = req.body;
 
     console.log(
-      'VERIFY PAYMENT REQUEST'
-    );
-
-    try {
-
-      const {
+      'PAYMENT DATA:',
+      {
         razorpay_order_id,
         razorpay_payment_id,
-        razorpay_signature,
         orderId
-      } = req.body;
-
-      console.log(
-        'PAYMENT DATA:',
-        {
-          razorpay_order_id,
-          razorpay_payment_id,
-          orderId
-        }
-      );
-
-      const order =
-        orders[
-          orderId ||
-          razorpay_order_id
-        ];
-
-      if (!order) {
-
-        console.error(
-          'ORDER NOT FOUND:',
-          orderId ||
-          razorpay_order_id
-        );
-
-        return res.status(404).json({
-          error:
-            'Order not found'
-        });
       }
+    );
 
-      if (
-        order.id !==
+    const order =
+      orders[
+        orderId ||
         razorpay_order_id
-      ) {
+      ];
 
-        return res.status(400).json({
-          error:
-            'Order ID mismatch'
-        });
-      }
-
-      const expectedSignature =
-        crypto
-          .createHmac(
-            'sha256',
-            process.env
-              .RAZORPAY_KEY_SECRET
-          )
-          .update(
-            `${razorpay_order_id}|${razorpay_payment_id}`
-          )
-          .digest('hex');
-
-      if (
-        !razorpay_signature ||
-        expectedSignature !==
-          razorpay_signature
-      ) {
-
-        console.error(
-          'PAYMENT SIGNATURE FAILED'
-        );
-
-        return res.status(400).json({
-          error:
-            'Payment verification failed'
-        });
-      }
-
-      // -------------------------------------------------
-      // PAYMENT SUCCESSFULLY VERIFIED
-      // -------------------------------------------------
-
-      order.status =
-        'generating';
-
-      order.paymentId =
-        razorpay_payment_id;
-
-      save();
-
-      console.log(
-        'PAYMENT VERIFIED:',
-        order.id
-      );
-
-      console.log(
-        'STARTING STORY GENERATION:',
-        order.id
-      );
-
-      // Start generation
-      generate(order.id)
-        .then(() => {
-
-          console.log(
-            'STORY GENERATION FINISHED:',
-            order.id
-          );
-
-        })
-        .catch(error => {
-
-          console.error(
-            'STORY GENERATION ERROR:',
-            error
-          );
-
-          order.status =
-            'failed';
-
-          order.error =
-            error?.message ||
-            'Generation failed. Please contact support.';
-
-          save();
-        });
-
-      res.json({
-
-        ok: true,
-
-        orderId:
-          order.id
-      });
-
-    } catch (error) {
+    if (!order) {
 
       console.error(
-        'PAYMENT VERIFICATION ERROR:',
-        error
+        'ORDER NOT FOUND:',
+        orderId || razorpay_order_id
       );
 
-      res.status(500).json({
-        error:
-          'Verification failed'
+      return res.status(404).json({
+        error: 'Order not found'
       });
     }
+
+    if (order.id !== razorpay_order_id) {
+
+      return res.status(400).json({
+        error: 'Order ID mismatch'
+      });
+    }
+
+    const expectedSignature =
+      crypto
+        .createHmac(
+          'sha256',
+          process.env.RAZORPAY_KEY_SECRET
+        )
+        .update(
+          `${razorpay_order_id}|${razorpay_payment_id}`
+        )
+        .digest('hex');
+
+    if (
+      !razorpay_signature ||
+      expectedSignature !== razorpay_signature
+    ) {
+
+      console.error(
+        'PAYMENT SIGNATURE FAILED'
+      );
+
+      return res.status(400).json({
+        error: 'Payment verification failed'
+      });
+    }
+
+    order.status = 'generating';
+
+    order.paymentId =
+      razorpay_payment_id;
+
+    save();
+
+    console.log(
+      'PAYMENT VERIFIED:',
+      order.id
+    );
+
+    console.log(
+      'STARTING STORY GENERATION:',
+      order.id
+    );
+
+    generate(order.id)
+      .then(() => {
+
+        console.log(
+          'STORY GENERATION FINISHED:',
+          order.id
+        );
+
+      })
+      .catch(error => {
+
+        console.error(
+          'STORY GENERATION ERROR:',
+          error
+        );
+
+        order.status = 'failed';
+
+        order.error =
+          error?.message ||
+          'Generation failed. Please contact support.';
+
+        save();
+
+      });
+
+    res.json({
+
+      ok: true,
+
+      orderId:
+        order.id
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      'PAYMENT VERIFICATION ERROR:',
+      error
+    );
+
+    res.status(500).json({
+      error: 'Verification failed'
+    });
   }
-);
+});
 
 // =====================================================
 // STORY STATUS
 // =====================================================
 
-app.get(
-  '/api/story/:id',
-  (req, res) => {
+app.get('/api/story/:id', (req, res) => {
 
-    const order =
-      orders[
-        req.params.id
-      ];
+  const order =
+    orders[
+      req.params.id
+    ];
 
-    if (!order) {
+  if (!order) {
 
-      return res.status(404).json({
-        error:
-          'Not found'
-      });
-    }
-
-    res.json({
-
-      status:
-        order.status,
-
-      title:
-        order.title,
-
-      pages:
-        order.pages,
-
-      pdfUrl:
-        order.pdfUrl,
-
-      audioUrl:
-        order.audioUrl,
-
-      error:
-        order.error
+    return res.status(404).json({
+      error: 'Not found'
     });
   }
-);
+
+  res.json({
+
+    status:
+      order.status,
+
+    title:
+      order.title,
+
+    pages:
+      order.pages,
+
+    pdfUrl:
+      order.pdfUrl,
+
+    audioUrl:
+      order.audioUrl,
+
+    error:
+      order.error
+
+  });
+});
 
 // =====================================================
 // OPENAI REQUEST HELPER
@@ -560,16 +470,20 @@ async function ai(
       'https://api.openai.com/v1/' +
         endpoint,
       {
+
         method: 'POST',
 
         headers: {
+
           Authorization:
             `Bearer ${process.env.OPENAI_API_KEY}`,
 
           ...headers
+
         },
 
         body
+
       }
     );
 
@@ -590,7 +504,7 @@ async function ai(
 }
 
 // =====================================================
-// CREATE STORY
+// CREATE CONNECTED STORY
 // =====================================================
 
 async function makeStory(data) {
@@ -600,6 +514,7 @@ async function makeStory(data) {
   );
 
   const prompt = `
+
 Create a personalized children's picture book for a child aged 1–5.
 
 Child name: ${data.childName}
@@ -611,31 +526,57 @@ Favorite animal: ${data.animal || 'none'}
 Personality: ${data.personality || 'none'}
 Dedication: ${data.dedication || 'none'}
 
-STORY REQUIREMENTS:
+IMPORTANT STORY STYLE:
 
-Create exactly 6 pages.
+Create ONE COMPLETE CONNECTED STORY.
 
-The child must be the main character and must appear as the central character throughout the entire story.
+The six pages must feel like six parts of the SAME story.
 
-Write a warm, playful, positive and age-appropriate story that parents will enjoy reading aloud.
+Do NOT create six unrelated mini-stories.
+
+Each page must naturally continue from the previous page.
+
+The final page must resolve the adventure and give the story a warm, happy ending.
+
+Create exactly 6 story pages.
+
+The child is the main character throughout the entire story.
 
 Use very simple vocabulary suitable for ages 1–5.
 
 Each page must contain only 1–3 short sentences.
 
-Every page should have a clear action or event so that the illustration can visually show what is happening.
+Every page must have a clear action that can be shown in the illustration.
 
-Create a beginning, a small adventure or problem, and a happy ending.
+STORY STRUCTURE:
+
+Page 1:
+Introduce the child, setting and the beginning of the adventure.
+
+Page 2:
+The child discovers something interesting or receives a small invitation/challenge.
+
+Page 3:
+The child begins the adventure and meets a friendly character or discovers something special.
+
+Page 4:
+The adventure continues with a small age-appropriate problem or surprise.
+
+Page 5:
+The child solves the problem through kindness, curiosity, teamwork or imagination.
+
+Page 6:
+The adventure ends happily and connects back to the beginning.
 
 Do not create scary, violent, dangerous or sad situations.
 
-Keep the story imaginative, colorful and emotionally positive.
+Keep the story imaginative, colorful, warm and emotionally positive.
 
-CHARACTER CONSISTENCY:
+CHARACTER:
 
 The uploaded child photo will be used as the visual identity reference.
 
-Every imagePrompt must instruct the image generator to keep the same recognizable child character throughout the entire book.
+The same uploaded child should remain the central character throughout all six illustrations.
 
 Keep consistent:
 - facial identity
@@ -649,35 +590,59 @@ Keep consistent:
 - age appearance
 - body proportions
 
-Do not make the child look like a different child from one page to another.
+Do not turn the child into a different child from page to page.
+
+VISUAL STORY CONTINUITY:
+
+Each illustration must visually continue the previous page.
+
+Keep important locations, objects and friendly characters consistent when they return.
+
+The child's clothing should remain logically consistent unless the story specifically requires a change.
 
 IMAGE PROMPTS:
 
-Each page must have a detailed imagePrompt describing:
-- the child's pose
+Each imagePrompt must describe:
+
+- child's pose
 - facial expression
 - clothing
-- location/environment
-- lighting
+- environment
 - important objects
 - other characters
-- the action taking place
+- exact action taking place
+- visual connection to the previous page
 - colorful children's picture-book illustration style
 
-The imagePrompt must NOT contain written text, letters, captions, logos or watermarks.
+IMPORTANT:
 
-RETURN ONLY VALID JSON in exactly this structure:
+The illustration itself must NOT contain written text.
+
+Do not put:
+- words
+- letters
+- captions
+- subtitles
+- logos
+- watermarks
+
+The story text will be added separately over the illustration by the website.
+
+RETURN ONLY VALID JSON.
+
+Use exactly this structure:
 
 {
   "title": "Story title",
   "pages": [
     {
-      "title": "Page title",
-      "text": "Short story text",
+      "title": "Internal page title",
+      "text": "Short connected story text",
       "imagePrompt": "Detailed illustration prompt"
     }
   ]
 }
+
 `;
 
   const r =
@@ -696,7 +661,7 @@ RETURN ONLY VALID JSON in exactly this structure:
             role: 'system',
 
             content:
-              'You create simple, warm, age-appropriate personalized childrens picture books. Always return valid JSON only.'
+              'You create warm, connected personalized childrens picture books. Always return valid JSON only.'
           },
 
           {
@@ -728,22 +693,6 @@ RETURN ONLY VALID JSON in exactly this structure:
   console.log(
     'OPENAI STORY RESPONSE RECEIVED'
   );
-
-  if (!r.ok) {
-
-    console.error(
-      'OPENAI STORY ERROR:',
-      JSON.stringify(
-        j,
-        null,
-        2
-      )
-    );
-
-    throw new Error(
-      `OpenAI story generation failed: ${r.status} ${j.error?.message || 'Unknown error'}`
-    );
-  }
 
   const outputText =
     j.choices?.[0]?.message?.content;
@@ -787,9 +736,7 @@ RETURN ONLY VALID JSON in exactly this structure:
 
   if (
     !story.title ||
-    !Array.isArray(
-      story.pages
-    ) ||
+    !Array.isArray(story.pages) ||
     story.pages.length !== 6
   ) {
 
@@ -856,7 +803,7 @@ IMPORTANT CHARACTER CONSISTENCY:
 
 Use the uploaded child photo as the primary identity reference.
 
-The child in the illustration must remain the same child across every page of the book.
+The child in the illustration must remain the same child across every page of THIS customer's book.
 
 Preserve the child's recognizable:
 - face shape
@@ -874,17 +821,17 @@ Do not create a different child.
 Do not make the child older or younger.
 Do not change the child's skin tone or facial structure.
 
-Create a polished, colorful children's picture-book illustration.
+Keep visual continuity with the previous story pages.
 
-Keep the child's identity recognizable while adapting the photo into a friendly illustrated character.
+Create a polished colorful children's picture-book illustration.
 
-Use expressive poses and natural facial expressions appropriate to the story.
+The illustration must contain NO written text,
+NO letters,
+NO captions,
+NO logos,
+NO watermark.
 
-No written text.
-No letters.
-No captions.
-No logos.
-No watermark.
+The story text will be added separately.
 `
   );
 
@@ -952,9 +899,7 @@ No watermark.
 // CREATE AUDIO
 // =====================================================
 
-async function makeAudio(
-  text
-) {
+async function makeAudio(text) {
 
   console.log(
     'OPENAI AUDIO REQUEST STARTING'
@@ -995,8 +940,10 @@ async function makeAudio(
     await r.arrayBuffer()
   );
 }
+
 // =====================================================
-// PUT STORY TEXT ON ILLUSTRATION
+// PUT STORY TEXT DIRECTLY ON ILLUSTRATION
+// NO WHITE BOX
 // =====================================================
 
 async function addStoryTextToImage(
@@ -1012,18 +959,21 @@ async function addStoryTextToImage(
   const width = 1024;
   const height = 1024;
 
-  // Escape special XML characters
   function escapeXml(text) {
+
     return String(text)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&apos;');
+
   }
 
-  // Break text into readable lines
-  function wrapText(text, maxChars) {
+  function wrapText(
+    text,
+    maxChars
+  ) {
 
     const words =
       String(text)
@@ -1031,16 +981,22 @@ async function addStoryTextToImage(
         .split(/\s+/);
 
     const lines = [];
+
     let line = '';
 
-    for (const word of words) {
+    for (
+      const word of words
+    ) {
 
       const test =
         line
           ? line + ' ' + word
           : word;
 
-      if (test.length > maxChars) {
+      if (
+        test.length >
+        maxChars
+      ) {
 
         if (line) {
           lines.push(line);
@@ -1051,7 +1007,9 @@ async function addStoryTextToImage(
       } else {
 
         line = test;
+
       }
+
     }
 
     if (line) {
@@ -1059,78 +1017,87 @@ async function addStoryTextToImage(
     }
 
     return lines;
+
   }
 
   const lines =
     wrapText(
       storyText,
-      48
+      42
     );
 
-  const lineHeight = 46;
+  // Large readable children's-book text
+  const fontSize = 38;
+  const lineHeight = 52;
 
-  const textHeight =
-    lines.length * lineHeight;
+  /*
+   * Keep text near the top of the illustration.
+   * There is NO rectangle/background.
+   */
 
-  const boxPadding = 28;
-
-  const boxHeight =
-    textHeight +
-    boxPadding * 2;
-
-  const boxY = 25;
-
-  const textStartY =
-    boxY +
-    boxPadding +
-    32;
+  const startY =
+    72;
 
   const svgText =
     lines
+      .slice(0, 4)
       .map(
         (line, index) => {
 
           const y =
-            textStartY +
+            startY +
             index * lineHeight;
 
           return `
+
+            <!-- soft shadow -->
+            <text
+              x="512"
+              y="${y + 3}"
+              text-anchor="middle"
+              font-family="Arial, Helvetica, sans-serif"
+              font-size="${fontSize}"
+              font-weight="700"
+              fill="rgba(0,0,0,0.55)"
+            >
+              ${escapeXml(line)}
+            </text>
+
+            <!-- main text -->
             <text
               x="512"
               y="${y}"
               text-anchor="middle"
               font-family="Arial, Helvetica, sans-serif"
-              font-size="30"
-              font-weight="600"
-              fill="#222222"
+              font-size="${fontSize}"
+              font-weight="700"
+              fill="#ffffff"
+              stroke="#3b3155"
+              stroke-width="2"
+              paint-order="stroke"
+              stroke-linejoin="round"
             >
               ${escapeXml(line)}
             </text>
+
           `;
+
         }
       )
       .join('');
 
   const svg = `
+
     <svg
       width="${width}"
       height="${height}"
       xmlns="http://www.w3.org/2000/svg"
     >
 
-      <rect
-        x="28"
-        y="${boxY}"
-        width="${width - 56}"
-        height="${boxHeight}"
-        rx="28"
-        fill="white"
-        fill-opacity="0.90"
-      />
-
       ${svgText}
 
     </svg>
+
   `;
 
   const finalImage =
@@ -1139,7 +1106,9 @@ async function addStoryTextToImage(
         {
           input:
             Buffer.from(svg),
+
           top: 0,
+
           left: 0
         }
       ])
@@ -1152,8 +1121,10 @@ async function addStoryTextToImage(
 
   return finalImage;
 }
+
 // =====================================================
-// CREATE PDF - TEXT OVER ILLUSTRATION
+// CREATE PDF
+// ILLUSTRATION + TEXT ON ILLUSTRATION
 // =====================================================
 
 function makePdf(
@@ -1177,6 +1148,7 @@ function makePdf(
           size: 'A5',
 
           margin: 0
+
         });
 
       const w =
@@ -1184,6 +1156,7 @@ function makePdf(
 
       w.on(
         'finish',
+
         () =>
           resolve(
             '/books/' +
@@ -1200,7 +1173,7 @@ function makePdf(
       d.pipe(w);
 
       // =================================================
-      // COVER PAGE
+      // COVER
       // =================================================
 
       d.rect(
@@ -1216,11 +1189,11 @@ function makePdf(
         .font('Helvetica-Bold')
         .text(
           st.title,
-          45,
-          90,
+          40,
+          100,
           {
             width:
-              d.page.width - 90,
+              d.page.width - 80,
 
             align:
               'center'
@@ -1232,11 +1205,11 @@ function makePdf(
         .font('Helvetica')
         .text(
           'A personalized story created especially for your little one ✨',
-          55,
-          155,
+          45,
+          165,
           {
             width:
-              d.page.width - 110,
+              d.page.width - 90,
 
             align:
               'center'
@@ -1245,7 +1218,6 @@ function makePdf(
 
       // =================================================
       // STORY PAGES
-      // TEXT FIRST + ILLUSTRATION BELOW
       // =================================================
 
       st.pages.forEach(
@@ -1262,140 +1234,32 @@ function makePdf(
           const pageHeight =
             d.page.height;
 
-          // Background
-          d.rect(
-            0,
-            0,
-            pageWidth,
-            pageHeight
-          )
-            .fill('#fffdf9');
-
-          // ---------------------------------------------
-          // PAGE NUMBER
-          // ---------------------------------------------
-
-          d.circle(
-            35,
-            35,
-            15
-          )
-            .fill('#7156d8');
-
-          d.font(
-            'Helvetica-Bold'
-          )
-            .fontSize(11)
-            .fillColor('#ffffff')
-            .text(
-              String(i + 1),
-              29,
-              30,
-              {
-                width: 12,
-                align: 'center'
-              }
-            );
-
-          // ---------------------------------------------
-          // STORY TEXT AREA
-          // ---------------------------------------------
-
-          const textX = 42;
-          const textWidth =
-            pageWidth - 84;
-
-          d.font(
-            'Helvetica-Bold'
-          )
-            .fontSize(19)
-            .fillColor('#7156d8')
-            .text(
-              p.title || '',
-              textX,
-              25,
-              {
-                width:
-                  textWidth,
-
-                align:
-                  'center'
-              }
-            );
-
-          d.font(
-            'Helvetica'
-          )
-            .fontSize(14)
-            .fillColor('#25213a')
-            .text(
-              p.text,
-              textX,
-              58,
-              {
-                width:
-                  textWidth,
-
-                align:
-                  'center',
-
-                lineGap:
-                  4
-              }
-            );
-
-          // ---------------------------------------------
-          // ILLUSTRATION
-          // ---------------------------------------------
-
-          const imageX = 18;
-          const imageY = 185;
-
-          const imageWidth =
-            pageWidth - 36;
-
-          const imageHeight =
-            pageHeight - imageY - 18;
-
-          d.roundedRect(
-            imageX,
-            imageY,
-            imageWidth,
-            imageHeight,
-            12
-          )
-            .fill('#ffffff');
-
-          d.save();
-
-          d.roundedRect(
-            imageX,
-            imageY,
-            imageWidth,
-            imageHeight,
-            12
-          )
-            .clip();
+          /*
+           * Full-page illustration.
+           * The PNG already contains the story text.
+           */
 
           d.image(
             imgs[i],
-            imageX,
-            imageY,
+            0,
+            0,
             {
               cover: [
-                imageWidth,
-                imageHeight
+                pageWidth,
+                pageHeight
               ],
+
               align: 'center',
+
               valign: 'center'
             }
           );
 
-          d.restore();
         }
       );
 
       d.end();
+
     }
   );
 }
@@ -1404,9 +1268,7 @@ function makePdf(
 // GENERATE COMPLETE BOOK
 // =====================================================
 
-async function generate(
-  id
-) {
+async function generate(id) {
 
   console.log(
     '======================================'
@@ -1426,6 +1288,7 @@ async function generate(
     throw new Error(
       'OPENAI_API_KEY missing'
     );
+
   }
 
   const o =
@@ -1437,6 +1300,7 @@ async function generate(
       'Order not found: ' +
       id
     );
+
   }
 
   console.log(
@@ -1445,7 +1309,7 @@ async function generate(
   );
 
   console.log(
-    'CREATING STORY WITH OPENAI...'
+    'CREATING CONNECTED STORY WITH OPENAI...'
   );
 
   const st =
@@ -1470,6 +1334,7 @@ async function generate(
       'Child photo file not found: ' +
       photo
     );
+
   }
 
   const imgs = [];
@@ -1486,32 +1351,32 @@ async function generate(
     );
 
     const b =
-  await makeImage(
-    st.pages[i].imagePrompt,
-    photo
-  );
+      await makeImage(
+        st.pages[i].imagePrompt,
+        photo
+      );
 
-console.log(
-  `ADDING STORY TEXT TO IMAGE ${i + 1}...`
-);
+    console.log(
+      `ADDING STORY TEXT TO IMAGE ${i + 1}...`
+    );
 
-const finalImage =
-  await addStoryTextToImage(
-    b,
-    st.pages[i].text,
-    i + 1
-  );
+    const finalImage =
+      await addStoryTextToImage(
+        b,
+        st.pages[i].text,
+        i + 1
+      );
 
-const f =
-  path.join(
-    books,
-    `${id}-${i + 1}.png`
-  );
+    const f =
+      path.join(
+        books,
+        `${id}-${i + 1}.png`
+      );
 
-fs.writeFileSync(
-  f,
-  finalImage
-);
+    fs.writeFileSync(
+      f,
+      finalImage
+    );
 
     console.log(
       `IMAGE ${i + 1} CREATED`
@@ -1525,9 +1390,9 @@ fs.writeFileSync(
 
       imageUrl:
         `/books/${id}-${i + 1}.png`
+
     });
 
-    // Save progress after every image
     o.pages =
       pages;
 
@@ -1535,10 +1400,11 @@ fs.writeFileSync(
       st.title;
 
     save();
+
   }
 
   console.log(
-    'ALL 7 IMAGES CREATED'
+    'ALL 6 IMAGES CREATED'
   );
 
   o.title =
@@ -1563,21 +1429,28 @@ fs.writeFileSync(
     o.pdfUrl
   );
 
+  // ===================================================
+  // AUDIO PACKAGE
+  // ===================================================
+
   if (
     o.amount >= 59900
   ) {
 
     console.log(
-      'CREATING AUDIO...'
+      'CREATING STORY AUDIO...'
     );
+
+    const audioText =
+      st.pages
+        .map(
+          p => p.text
+        )
+        .join(' ');
 
     const b =
       await makeAudio(
-        st.pages
-          .map(
-            p => p.text
-          )
-          .join(' ')
+        audioText
       );
 
     const f =
@@ -1597,9 +1470,10 @@ fs.writeFileSync(
       '.mp3';
 
     console.log(
-      'AUDIO CREATED:',
+      'STORY AUDIO CREATED:',
       o.audioUrl
     );
+
   }
 
   o.status =
@@ -1622,6 +1496,7 @@ fs.writeFileSync(
   console.log(
     '======================================'
   );
+
 }
 
 // =====================================================
@@ -1651,8 +1526,7 @@ app.listen(
       order => {
 
         if (
-          order.status ===
-            'generating' &&
+          order.status === 'generating' &&
           order.paymentId
         ) {
 
@@ -1671,6 +1545,7 @@ app.listen(
                   'RESUMED STORY FINISHED:',
                   order.id
                 );
+
               }
             )
             .catch(
@@ -1689,10 +1564,14 @@ app.listen(
                   'Generation failed. Please contact support.';
 
                 save();
+
               }
             );
+
         }
+
       }
     );
+
   }
 );

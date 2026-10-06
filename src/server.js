@@ -943,7 +943,7 @@ async function makeAudio(text) {
 
 // =====================================================
 // PUT STORY TEXT DIRECTLY ON ILLUSTRATION
-// NO WHITE BOX
+// NO WHITE BOX / NO BACKGROUND
 // =====================================================
 
 async function addStoryTextToImage(
@@ -953,27 +953,22 @@ async function addStoryTextToImage(
 ) {
 
   console.log(
-    `ADDING STORY TEXT TO IMAGE ${pageNumber}...`
+    `ADDING STORY TEXT DIRECTLY TO IMAGE ${pageNumber}...`
   );
 
   const width = 1024;
   const height = 1024;
 
   function escapeXml(text) {
-
     return String(text)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&apos;');
-
   }
 
-  function wrapText(
-    text,
-    maxChars
-  ) {
+  function wrapText(text, maxChars) {
 
     const words =
       String(text)
@@ -981,22 +976,16 @@ async function addStoryTextToImage(
         .split(/\s+/);
 
     const lines = [];
-
     let line = '';
 
-    for (
-      const word of words
-    ) {
+    for (const word of words) {
 
       const test =
         line
           ? line + ' ' + word
           : word;
 
-      if (
-        test.length >
-        maxChars
-      ) {
+      if (test.length > maxChars) {
 
         if (line) {
           lines.push(line);
@@ -1009,7 +998,6 @@ async function addStoryTextToImage(
         line = test;
 
       }
-
     }
 
     if (line) {
@@ -1017,7 +1005,6 @@ async function addStoryTextToImage(
     }
 
     return lines;
-
   }
 
   const lines =
@@ -1026,21 +1013,15 @@ async function addStoryTextToImage(
       42
     );
 
-  // Large readable children's-book text
-  const fontSize = 38;
+  // Big readable text
+  const fontSize = 42;
   const lineHeight = 52;
 
-  /*
-   * Keep text near the top of the illustration.
-   * There is NO rectangle/background.
-   */
-
-  const startY =
-    72;
+  // Keep text near the top of the illustration
+  const startY = 75;
 
   const svgText =
     lines
-      .slice(0, 4)
       .map(
         (line, index) => {
 
@@ -1049,37 +1030,21 @@ async function addStoryTextToImage(
             index * lineHeight;
 
           return `
-
-            <!-- soft shadow -->
-            <text
-              x="512"
-              y="${y + 3}"
-              text-anchor="middle"
-              font-family="Arial, Helvetica, sans-serif"
-              font-size="${fontSize}"
-              font-weight="700"
-              fill="rgba(0,0,0,0.55)"
-            >
-              ${escapeXml(line)}
-            </text>
-
-            <!-- main text -->
             <text
               x="512"
               y="${y}"
               text-anchor="middle"
               font-family="Arial, Helvetica, sans-serif"
-              font-size="${fontSize}"
+              font-size="${fontSize}px"
               font-weight="700"
               fill="#ffffff"
-              stroke="#3b3155"
-              stroke-width="2"
-              paint-order="stroke"
+              stroke="#222222"
+              stroke-width="3"
               stroke-linejoin="round"
+              paint-order="stroke"
             >
               ${escapeXml(line)}
             </text>
-
           `;
 
         }
@@ -1087,7 +1052,6 @@ async function addStoryTextToImage(
       .join('');
 
   const svg = `
-
     <svg
       width="${width}"
       height="${height}"
@@ -1097,7 +1061,6 @@ async function addStoryTextToImage(
       ${svgText}
 
     </svg>
-
   `;
 
   const finalImage =
@@ -1106,9 +1069,7 @@ async function addStoryTextToImage(
         {
           input:
             Buffer.from(svg),
-
           top: 0,
-
           left: 0
         }
       ])
@@ -1116,12 +1077,12 @@ async function addStoryTextToImage(
       .toBuffer();
 
   console.log(
-    `STORY TEXT ADDED TO IMAGE ${pageNumber}`
+    `STORY TEXT DIRECTLY ADDED TO IMAGE ${pageNumber}`
   );
 
   return finalImage;
 }
-
+        
 // =====================================================
 // CREATE PDF
 // ILLUSTRATION + TEXT ON ILLUSTRATION

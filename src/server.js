@@ -21,7 +21,7 @@ const data = path.join(root, 'data');
 const uploads = path.join(data, 'uploads');
 const books = path.join(root, 'public', 'books');
 
-[data, uploads, books].forEach(dir => {
+[data, uploads, books].forEach((dir) => {
   fs.mkdirSync(dir, { recursive: true });
 });
 
@@ -45,6 +45,10 @@ function save() {
   );
 }
 
+// =====================================================
+// EXPRESS
+// =====================================================
+
 app.use(cors());
 
 app.use(
@@ -52,7 +56,6 @@ app.use(
     limit: '2mb'
   })
 );
-
 
 // =====================================================
 // STATIC FILES
@@ -64,7 +67,6 @@ app.use(
   )
 );
 
-
 // =====================================================
 // STORY ASSETS
 // =====================================================
@@ -72,162 +74,163 @@ app.use(
 app.get(
   '/story-assets/:filename',
   (req, res) => {
-
     const filename =
-      path.basename(
-        req.params.filename
-      );
+      path.basename(req.params.filename);
 
     if (
-      !/\.(png|jpg|jpeg)$/i.test(
-        filename
-      )
+      !/\.(png|jpg|jpeg)$/i.test(filename)
     ) {
       return res.status(404).end();
     }
 
     const filePath =
-      path.join(
-        root,
-        filename
-      );
+      path.join(root, filename);
 
-    if (
-      !fs.existsSync(filePath)
-    ) {
+    if (!fs.existsSync(filePath)) {
       return res.status(404).end();
     }
 
     res.sendFile(filePath);
-
   }
 );
-
 
 // =====================================================
 // WEBSITE PAGES
 // =====================================================
 
-app.get(
-  '/',
-  (req, res) => {
+app.get('/', (req, res) => {
+  res.sendFile(
+    path.join(root, 'index.html')
+  );
+});
 
-    res.sendFile(
-      path.join(
-        root,
-        'index.html'
-      )
-    );
+app.get('/index.html', (req, res) => {
+  res.sendFile(
+    path.join(root, 'index.html')
+  );
+});
 
-  }
-);
+app.get('/bhavik-story.html', (req, res) => {
+  res.sendFile(
+    path.join(root, 'bhavik-story.html')
+  );
+});
 
-app.get(
-  '/index.html',
-  (req, res) => {
-
-    res.sendFile(
-      path.join(
-        root,
-        'index.html'
-      )
-    );
-
-  }
-);
-
-app.get(
-  '/bhavik-story.html',
-  (req, res) => {
-
-    res.sendFile(
-      path.join(
-        root,
-        'bhavik-story.html'
-      )
-    );
-
-  }
-);
-
-app.get(
-  '/story.html',
-  (req, res) => {
-
-    res.sendFile(
-      path.join(
-        root,
-        'story.html'
-      )
-    );
-
-  }
-);
-
+app.get('/story.html', (req, res) => {
+  res.sendFile(
+    path.join(root, 'story.html')
+  );
+});
 
 // =====================================================
 // TEST PAGE
 // =====================================================
 
-app.get(
-  '/test',
-  (req, res) => {
+app.get('/test', (req, res) => {
+  res.send(`
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KidsImagination Test</title>
 
-    res.send(`
-      <!doctype html>
+<style>
+body{
+  margin:0;
+  padding:30px;
+  font-family:Arial,sans-serif;
+  background:#fff8f0;
+  color:#30264d;
+}
 
-      <html>
+.container{
+  max-width:800px;
+  margin:auto;
+  background:white;
+  padding:30px;
+  border-radius:24px;
+  box-shadow:0 10px 40px rgba(0,0,0,.08);
+}
 
-      <head>
+h1{
+  margin-top:0;
+}
 
-        <meta charset="utf-8">
+.card{
+  margin-top:20px;
+  padding:20px;
+  border-radius:18px;
+  background:#f7f1ff;
+}
 
-        <meta
-          name="viewport"
-          content="width=device-width,initial-scale=1"
-        >
+a{
+  display:inline-block;
+  margin-top:10px;
+  color:#6d42d8;
+  font-weight:bold;
+}
+</style>
+</head>
 
-        <title>
-          KidsImagination Test
-        </title>
+<body>
 
-      </head>
+<div class="container">
 
-      <body style="
-        font-family:Arial;
-        padding:40px;
-        background:#fffaf0;
-        color:#30264d;
-      ">
+<h1>KidsImagination is working ✅</h1>
 
-        <h1>
-          KidsImagination is working ✅
-        </h1>
+<p>
+The Render server is running correctly.
+</p>
 
-        <p>
-          The Render server is running correctly.
-        </p>
+<div class="card">
 
-        <p>
-          <a href="/">
-            Open KidsImagination homepage
-          </a>
-        </p>
+<h3>Website</h3>
 
-        <p>
-          <a href="/bhavik-story.html">
-            Open Bhavik's story
-          </a>
-        </p>
+<a href="/">
+Open KidsImagination homepage
+</a>
 
-      </body>
+</div>
 
-      </html>
-    `);
+<div class="card">
 
-  }
-);
+<h3>Bhavik Story</h3>
 
+<a href="/bhavik-story.html">
+Open Bhavik's story
+</a>
+
+</div>
+
+<div class="card">
+
+<h3>Story Viewer</h3>
+
+<a href="/story.html">
+Open story viewer
+</a>
+
+</div>
+
+<p>
+Server supports:
+</p>
+
+<ul>
+<li>6 connected story pages</li>
+<li>6 illustrations</li>
+<li>6 individual page narrations</li>
+<li>PDF download</li>
+<li>Razorpay payments</li>
+</ul>
+
+</div>
+
+</body>
+</html>
+`);
+});
 
 // =====================================================
 // FILE UPLOAD
@@ -235,16 +238,13 @@ app.get(
 
 const upload =
   multer({
-
     dest: uploads,
 
     limits: {
       fileSize:
         10 * 1024 * 1024
     }
-
   });
-
 
 app.post(
   '/api/upload-photo',
@@ -256,14 +256,12 @@ app.post(
     );
 
     if (!req.file) {
-
       return res
         .status(400)
         .json({
           error:
             'Photo required'
         });
-
     }
 
     console.log(
@@ -272,15 +270,11 @@ app.post(
     );
 
     res.json({
-
       photoId:
         req.file.filename
-
     });
-
   }
 );
-
 
 // =====================================================
 // RAZORPAY
@@ -289,19 +283,14 @@ app.post(
 const razorpay =
   process.env.RAZORPAY_KEY_ID &&
   process.env.RAZORPAY_KEY_SECRET
-
     ? new Razorpay({
-
         key_id:
           process.env.RAZORPAY_KEY_ID,
 
         key_secret:
           process.env.RAZORPAY_KEY_SECRET
-
       })
-
     : null;
-
 
 // =====================================================
 // CREATE ORDER
@@ -318,36 +307,32 @@ app.post(
     try {
 
       if (!razorpay) {
-
         return res
           .status(503)
           .json({
             error:
               'Razorpay is not configured'
           });
-
       }
 
-      const data =
+      const input =
         req.body || {};
 
       if (
-        !data.childName ||
-        !data.age ||
-        !data.theme
+        !input.childName ||
+        !input.age ||
+        !input.theme
       ) {
-
         return res
           .status(400)
           .json({
             error:
               'Child name, age and theme are required'
           });
-
       }
 
       const amount =
-        Number(data.amount);
+        Number(input.amount);
 
       if (
         ![
@@ -356,14 +341,12 @@ app.post(
           79900
         ].includes(amount)
       ) {
-
         return res
           .status(400)
           .json({
             error:
               'Invalid package'
           });
-
       }
 
       const packageName =
@@ -393,7 +376,6 @@ app.post(
 
           payment_capture:
             1
-
         });
 
       orders[order.id] = {
@@ -408,7 +390,8 @@ app.post(
 
         packageName,
 
-        data
+        data:
+          input
 
       };
 
@@ -429,7 +412,6 @@ app.post(
 
         amount:
           order.amount
-
       });
 
     } catch (error) {
@@ -445,12 +427,9 @@ app.post(
           error:
             'Order creation failed'
         });
-
     }
-
   }
 );
-
 
 // =====================================================
 // PAYMENT VERIFICATION
@@ -473,6 +452,10 @@ app.post(
         orderId
       } = req.body;
 
+      const lookupId =
+        orderId ||
+        razorpay_order_id;
+
       console.log(
         'PAYMENT DATA:',
         {
@@ -483,17 +466,13 @@ app.post(
       );
 
       const order =
-        orders[
-          orderId ||
-          razorpay_order_id
-        ];
+        orders[lookupId];
 
       if (!order) {
 
         console.error(
           'ORDER NOT FOUND:',
-          orderId ||
-          razorpay_order_id
+          lookupId
         );
 
         return res
@@ -502,7 +481,6 @@ app.post(
             error:
               'Order not found'
           });
-
       }
 
       if (
@@ -516,7 +494,6 @@ app.post(
             error:
               'Order ID mismatch'
           });
-
       }
 
       const expectedSignature =
@@ -546,7 +523,6 @@ app.post(
             error:
               'Payment verification failed'
           });
-
       }
 
       order.status =
@@ -562,11 +538,6 @@ app.post(
         order.id
       );
 
-      console.log(
-        'STARTING STORY GENERATION:',
-        order.id
-      );
-
       generate(
         order.id
       )
@@ -578,7 +549,7 @@ app.post(
           );
 
         })
-        .catch(error => {
+        .catch((error) => {
 
           console.error(
             'STORY GENERATION ERROR:',
@@ -593,7 +564,6 @@ app.post(
             'Generation failed. Please contact support.';
 
           save();
-
         });
 
       res.json({
@@ -603,7 +573,6 @@ app.post(
 
         orderId:
           order.id
-
       });
 
     } catch (error) {
@@ -619,12 +588,9 @@ app.post(
           error:
             'Verification failed'
         });
-
     }
-
   }
 );
-
 
 // =====================================================
 // STORY STATUS
@@ -647,7 +613,6 @@ app.get(
           error:
             'Not found'
         });
-
     }
 
     res.json({
@@ -659,31 +624,19 @@ app.get(
         order.title,
 
       pages:
-        order.pages,
+        order.pages || [],
 
       pdfUrl:
-        order.pdfUrl,
-
-      /*
-       * IMPORTANT:
-       * There is intentionally NO
-       * separate audiobook URL.
-       *
-       * Each page contains its own
-       * audioUrl.
-       */
+        order.pdfUrl || null,
 
       error:
-        order.error
-
+        order.error || null
     });
-
   }
 );
 
-
 // =====================================================
-// OPENAI REQUEST HELPER
+// OPENAI HELPER
 // =====================================================
 
 async function ai(
@@ -699,7 +652,6 @@ async function ai(
     throw new Error(
       'OPENAI_API_KEY missing'
     );
-
   }
 
   const response =
@@ -717,11 +669,9 @@ async function ai(
             `Bearer ${process.env.OPENAI_API_KEY}`,
 
           ...headers
-
         },
 
         body
-
       }
     );
 
@@ -736,16 +686,13 @@ async function ai(
       ' ' +
       errorText.slice(
         0,
-        1000
+        1500
       )
     );
-
   }
 
   return response;
-
 }
-
 
 // =====================================================
 // CREATE CONNECTED STORY
@@ -772,27 +719,25 @@ Favorite animal: ${data.animal || 'none'}
 Personality: ${data.personality || 'none'}
 Dedication: ${data.dedication || 'none'}
 
-IMPORTANT STORY STYLE:
+IMPORTANT:
 
 Create ONE COMPLETE CONNECTED STORY.
 
-The six pages must feel like six parts of the SAME story.
+The six pages are six sequential parts of the SAME adventure.
 
-Do NOT create six unrelated mini-stories.
+Do NOT create six unrelated stories.
 
-Each page must naturally continue from the previous page.
+Every page must continue naturally from the previous page.
 
-The final page must resolve the adventure and give the story a warm, happy ending.
+The child is the main character throughout.
 
-Create exactly 6 story pages.
+Create exactly 6 pages.
 
-The child is the main character throughout the entire story.
+Use simple vocabulary suitable for ages 1–5.
 
-Use very simple vocabulary suitable for ages 1–5.
+Each page should contain 1–3 short sentences.
 
-Each page must contain only 1–3 short sentences.
-
-Every page must have a clear action that can be shown in the illustration.
+Every page must contain a clear action that can be illustrated.
 
 STORY STRUCTURE:
 
@@ -800,13 +745,13 @@ Page 1:
 Introduce the child, setting and beginning of the adventure.
 
 Page 2:
-The child discovers something interesting or receives a small invitation or challenge.
+The child discovers something interesting or receives an invitation or challenge.
 
 Page 3:
-The child begins the adventure and meets a friendly character or discovers something special.
+The child continues the adventure and meets a friendly character or discovers something special.
 
 Page 4:
-The adventure continues with a small age-appropriate problem or surprise.
+A small age-appropriate problem or surprise appears.
 
 Page 5:
 The child solves the problem through kindness, curiosity, teamwork or imagination.
@@ -814,18 +759,27 @@ The child solves the problem through kindness, curiosity, teamwork or imaginatio
 Page 6:
 The adventure ends happily and connects back to the beginning.
 
-Do not create scary, violent, dangerous or sad situations.
+Keep everything:
+- warm
+- colorful
+- playful
+- positive
+- age appropriate
+- imaginative
 
-Keep the story imaginative, colorful, warm and emotionally positive.
+Do not create:
+- violence
+- scary scenes
+- dangerous situations
+- sad endings
 
-CHARACTER:
+CHARACTER CONSISTENCY:
 
 The uploaded child photo will be used as the visual identity reference.
 
-The same uploaded child should remain the central character throughout all six illustrations.
+The same child must remain the main character throughout all six illustrations.
 
 Keep consistent:
-
 - facial identity
 - face shape
 - eyes
@@ -837,15 +791,15 @@ Keep consistent:
 - age appearance
 - body proportions
 
-Do not turn the child into a different child from page to page.
+Do not turn the child into another child.
 
-VISUAL STORY CONTINUITY:
+VISUAL CONTINUITY:
 
-Each illustration must visually continue the previous page.
+The illustrations must feel like pages from the same picture book.
 
-Keep important locations, objects and friendly characters consistent when they return.
+Keep locations, objects and supporting characters consistent when they return.
 
-The child's clothing should remain logically consistent unless the story specifically requires a change.
+Keep clothing logically consistent.
 
 IMAGE PROMPTS:
 
@@ -856,44 +810,36 @@ Each imagePrompt must describe:
 - clothing
 - environment
 - important objects
-- other characters
-- exact action taking place
-- visual connection to the previous page
+- supporting characters
+- exact action
+- visual connection to previous page
 - colorful children's picture-book illustration style
 
-IMPORTANT:
-
-The illustration itself must NOT contain written text.
-
-Do not put:
-
-- words
+The illustration must NOT contain:
+- text
 - letters
 - captions
 - subtitles
 - logos
 - watermarks
 
-The story text will be added separately by the website.
+Return ONLY valid JSON.
 
-RETURN ONLY VALID JSON.
-
-Use exactly this structure:
+Use exactly:
 
 {
   "title": "Story title",
   "pages": [
     {
-      "title": "Internal page title",
+      "title": "Page title",
       "text": "Short connected story text",
       "imagePrompt": "Detailed illustration prompt"
     }
   ]
 }
-
 `;
 
-  const r =
+  const response =
     await ai(
       'chat/completions',
 
@@ -910,7 +856,7 @@ Use exactly this structure:
               'system',
 
             content:
-              'You create warm, connected personalized childrens picture books. Always return valid JSON only.'
+              'You create connected personalized childrens picture books. Return valid JSON only.'
           },
 
           {
@@ -920,7 +866,6 @@ Use exactly this structure:
             content:
               prompt
           }
-
         ],
 
         temperature:
@@ -930,32 +875,28 @@ Use exactly this structure:
           type:
             'json_object'
         }
-
       }),
 
       {
         'Content-Type':
           'application/json'
       }
-
     );
 
-  const j =
-    await r.json();
-
-  console.log(
-    'OPENAI STORY RESPONSE RECEIVED'
-  );
+  const result =
+    await response.json();
 
   const outputText =
-    j.choices?.[0]?.message?.content;
+    result
+      .choices?.[0]
+      ?.message?.content;
 
   if (!outputText) {
 
     console.error(
       'OPENAI STORY RESPONSE:',
       JSON.stringify(
-        j,
+        result,
         null,
         2
       )
@@ -964,7 +905,6 @@ Use exactly this structure:
     throw new Error(
       'OpenAI returned no story content'
     );
-
   }
 
   let story;
@@ -986,7 +926,6 @@ Use exactly this structure:
     throw new Error(
       'OpenAI returned invalid story JSON'
     );
-
   }
 
   if (
@@ -997,30 +936,34 @@ Use exactly this structure:
     story.pages.length !== 6
   ) {
 
-    console.error(
-      'INVALID STORY STRUCTURE:',
-      JSON.stringify(
-        story,
-        null,
-        2
-      )
-    );
-
     throw new Error(
       'OpenAI returned an invalid 6-page story'
     );
+  }
 
+  for (
+    const page of story.pages
+  ) {
+
+    if (
+      !page.title ||
+      !page.text ||
+      !page.imagePrompt
+    ) {
+
+      throw new Error(
+        'One or more story pages are incomplete'
+      );
+    }
   }
 
   console.log(
-    'STORY CREATED SUCCESSFULLY:',
+    'STORY CREATED:',
     story.title
   );
 
   return story;
-
 }
-
 
 // =====================================================
 // CREATE IMAGE
@@ -1043,19 +986,18 @@ async function makeImage(
       'Uploaded child photo not found: ' +
       photo
     );
-
   }
 
-  const f =
+  const form =
     new FormData();
 
-  f.append(
+  form.append(
     'model',
     process.env.OPENAI_IMAGE_MODEL ||
       'gpt-image-2'
   );
 
-  f.append(
+  form.append(
     'prompt',
 
     prompt +
@@ -1066,10 +1008,10 @@ IMPORTANT CHARACTER CONSISTENCY:
 
 Use the uploaded child photo as the primary identity reference.
 
-The child in the illustration must remain the same child across every page of THIS customer's book.
+The child must remain the same child throughout this customer's six-page book.
 
-Preserve the child's recognizable:
-
+Preserve:
+- recognizable face
 - face shape
 - eyes
 - nose
@@ -1080,36 +1022,33 @@ Preserve the child's recognizable:
 - age appearance
 - facial proportions
 
-Do not redesign the child's face.
-
 Do not create a different child.
 
 Do not make the child older or younger.
 
-Do not change the child's skin tone or facial structure.
-
-Keep visual continuity with the previous story pages.
+Do not change the child's facial structure.
 
 Create a polished colorful children's picture-book illustration.
 
 The illustration must contain:
 
-NO written text
-NO letters
-NO captions
-NO logos
-NO watermark
+NO written text.
+NO letters.
+NO captions.
+NO subtitles.
+NO logos.
+NO watermark.
 
-The story text will be added separately.
+The story text is added separately by the website.
 `
   );
 
-  f.append(
+  form.append(
     'size',
     '1024x1024'
   );
 
-  f.append(
+  form.append(
     'image',
 
     new Blob(
@@ -1127,25 +1066,25 @@ The story text will be added separately.
     'child.jpg'
   );
 
-  const r =
+  const response =
     await ai(
       'images/edits',
-      f
+      form
     );
 
-  const j =
-    await r.json();
+  const result =
+    await response.json();
 
   if (
-    !j.data ||
-    !j.data[0] ||
-    !j.data[0].b64_json
+    !result.data ||
+    !result.data[0] ||
+    !result.data[0].b64_json
   ) {
 
     console.error(
       'IMAGE API RESPONSE:',
       JSON.stringify(
-        j,
+        result,
         null,
         2
       )
@@ -1154,20 +1093,13 @@ The story text will be added separately.
     throw new Error(
       'OpenAI image generation returned no image'
     );
-
   }
 
-  console.log(
-    'OPENAI IMAGE CREATED'
-  );
-
   return Buffer.from(
-    j.data[0].b64_json,
+    result.data[0].b64_json,
     'base64'
   );
-
 }
-
 
 // =====================================================
 // CREATE ONE PAGE NARRATION
@@ -1179,10 +1111,10 @@ async function makeAudio(
 ) {
 
   console.log(
-    `OPENAI AUDIO REQUEST STARTING FOR PAGE ${pageNumber}`
+    `CREATING PAGE ${pageNumber} NARRATION`
   );
 
-  const r =
+  const response =
     await ai(
       'audio/speech',
 
@@ -1207,22 +1139,22 @@ async function makeAudio(
         'Content-Type':
           'application/json'
       }
-
     );
 
+  const arrayBuffer =
+    await response.arrayBuffer();
+
   console.log(
-    `OPENAI AUDIO CREATED FOR PAGE ${pageNumber}`
+    `PAGE ${pageNumber} NARRATION CREATED`
   );
 
   return Buffer.from(
-    await r.arrayBuffer()
+    arrayBuffer
   );
-
 }
 
-
 // =====================================================
-// ADD STORY TEXT WITH TRANSLUCENT CLOUD BACKGROUND
+// ADD STORY TEXT TO ILLUSTRATION
 // =====================================================
 
 async function addStoryTextToImage(
@@ -1232,7 +1164,7 @@ async function addStoryTextToImage(
 ) {
 
   console.log(
-    `ADDING CLOUD STORY TEXT TO IMAGE ${pageNumber}...`
+    `ADDING STORY TEXT TO PAGE ${pageNumber}`
   );
 
   const width =
@@ -1241,18 +1173,9 @@ async function addStoryTextToImage(
   const height =
     1024;
 
+  function escapeXml(text) {
 
-  // ===================================================
-  // ESCAPE XML
-  // ===================================================
-
-  function escapeXml(
-    text
-  ) {
-
-    return String(
-      text
-    )
+    return String(text)
       .replace(
         /&/g,
         '&amp;'
@@ -1273,13 +1196,7 @@ async function addStoryTextToImage(
         /'/g,
         '&apos;'
       );
-
   }
-
-
-  // ===================================================
-  // WRAP TEXT
-  // ===================================================
 
   function wrapText(
     text,
@@ -1324,9 +1241,7 @@ async function addStoryTextToImage(
 
         line =
           test;
-
       }
-
     }
 
     if (line) {
@@ -1336,13 +1251,7 @@ async function addStoryTextToImage(
     }
 
     return lines;
-
   }
-
-
-  // ===================================================
-  // TEXT SIZE
-  // ===================================================
 
   let fontSize =
     42;
@@ -1371,7 +1280,6 @@ async function addStoryTextToImage(
         storyText,
         43
       );
-
   }
 
   if (
@@ -1389,13 +1297,7 @@ async function addStoryTextToImage(
         storyText,
         48
       );
-
   }
-
-
-  // ===================================================
-  // CLOUD SIZE
-  // ===================================================
 
   const verticalPadding =
     42;
@@ -1426,11 +1328,6 @@ async function addStoryTextToImage(
   const cloudY =
     28;
 
-
-  // ===================================================
-  // TEXT POSITION
-  // ===================================================
-
   const actualTextHeight =
     lines.length *
     lineHeight;
@@ -1443,11 +1340,6 @@ async function addStoryTextToImage(
     ) / 2 +
     fontSize *
       0.78;
-
-
-  // ===================================================
-  // TEXT SVG
-  // ===================================================
 
   const svgText =
     lines
@@ -1463,210 +1355,180 @@ async function addStoryTextToImage(
               lineHeight;
 
           return `
-            <text
-              x="512"
-              y="${y}"
-              text-anchor="middle"
-              font-family="Arial Rounded MT Bold, Arial, Helvetica, sans-serif"
-              font-size="${fontSize}px"
-              font-weight="800"
-              fill="#21145f"
-              stroke="#ffffff"
-              stroke-width="1"
-              paint-order="stroke"
-            >
-              ${escapeXml(
-                line
-              )}
-            </text>
-          `;
+<text
+x="512"
+y="${y}"
+text-anchor="middle"
+font-family="Arial Rounded MT Bold, Arial, Helvetica, sans-serif"
+font-size="${fontSize}px"
+font-weight="800"
+fill="#21145f"
+stroke="#ffffff"
+stroke-width="1"
+paint-order="stroke"
+>
+${escapeXml(line)}
+</text>
+`;
 
         }
       )
       .join('');
-
-
-  // ===================================================
-  // CLOUD
-  // ===================================================
 
   const cloudBottom =
     cloudY +
     finalCloudHeight;
 
   const svg = `
-    <svg
-      width="${width}"
-      height="${height}"
-      viewBox="0 0 ${width} ${height}"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+<svg
+width="${width}"
+height="${height}"
+viewBox="0 0 ${width} ${height}"
+xmlns="http://www.w3.org/2000/svg"
+>
 
-      <defs>
+<defs>
 
-        <filter
-          id="cloudShadow"
-          x="-20%"
-          y="-20%"
-          width="140%"
-          height="150%"
-        >
+<filter
+id="cloudShadow"
+x="-20%"
+y="-20%"
+width="140%"
+height="150%"
+>
 
-          <feDropShadow
-            dx="0"
-            dy="5"
-            stdDeviation="8"
-            flood-color="#000000"
-            flood-opacity="0.22"
-          />
+<feDropShadow
+dx="0"
+dy="5"
+stdDeviation="8"
+flood-color="#000000"
+flood-opacity="0.22"
+/>
 
-        </filter>
+</filter>
 
-      </defs>
+</defs>
 
+<g filter="url(#cloudShadow)">
 
-      <g
-        filter="url(#cloudShadow)"
-      >
+<rect
+x="${cloudX + 45}"
+y="${cloudY + 25}"
+width="${cloudWidth - 90}"
+height="${Math.max(
+  80,
+  finalCloudHeight - 50
+)}"
+rx="70"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
-        <rect
-          x="${cloudX + 45}"
-          y="${cloudY + 25}"
-          width="${cloudWidth - 90}"
-          height="${Math.max(
-            80,
-            finalCloudHeight - 50
-          )}"
-          rx="70"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+<circle
+cx="150"
+cy="${cloudY + 45}"
+r="58"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
+<circle
+cx="245"
+cy="${cloudY + 28}"
+r="72"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
-        <circle
-          cx="150"
-          cy="${cloudY + 45}"
-          r="58"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+<circle
+cx="350"
+cy="${cloudY + 20}"
+r="62"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
-        <circle
-          cx="245"
-          cy="${cloudY + 28}"
-          r="72"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+<circle
+cx="455"
+cy="${cloudY + 35}"
+r="78"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
-        <circle
-          cx="350"
-          cy="${cloudY + 20}"
-          r="62"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+<circle
+cx="565"
+cy="${cloudY + 25}"
+r="68"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
-        <circle
-          cx="455"
-          cy="${cloudY + 35}"
-          r="78"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+<circle
+cx="680"
+cy="${cloudY + 32}"
+r="76"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
-        <circle
-          cx="565"
-          cy="${cloudY + 25}"
-          r="68"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+<circle
+cx="790"
+cy="${cloudY + 22}"
+r="65"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
-        <circle
-          cx="680"
-          cy="${cloudY + 32}"
-          r="76"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+<circle
+cx="885"
+cy="${cloudY + 45}"
+r="58"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
-        <circle
-          cx="790"
-          cy="${cloudY + 22}"
-          r="65"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+<circle
+cx="145"
+cy="${cloudBottom - 28}"
+r="42"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
-        <circle
-          cx="885"
-          cy="${cloudY + 45}"
-          r="58"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+<circle
+cx="880"
+cy="${cloudBottom - 28}"
+r="42"
+fill="#ffffff"
+fill-opacity="0.88"
+/>
 
+</g>
 
-        <circle
-          cx="145"
-          cy="${cloudBottom - 28}"
-          r="42"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+${svgText}
 
-        <circle
-          cx="880"
-          cy="${cloudBottom - 28}"
-          r="42"
-          fill="#ffffff"
-          fill-opacity="0.88"
-        />
+</svg>
+`;
 
-      </g>
+  return await sharp(
+    imageBuffer
+  )
+    .composite([
+      {
+        input:
+          Buffer.from(svg),
 
+        top:
+          0,
 
-      ${svgText}
-
-    </svg>
-  `;
-
-
-  // ===================================================
-  // COMPOSITE
-  // ===================================================
-
-  const finalImage =
-    await sharp(
-      imageBuffer
-    )
-      .composite([
-        {
-          input:
-            Buffer.from(
-              svg
-            ),
-
-          top:
-            0,
-
-          left:
-            0
-
-        }
-      ])
-      .png()
-      .toBuffer();
-
-  console.log(
-    `CLOUD STORY TEXT ADDED TO IMAGE ${pageNumber}`
-  );
-
-  return finalImage;
-
+        left:
+          0
+      }
+    ])
+    .png()
+    .toBuffer();
 }
-
 
 // =====================================================
 // CREATE PDF
@@ -1675,7 +1537,7 @@ async function addStoryTextToImage(
 function makePdf(
   id,
   st,
-  imgs
+  imageFiles
 ) {
 
   return new Promise(
@@ -1684,13 +1546,13 @@ function makePdf(
       reject
     ) => {
 
-      const f =
+      const filePath =
         path.join(
           books,
           id + '.pdf'
         );
 
-      const d =
+      const doc =
         new PDFDocument({
 
           size:
@@ -1698,66 +1560,57 @@ function makePdf(
 
           margin:
             0
-
         });
 
-      const w =
+      const stream =
         fs.createWriteStream(
-          f
+          filePath
         );
 
-
-      w.on(
+      stream.on(
         'finish',
-        () =>
+        () => {
+
           resolve(
             '/books/' +
             id +
             '.pdf'
-          )
+          );
+        }
       );
 
-
-      w.on(
+      stream.on(
         'error',
         reject
       );
 
-
-      d.pipe(w);
-
+      doc.pipe(stream);
 
       // =================================================
       // COVER
       // =================================================
 
-      d.rect(
+      doc.rect(
         0,
         0,
-        d.page.width,
-        d.page.height
+        doc.page.width,
+        doc.page.height
       )
         .fill(
           '#fff8f0'
         );
 
-
-      d.fontSize(
-        34
-      )
-        .fillColor(
-          '#3d315d'
-        )
-        .font(
-          'Helvetica-Bold'
-        )
+      doc
+        .fontSize(34)
+        .fillColor('#3d315d')
+        .font('Helvetica-Bold')
         .text(
           st.title,
           40,
           100,
           {
             width:
-              d.page.width -
+              doc.page.width -
               80,
 
             align:
@@ -1765,23 +1618,17 @@ function makePdf(
           }
         );
 
-
-      d.fontSize(
-        16
-      )
-        .fillColor(
-          '#777777'
-        )
-        .font(
-          'Helvetica'
-        )
+      doc
+        .fontSize(16)
+        .fillColor('#777777')
+        .font('Helvetica')
         .text(
-          'A personalized story created especially for your little one ✨',
+          'A personalized story created especially for your little one',
           45,
           165,
           {
             width:
-              d.page.width -
+              doc.page.width -
               90,
 
             align:
@@ -1789,18 +1636,14 @@ function makePdf(
           }
         );
 
-
       // =================================================
-      // STORY PAGES
+      // SIX STORY PAGES
       // =================================================
 
-      st.pages.forEach(
-        (
-          p,
-          i
-        ) => {
+      imageFiles.forEach(
+        (imageFile) => {
 
-          d.addPage({
+          doc.addPage({
             size:
               'A5',
 
@@ -1808,22 +1651,14 @@ function makePdf(
               0
           });
 
-
-          const pageWidth =
-            d.page.width;
-
-          const pageHeight =
-            d.page.height;
-
-
-          d.image(
-            imgs[i],
+          doc.image(
+            imageFile,
             0,
             0,
             {
               cover: [
-                pageWidth,
-                pageHeight
+                doc.page.width,
+                doc.page.height
               ],
 
               align:
@@ -1833,18 +1668,13 @@ function makePdf(
                 'center'
             }
           );
-
         }
       );
 
-
-      d.end();
-
+      doc.end();
     }
   );
-
 }
-
 
 // =====================================================
 // GENERATE COMPLETE BOOK
@@ -1867,7 +1697,6 @@ async function generate(
     '======================================'
   );
 
-
   if (
     !process.env.OPENAI_API_KEY
   ) {
@@ -1875,122 +1704,104 @@ async function generate(
     throw new Error(
       'OPENAI_API_KEY missing'
     );
-
   }
 
-
-  const o =
+  const order =
     orders[id];
 
-
-  if (!o) {
+  if (!order) {
 
     throw new Error(
       'Order not found: ' +
       id
     );
-
   }
 
-
-  console.log(
-    'ORDER FOUND:',
-    id
-  );
-
-
   // ===================================================
-  // CREATE STORY
+  // STORY
   // ===================================================
 
-  console.log(
-    'CREATING CONNECTED STORY WITH OPENAI...'
-  );
-
-
-  const st =
+  const story =
     await makeStory(
-      o.data
+      order.data
     );
-
 
   console.log(
     'STORY CREATED:',
-    st.title
+    story.title
   );
 
-
   // ===================================================
-  // CHILD PHOTO
+  // PHOTO
   // ===================================================
 
   const photo =
     path.join(
       uploads,
-      o.data.photoId
+      order.data.photoId
     );
 
-
   if (
-    !fs.existsSync(
-      photo
-    )
+    !fs.existsSync(photo)
   ) {
 
     throw new Error(
       'Child photo file not found: ' +
       photo
     );
-
   }
 
-
-  const imgs = [];
-
+  const imageFiles = [];
   const pages = [];
 
-
   // ===================================================
-  // CREATE SIX PAGES
+  // CREATE 6 PAGES
   // ===================================================
 
   for (
     let i = 0;
-    i < st.pages.length;
+    i < story.pages.length;
     i++
   ) {
 
     const pageNumber =
       i + 1;
 
+    const storyPage =
+      story.pages[i];
 
     console.log(
-      `CREATING PAGE ${pageNumber} OF ${st.pages.length}...`
+      `======================================`
     );
 
+    console.log(
+      `CREATING PAGE ${pageNumber}/6`
+    );
 
-    // -------------------------------------------------
-    // ILLUSTRATION
-    // -------------------------------------------------
+    console.log(
+      `======================================`
+    );
 
-    const b =
+    // =================================================
+    // IMAGE
+    // =================================================
+
+    const rawImage =
       await makeImage(
-        st.pages[i].imagePrompt,
+        storyPage.imagePrompt,
         photo
       );
 
-
-    // -------------------------------------------------
-    // STORY TEXT ON ILLUSTRATION
-    // -------------------------------------------------
+    // =================================================
+    // STORY TEXT
+    // =================================================
 
     const finalImage =
       await addStoryTextToImage(
-        b,
-        st.pages[i].text,
+        rawImage,
+        storyPage.text,
         pageNumber
       );
-
 
     const imageFile =
       path.join(
@@ -1998,33 +1809,34 @@ async function generate(
         `${id}-${pageNumber}.png`
       );
 
-
     fs.writeFileSync(
       imageFile,
       finalImage
     );
 
-
-    console.log(
-      `PAGE ${pageNumber} IMAGE CREATED`
+    // IMPORTANT:
+    // Add every generated image to the PDF list.
+    imageFiles.push(
+      imageFile
     );
 
-
-    // -------------------------------------------------
-    // PAGE-SPECIFIC NARRATION
-    // -------------------------------------------------
+    const imageUrl =
+      `/books/${id}-${pageNumber}.png`;
 
     console.log(
-      `CREATING NARRATION FOR PAGE ${pageNumber}...`
+      `PAGE ${pageNumber} IMAGE READY:`,
+      imageUrl
     );
 
+    // =================================================
+    // INDIVIDUAL PAGE NARRATION
+    // =================================================
 
     const audioBuffer =
       await makeAudio(
-        st.pages[i].text,
+        storyPage.text,
         pageNumber
       );
-
 
     const audioFile =
       path.join(
@@ -2032,108 +1844,121 @@ async function generate(
         `${id}-page-${pageNumber}.mp3`
       );
 
-
     fs.writeFileSync(
       audioFile,
       audioBuffer
     );
 
-
     const audioUrl =
       `/books/${id}-page-${pageNumber}.mp3`;
 
-
     console.log(
-      `PAGE ${pageNumber} AUDIO CREATED:`,
+      `PAGE ${pageNumber} AUDIO READY:`,
       audioUrl
     );
 
-
-    // -------------------------------------------------
-    // SAVE PAGE DATA
-    // -------------------------------------------------
+    // =================================================
+    // SAVE PAGE
+    // =================================================
 
     pages.push({
 
-      ...st.pages[i],
+      title:
+        storyPage.title,
 
-      imageUrl:
-        `/books/${id}-${pageNumber}.png`,
+      text:
+        storyPage.text,
+
+      imagePrompt:
+        storyPage.imagePrompt,
+
+      imageUrl,
 
       audioUrl
-
     });
 
+    order.title =
+      story.title;
 
-    o.pages =
+    order.pages =
       pages;
 
-    o.title =
-      st.title;
-
-
     save();
-
   }
 
+  // ===================================================
+  // ALL SIX PAGES CREATED
+  // ===================================================
 
   console.log(
-    'ALL 6 IMAGES AND 6 PAGE NARRATIONS CREATED'
+    '======================================'
   );
 
+  console.log(
+    'ALL 6 ILLUSTRATIONS CREATED'
+  );
+
+  console.log(
+    'ALL 6 PAGE NARRATIONS CREATED'
+  );
+
+  console.log(
+    '======================================'
+  );
 
   // ===================================================
-  // CREATE PDF
+  // CREATE ONE PDF
   // ===================================================
 
   console.log(
     'CREATING PDF...'
   );
 
-
-  o.pdfUrl =
+  order.pdfUrl =
     await makePdf(
       id,
-      st,
-      imgs.length === 0
-        ? pages.map(
-            p =>
-              path.join(
-                books,
-                path.basename(
-                  p.imageUrl
-                )
-              )
-          )
-        : imgs
+      story,
+      imageFiles
     );
-
 
   console.log(
     'PDF CREATED:',
-    o.pdfUrl
+    order.pdfUrl
   );
 
-
   // ===================================================
-  // IMPORTANT:
-  // NO SEPARATE AUDIOBOOK IS CREATED.
-  //
-  // Audio exists only as individual page
-  // narration files referenced by each page.
+  // NO SEPARATE AUDIOBOOK
   // ===================================================
 
+  /*
+   * IMPORTANT:
+   *
+   * We intentionally DO NOT create:
+   *
+   * order.audioUrl
+   *
+   * and we DO NOT create a single audiobook.mp3.
+   *
+   * Instead:
+   *
+   * Page 1 -> page-1.mp3
+   * Page 2 -> page-2.mp3
+   * Page 3 -> page-3.mp3
+   * Page 4 -> page-4.mp3
+   * Page 5 -> page-5.mp3
+   * Page 6 -> page-6.mp3
+   *
+   * story.html will place the Listen button
+   * on each corresponding illustration.
+   */
 
-  o.status =
+  order.status =
     'ready';
 
-
-  o.error =
-    undefined;
-
+  order.error =
+    null;
 
   save();
-
 
   console.log(
     '======================================'
@@ -2146,19 +1971,17 @@ async function generate(
 
   console.log(
     'PDF:',
-    o.pdfUrl
+    order.pdfUrl
   );
 
   console.log(
-    '6 PAGE NARRATIONS READY'
+    '6 INDIVIDUAL PAGE NARRATIONS READY'
   );
 
   console.log(
     '======================================'
   );
-
 }
-
 
 // =====================================================
 // START SERVER
@@ -2172,7 +1995,6 @@ app.listen(
       `KidsImagination running on port ${PORT}`
     );
 
-
     console.log(
       'Loaded orders:',
       Object.keys(
@@ -2180,15 +2002,14 @@ app.listen(
       ).length
     );
 
-
-    // -------------------------------------------------
+    // =================================================
     // RESUME INTERRUPTED PAID STORIES
-    // -------------------------------------------------
+    // =================================================
 
     Object.values(
       orders
     ).forEach(
-      order => {
+      (order) => {
 
         if (
           order.status ===
@@ -2201,7 +2022,6 @@ app.listen(
             order.id
           );
 
-
           generate(
             order.id
           )
@@ -2212,36 +2032,28 @@ app.listen(
                   'RESUMED STORY FINISHED:',
                   order.id
                 );
-
               }
             )
             .catch(
-              error => {
+              (error) => {
 
                 console.error(
                   'RESUMED STORY FAILED:',
                   error
                 );
 
-
                 order.status =
                   'failed';
-
 
                 order.error =
                   error?.message ||
                   'Generation failed. Please contact support.';
 
-
                 save();
-
               }
             );
-
         }
-
       }
     );
-
   }
 );

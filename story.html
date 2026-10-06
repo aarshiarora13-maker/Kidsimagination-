@@ -20,6 +20,7 @@
 }
 
 body{
+
   margin:0;
 
   font-family:
@@ -29,114 +30,243 @@ body{
     "Segoe UI",
     sans-serif;
 
-  background:#f7f3ff;
+  background:
+    linear-gradient(
+      180deg,
+      #f8f3ff,
+      #fffaf2
+    );
 
   color:#25213a;
+
 }
 
 .wrap{
+
   max-width:900px;
 
-  margin:30px auto;
+  margin:25px auto;
 
-  padding:20px;
+  padding:15px;
+
 }
 
 .card{
+
   background:#ffffff;
 
-  border-radius:25px;
+  border-radius:28px;
 
-  padding:28px;
-
-  text-align:center;
+  padding:25px;
 
   box-shadow:
     0 10px 35px #0001;
+
+}
+
+.header{
+
+  text-align:center;
+
+}
+
+.header h1{
+
+  margin:
+    0 0 8px;
+
+  color:#5b42c7;
+
+  font-size:30px;
+
+}
+
+.header h2{
+
+  margin:
+    5px 0 10px;
+
+  font-size:22px;
+
+}
+
+.header p{
+
+  margin:
+    0 0 18px;
+
+  color:#666;
+
 }
 
 .bar{
+
   height:10px;
 
-  background:#ddd;
+  background:#e5e1f0;
 
-  border-radius:10px;
+  border-radius:20px;
 
   overflow:hidden;
+
 }
 
 .fill{
+
   height:100%;
 
   width:5%;
 
-  background:#7156d8;
+  background:
+    linear-gradient(
+      90deg,
+      #7156d8,
+      #9a7df2
+    );
 
-  border-radius:10px;
+  border-radius:20px;
 
   transition:
     width .4s ease;
+
 }
 
-.book{
-  margin-top:30px;
+/* =====================================================
+   DOWNLOAD AREA
+   ===================================================== */
+
+.download-area{
+
+  display:flex;
+
+  flex-wrap:wrap;
+
+  justify-content:center;
+
+  gap:12px;
+
+  margin:
+    25px 0 30px;
+
+}
+
+.btn{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  min-height:48px;
+
+  padding:
+    13px 22px;
+
+  border-radius:15px;
+
+  border:0;
+
+  text-decoration:none;
+
+  font-weight:800;
+
+  font-size:16px;
+
+  cursor:pointer;
+
+  background:#7156d8;
+
+  color:white;
+
+  box-shadow:
+    0 5px 15px #7156d833;
+
+}
+
+.btn:hover{
+
+  transform:
+    translateY(-1px);
+
+}
+
+.btn.audio{
+
+  background:#f5c94a;
+
+  color:#342800;
+
+  box-shadow:
+    0 5px 15px #f5c94a55;
+
 }
 
 /* =====================================================
    STORY PAGE
    ===================================================== */
 
+.book{
+
+  margin-top:10px;
+
+}
+
 .page{
+
   position:relative;
 
-  margin:35px 0;
+  margin:
+    30px 0 42px;
+
+  background:#fff;
 
   border-radius:24px;
 
   overflow:hidden;
 
-  background:#ffffff;
-
   box-shadow:
     0 8px 30px #0002;
+
 }
 
 .page-number{
+
   position:absolute;
 
-  left:18px;
-  top:18px;
+  left:15px;
 
-  width:34px;
-  height:34px;
+  top:15px;
+
+  width:38px;
+
+  height:38px;
 
   border-radius:50%;
 
   background:#7156d8;
 
-  color:#ffffff;
+  color:white;
 
   display:flex;
 
   align-items:center;
+
   justify-content:center;
+
+  font-weight:900;
 
   font-size:14px;
 
-  font-weight:800;
+  z-index:10;
 
-  z-index:5;
+  box-shadow:
+    0 4px 12px #0003;
+
 }
 
-/*
- * The generated PNG already contains:
- * illustration + story text.
- *
- * Therefore there is NO separate white
- * text area underneath.
- */
+.page-image{
 
-.page img{
   display:block;
 
   width:100%;
@@ -145,88 +275,137 @@ body{
 
   margin:0;
 
-  border-radius:24px;
 }
 
 /* =====================================================
-   BUTTONS
-   ===================================================== */
-
-.buttons{
-  margin:
-    25px
-    0
-    15px;
-
-  display:flex;
-
-  justify-content:center;
-
-  flex-wrap:wrap;
-
-  gap:10px;
-}
-
-.btn{
-  display:inline-block;
-
-  background:#7156d8;
-
-  color:#ffffff;
-
-  padding:
-    13px
-    20px;
-
-  border-radius:12px;
-
-  text-decoration:none;
-
-  font-weight:bold;
-
-  border:0;
-
-  cursor:pointer;
-}
-
-.btn:hover{
-  opacity:.9;
-}
-
-.btn.yellow{
-  background:#f0b429;
-
-  color:#302746;
-}
-
-/* =====================================================
-   AUDIO
+   PAGE AUDIO
    ===================================================== */
 
 .page-audio{
-  position:relative;
-  width:90%;
-  max-width:600px;
-  margin:12px auto 20px;
-  padding:10px;
-  border-radius:18px;
-  background:rgba(255,255,255,.92);
-  box-shadow:0 5px 20px #0002;
-  z-index:4;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fffdf3,
+      #fff8cf
+    );
+
+  padding:
+    14px 16px;
+
+  border-top:
+    1px solid #eee;
+
+}
+
+.page-audio-title{
+
+  text-align:center;
+
+  font-weight:800;
+
+  color:#5b42c7;
+
+  margin:
+    0 0 8px;
+
+  font-size:15px;
+
 }
 
 .page-audio audio{
+
   display:block;
+
   width:100%;
+
+  height:44px;
+
 }
 
+/* =====================================================
+   COMPLETE AUDIOBOOK
+   ===================================================== */
+
+.complete-audio{
+
+  margin:
+    30px 0;
+
+  padding:20px;
+
+  border-radius:20px;
+
+  background:#fff9d9;
+
+  text-align:center;
+
+}
+
+.complete-audio h3{
+
+  margin:
+    0 0 12px;
+
+  color:#574300;
+
+}
+
+.complete-audio audio{
+
+  width:100%;
+
+  max-width:600px;
+
+}
+
+/* =====================================================
+   BOTTOM DOWNLOAD
+   ===================================================== */
+
+.bottom-download{
+
+  text-align:center;
+
+  padding:
+    10px 0 30px;
+
+}
 
 /* =====================================================
    LOADING
    ===================================================== */
 
 .loading{
+
+  padding:45px 20px;
+
+  text-align:center;
+
+  color:#666;
+
+  font-size:17px;
+
+}
+
+/* =====================================================
+   FAILED
+   ===================================================== */
+
+.error{
+
   padding:20px;
+
+  border-radius:16px;
+
+  background:#fff0f0;
+
+  color:#b42318;
+
+  text-align:center;
+
+  font-weight:700;
+
 }
 
 /* =====================================================
@@ -236,39 +415,64 @@ body{
 @media(max-width:600px){
 
   .wrap{
-    padding:10px;
 
-    margin:15px auto;
+    padding:8px;
+
+    margin:10px auto;
+
   }
 
   .card{
-    padding:16px;
+
+    padding:14px;
 
     border-radius:20px;
+
+  }
+
+  .header h1{
+
+    font-size:25px;
+
+  }
+
+  .header h2{
+
+    font-size:19px;
+
+  }
+
+  .download-area{
+
+    flex-direction:column;
+
+  }
+
+  .btn{
+
+    width:100%;
+
   }
 
   .page{
-    margin:25px 0;
+
+    margin:
+      22px 0 30px;
 
     border-radius:18px;
-  }
 
-  .page img{
-    border-radius:18px;
   }
 
   .page-number{
-    left:12px;
-    top:12px;
 
-    width:31px;
-    height:31px;
-  }
+    left:10px;
 
-  .page-audio{
-    width:85%;
+    top:10px;
 
-    bottom:12px;
+    width:34px;
+
+    height:34px;
+
   }
 
 }
@@ -284,26 +488,31 @@ body{
 
   <div class="card">
 
-    <h1>
-      ✨ KidsImagination
-    </h1>
+    <div class="header">
 
-    <h2 id="title">
-      Creating your story…
-    </h2>
+      <h1>
+        ✨ KidsImagination
+      </h1>
 
-    <p id="msg">
-      Please keep this page open.
-    </p>
+      <h2 id="title">
+        Creating your story…
+      </h2>
 
-    <div class="bar">
+      <p id="msg">
+        Please keep this page open.
+      </p>
 
-      <div
-        id="fill"
-        class="fill"
-      ></div>
+      <div class="bar">
+
+        <div
+          id="fill"
+          class="fill"
+        ></div>
+
+      </div>
 
     </div>
+
 
     <div
       id="book"
@@ -311,7 +520,9 @@ body{
     >
 
       <div class="loading">
-        📖 Your personalized story is being created...
+
+        📖 Your personalized story is being created…
+
       </div>
 
     </div>
@@ -360,37 +571,278 @@ let n = 0;
 // ESCAPE HTML
 // =====================================================
 
-function esc(s){
+function esc(value){
 
   return String(
-    s || ''
+    value ?? ''
   )
   .replace(
     /[&<>"']/g,
-    c =>
+    char =>
       ({
         '&':'&amp;',
         '<':'&lt;',
         '>':'&gt;',
         '"':'&quot;',
         "'":'&#39;'
-      }[c])
+      }[char])
   );
 
 }
 
 
 // =====================================================
-// POLL STORY STATUS
+// RENDER READY BOOK
+// =====================================================
+
+function renderBook(d){
+
+  title.textContent =
+    d.title ||
+    'Your personalized story is ready! 🎉';
+
+  msg.textContent =
+    'Your complete personalized story is ready.';
+
+  fill.style.width =
+    '100%';
+
+
+  let pagesHtml = '';
+
+
+  if(
+    Array.isArray(d.pages)
+  ){
+
+    pagesHtml =
+      d.pages
+        .map(
+          (page,index) => {
+
+            return `
+
+              <section
+                class="page"
+              >
+
+                <div
+                  class="page-number"
+                >
+                  ${index + 1}
+                </div>
+
+
+                <img
+                  class="page-image"
+                  src="${esc(
+                    page.imageUrl
+                  )}"
+                  alt="Story illustration page ${
+                    index + 1
+                  }"
+                  loading="lazy"
+                >
+
+
+                ${
+                  page.audioUrl
+                    ? `
+
+                      <div
+                        class="page-audio"
+                      >
+
+                        <div
+                          class="page-audio-title"
+                        >
+                          🎧 Listen to Page ${
+                            index + 1
+                          }
+                        </div>
+
+                        <audio
+                          controls
+                          preload="none"
+                          src="${esc(
+                            page.audioUrl
+                          )}"
+                        ></audio>
+
+                      </div>
+
+                    `
+                    : ''
+                }
+
+              </section>
+
+            `;
+
+          }
+        )
+        .join('');
+
+  }
+
+
+  /*
+   * PDF DOWNLOAD
+   */
+
+  const pdfButton =
+    d.pdfUrl
+      ? `
+
+        <a
+          class="btn"
+          href="${esc(
+            d.pdfUrl
+          )}"
+          download
+        >
+          📥 Download Complete PDF Storybook
+        </a>
+
+      `
+      : `
+
+        <span
+          class="btn"
+          style="
+            opacity:.5;
+            cursor:not-allowed;
+          "
+        >
+          📥 PDF is being prepared…
+        </span>
+
+      `;
+
+
+  /*
+   * COMPLETE AUDIOBOOK
+   */
+
+  const audiobookButton =
+    d.audioUrl
+      ? `
+
+        <a
+          class="btn audio"
+          href="${esc(
+            d.audioUrl
+          )}"
+          download
+        >
+          🎧 Download Complete Audiobook
+        </a>
+
+      `
+      : '';
+
+
+  const audiobookPlayer =
+    d.audioUrl
+      ? `
+
+        <div
+          class="complete-audio"
+        >
+
+          <h3>
+            🎧 Listen to the Complete Audiobook
+          </h3>
+
+          <audio
+            controls
+            preload="none"
+            src="${esc(
+              d.audioUrl
+            )}"
+          ></audio>
+
+        </div>
+
+      `
+      : '';
+
+
+  book.innerHTML = `
+
+    <!-- =========================================
+         DOWNLOAD BUTTONS AT TOP
+         ========================================= -->
+
+    <div
+      class="download-area"
+    >
+
+      ${pdfButton}
+
+      ${audiobookButton}
+
+    </div>
+
+
+    <!-- =========================================
+         COMPLETE AUDIOBOOK PLAYER
+         ========================================= -->
+
+    ${audiobookPlayer}
+
+
+    <!-- =========================================
+         SIX ILLUSTRATED STORY PAGES
+         Each page has its own audio.
+         ========================================= -->
+
+    ${pagesHtml}
+
+
+    <!-- =========================================
+         DOWNLOAD BUTTON AT BOTTOM
+         ========================================= -->
+
+    <div
+      class="bottom-download"
+    >
+
+      ${pdfButton}
+
+    </div>
+
+  `;
+
+}
+
+
+// =====================================================
+// POLL
 // =====================================================
 
 async function poll(){
 
   n++;
 
+  if(!id){
+
+    title.textContent =
+      'Story not found';
+
+    msg.textContent =
+      'No story order was provided.';
+
+    fill.style.width =
+      '0%';
+
+    return;
+
+  }
+
   try{
 
-    const r =
+    const response =
       await fetch(
         '/api/story/' +
         encodeURIComponent(id) +
@@ -399,8 +851,17 @@ async function poll(){
       );
 
 
+    if(!response.ok){
+
+      throw new Error(
+        'Story status request failed'
+      );
+
+    }
+
+
     const d =
-      await r.json();
+      await response.json();
 
 
     // =================================================
@@ -408,176 +869,10 @@ async function poll(){
     // =================================================
 
     if(
-      d.status ===
-      'ready'
+      d.status === 'ready'
     ){
 
-      title.textContent =
-        d.title ||
-        'Your story is ready! 🎉';
-
-
-      msg.textContent =
-        'Your complete personalized story is ready.';
-
-
-      fill.style.width =
-        '100%';
-
-
-      let pagesHtml =
-        '';
-
-
-      if(
-        Array.isArray(
-          d.pages
-        )
-      ){
-
-        pagesHtml =
-          d.pages
-            .map(
-              (p,index) => `
-
-                <section
-                  class="page"
-                >
-
-                  <div
-                    class="page-number"
-                  >
-                    ${index + 1}
-                  </div>
-
-                  <img
-                    src="${esc(
-                      p.imageUrl
-                    )}"
-                    alt="Story illustration page ${
-                      index + 1
-                    }"
-                    loading="lazy"
-                  >
-
-                  ${
-                    d.audioUrl
-                      ? `
-
-                        <div
-                          class="page-audio"
-                        >
-
-                          <audio
-                            controls
-                            preload="none"
-                            src="${esc(
-                              d.audioUrl
-                            )}"
-                          ></audio>
-
-                        </div>
-
-                      `
-                      : ''
-                  }
-
-                </section>
-
-              `
-            )
-            .join('');
-
-      }
-
-
-      book.innerHTML = `
-
-        <!-- =========================================
-             DOWNLOAD BUTTONS
-             ========================================= -->
-
-        <div
-          class="buttons"
-        >
-
-          ${
-            d.pdfUrl
-              ? `
-
-                <a
-                  class="btn"
-                  href="${esc(
-                    d.pdfUrl
-                  )}"
-                  download
-                >
-                  📥 Download Storybook
-                </a>
-
-              `
-              : ''
-          }
-
-
-          ${
-            d.audioUrl
-              ? `
-
-                <a
-                  class="btn yellow"
-                  href="${esc(
-                    d.audioUrl
-                  )}"
-                  download
-                >
-                  🎧 Download Story Audio
-                </a>
-
-              `
-              : ''
-          }
-
-        </div>
-
-
-        <!-- =========================================
-             COMPLETE ILLUSTRATED STORY
-             ========================================= -->
-
-        ${pagesHtml}
-
-
-        <!-- =========================================
-             DOWNLOAD AGAIN AT BOTTOM
-             ========================================= -->
-
-        <div
-          class="buttons"
-        >
-
-          ${
-            d.pdfUrl
-              ? `
-
-                <a
-                  class="btn"
-                  href="${esc(
-                    d.pdfUrl
-                  )}"
-                  download
-                >
-                  📥 Download Storybook
-                </a>
-
-              `
-              : ''
-          }
-
-        </div>
-
-      `;
-
+      renderBook(d);
 
       return;
 
@@ -589,28 +884,22 @@ async function poll(){
     // =================================================
 
     if(
-      d.status ===
-      'failed'
+      d.status === 'failed'
     ){
 
-      msg.textContent =
-        d.error ||
-        'Story generation failed.';
+      title.textContent =
+        'Something went wrong';
 
+      msg.textContent =
+        'We could not finish your story.';
 
       fill.style.width =
         '0%';
 
-
       book.innerHTML = `
 
         <div
-          style="
-            padding:20px;
-            color:#b42318;
-            background:#fff0f0;
-            border-radius:15px;
-          "
+          class="error"
         >
 
           ❌ ${
@@ -623,7 +912,6 @@ async function poll(){
         </div>
 
       `;
-
 
       return;
 
@@ -642,7 +930,7 @@ async function poll(){
 
 
     msg.textContent =
-      'Creating your connected story and illustrations…';
+      'Creating your connected story, illustrations and audio…';
 
 
     setTimeout(
@@ -651,9 +939,11 @@ async function poll(){
     );
 
 
-  }catch(e){
+  }catch(error){
 
-    console.error(e);
+    console.error(
+      error
+    );
 
     setTimeout(
       poll,
@@ -669,19 +959,7 @@ async function poll(){
 // START
 // =====================================================
 
-if(id){
-
-  poll();
-
-}else{
-
-  title.textContent =
-    'Story not found';
-
-  msg.textContent =
-    'No story order was provided.';
-
-}
+poll();
 
 </script>
 

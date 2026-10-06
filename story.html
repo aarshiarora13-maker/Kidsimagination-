@@ -21,58 +21,89 @@
 
 body{
   margin:0;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,
-    "Segoe UI",sans-serif;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
   background:#f7f3ff;
+
   color:#25213a;
 }
 
 .wrap{
   max-width:900px;
+
   margin:30px auto;
+
   padding:20px;
 }
 
 .card{
   background:#ffffff;
+
   border-radius:25px;
+
   padding:28px;
+
   text-align:center;
-  box-shadow:0 10px 35px #0001;
+
+  box-shadow:
+    0 10px 35px #0001;
 }
 
 .bar{
   height:10px;
+
   background:#ddd;
+
   border-radius:10px;
+
   overflow:hidden;
 }
 
 .fill{
   height:100%;
+
   width:5%;
+
   background:#7156d8;
+
   border-radius:10px;
-  transition:width .4s ease;
+
+  transition:
+    width .4s ease;
 }
 
 .book{
   margin-top:30px;
 }
 
+/* =====================================================
+   STORY PAGE
+   ===================================================== */
+
 .page{
-  background:#fffdf9;
-  margin:35px 0;
-  padding:20px;
-  border-radius:24px;
-  box-shadow:0 8px 30px #0001;
-  text-align:center;
   position:relative;
+
+  margin:35px 0;
+
+  border-radius:24px;
+
   overflow:hidden;
+
+  background:#ffffff;
+
+  box-shadow:
+    0 8px 30px #0002;
 }
 
 .page-number{
   position:absolute;
+
   left:18px;
   top:18px;
 
@@ -82,66 +113,50 @@ body{
   border-radius:50%;
 
   background:#7156d8;
+
   color:#ffffff;
 
   display:flex;
+
   align-items:center;
   justify-content:center;
 
   font-size:14px;
-  font-weight:800;
-}
-
-.page-text{
-  padding:
-    15px
-    20px
-    20px
-    45px;
-}
-
-.page-title{
-  margin:
-    0
-    0
-    15px;
-
-  color:#7156d8;
-
-  font-size:27px;
-  line-height:1.2;
 
   font-weight:800;
+
+  z-index:5;
 }
 
-.page-story{
-  margin:0;
-
-  font-size:19px;
-  line-height:1.65;
-
-  color:#25213a;
-
-  font-weight:500;
-}
+/*
+ * The generated PNG already contains:
+ * illustration + story text.
+ *
+ * Therefore there is NO separate white
+ * text area underneath.
+ */
 
 .page img{
   display:block;
 
   width:100%;
 
-  border-radius:18px;
+  height:auto;
 
-  margin-top:5px;
+  margin:0;
 
-  background:#ffffff;
+  border-radius:24px;
 }
+
+/* =====================================================
+   BUTTONS
+   ===================================================== */
 
 .buttons{
   margin:
     25px
     0
-    10px;
+    15px;
 
   display:flex;
 
@@ -180,58 +195,99 @@ body{
 
 .btn.yellow{
   background:#f0b429;
+
   color:#302746;
 }
+
+/* =====================================================
+   AUDIO
+   ===================================================== */
+
+.page-audio{
+  position:absolute;
+
+  left:50%;
+
+  bottom:18px;
+
+  transform:
+    translateX(-50%);
+
+  width:70%;
+
+  max-width:500px;
+
+  padding:8px;
+
+  border-radius:14px;
+
+  background:rgba(
+    255,
+    255,
+    255,
+    .90
+  );
+
+  box-shadow:
+    0 5px 20px #0003;
+
+  z-index:4;
+}
+
+audio{
+  display:block;
+
+  width:100%;
+}
+
+/* =====================================================
+   LOADING
+   ===================================================== */
 
 .loading{
   padding:20px;
 }
 
-audio{
-  width:100%;
-  margin-top:10px;
-}
+/* =====================================================
+   MOBILE
+   ===================================================== */
 
 @media(max-width:600px){
 
   .wrap{
     padding:10px;
+
     margin:15px auto;
   }
 
   .card{
     padding:16px;
+
     border-radius:20px;
   }
 
   .page{
-    padding:12px;
     margin:25px 0;
+
+    border-radius:18px;
+  }
+
+  .page img{
     border-radius:18px;
   }
 
   .page-number{
     left:12px;
     top:12px;
+
     width:31px;
     height:31px;
   }
 
-  .page-text{
-    padding:
-      12px
-      8px
-      16px
-      42px;
-  }
+  .page-audio{
+    width:85%;
 
-  .page-title{
-    font-size:23px;
-  }
-
-  .page-story{
-    font-size:17px;
-    line-height:1.55;
+    bottom:12px;
   }
 
 }
@@ -291,28 +347,37 @@ const id =
     location.search
   ).get('order');
 
+
 const msg =
   document.querySelector(
     '#msg'
   );
+
 
 const fill =
   document.querySelector(
     '#fill'
   );
 
+
 const book =
   document.querySelector(
     '#book'
   );
+
 
 const title =
   document.querySelector(
     '#title'
   );
 
+
 let n = 0;
 
+
+// =====================================================
+// ESCAPE HTML
+// =====================================================
 
 function esc(s){
 
@@ -334,6 +399,10 @@ function esc(s){
 }
 
 
+// =====================================================
+// POLL STORY STATUS
+// =====================================================
+
 async function poll(){
 
   n++;
@@ -348,9 +417,14 @@ async function poll(){
         Date.now()
       );
 
+
     const d =
       await r.json();
 
+
+    // =================================================
+    // READY
+    // =================================================
 
     if(
       d.status ===
@@ -361,8 +435,10 @@ async function poll(){
         d.title ||
         'Your story is ready! 🎉';
 
+
       msg.textContent =
         'Your complete personalized story is ready.';
+
 
       fill.style.width =
         '100%';
@@ -393,28 +469,6 @@ async function poll(){
                     ${index + 1}
                   </div>
 
-                  <div
-                    class="page-text"
-                  >
-
-                    <h2
-                      class="page-title"
-                    >
-                      ${esc(
-                        p.title
-                      )}
-                    </h2>
-
-                    <p
-                      class="page-story"
-                    >
-                      ${esc(
-                        p.text
-                      )}
-                    </p>
-
-                  </div>
-
                   <img
                     src="${esc(
                       p.imageUrl
@@ -424,6 +478,28 @@ async function poll(){
                     }"
                     loading="lazy"
                   >
+
+                  ${
+                    d.audioUrl
+                      ? `
+
+                        <div
+                          class="page-audio"
+                        >
+
+                          <audio
+                            controls
+                            preload="none"
+                            src="${esc(
+                              d.audioUrl
+                            )}"
+                          ></audio>
+
+                        </div>
+
+                      `
+                      : ''
+                  }
 
                 </section>
 
@@ -436,6 +512,10 @@ async function poll(){
 
       book.innerHTML = `
 
+        <!-- =========================================
+             DOWNLOAD BUTTONS
+             ========================================= -->
+
         <div
           class="buttons"
         >
@@ -457,6 +537,7 @@ async function poll(){
               `
               : ''
           }
+
 
           ${
             d.audioUrl
@@ -469,7 +550,7 @@ async function poll(){
                   )}"
                   download
                 >
-                  🎧 Download Audiobook
+                  🎧 Download Story Audio
                 </a>
 
               `
@@ -478,37 +559,17 @@ async function poll(){
 
         </div>
 
+
+        <!-- =========================================
+             COMPLETE ILLUSTRATED STORY
+             ========================================= -->
+
         ${pagesHtml}
 
-        ${
-          d.audioUrl
-            ? `
 
-              <div
-                style="
-                  margin-top:30px;
-                  padding:20px;
-                  background:#fff8dc;
-                  border-radius:18px;
-                "
-              >
-
-                <h3>
-                  🎧 Listen to your story
-                </h3>
-
-                <audio
-                  controls
-                  src="${esc(
-                    d.audioUrl
-                  )}"
-                ></audio>
-
-              </div>
-
-            `
-            : ''
-        }
+        <!-- =========================================
+             DOWNLOAD AGAIN AT BOTTOM
+             ========================================= -->
 
         <div
           class="buttons"
@@ -536,10 +597,15 @@ async function poll(){
 
       `;
 
+
       return;
 
     }
 
+
+    // =================================================
+    // FAILED
+    // =================================================
 
     if(
       d.status ===
@@ -550,10 +616,13 @@ async function poll(){
         d.error ||
         'Story generation failed.';
 
+
       fill.style.width =
         '0%';
 
+
       book.innerHTML = `
+
         <div
           style="
             padding:20px;
@@ -562,19 +631,27 @@ async function poll(){
             border-radius:15px;
           "
         >
+
           ❌ ${
             esc(
               d.error ||
               'Story generation failed.'
             )
           }
+
         </div>
+
       `;
+
 
       return;
 
     }
 
+
+    // =================================================
+    // GENERATING
+    // =================================================
 
     fill.style.width =
       Math.min(
@@ -606,6 +683,10 @@ async function poll(){
 
 }
 
+
+// =====================================================
+// START
+// =====================================================
 
 if(id){
 

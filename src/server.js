@@ -941,9 +941,9 @@ async function makeAudio(text) {
   );
 }
 
+
 // =====================================================
-// PUT STORY TEXT DIRECTLY ON ILLUSTRATION
-// NO WHITE BOX / NO BACKGROUND
+// ADD STORY TEXT WITH TRANSLUCENT CLOUD BACKGROUND
 // =====================================================
 
 async function addStoryTextToImage(
@@ -953,20 +953,30 @@ async function addStoryTextToImage(
 ) {
 
   console.log(
-    `ADDING STORY TEXT DIRECTLY TO IMAGE ${pageNumber}...`
+    `ADDING CLOUD STORY TEXT TO IMAGE ${pageNumber}...`
   );
 
   const width = 1024;
   const height = 1024;
 
+  // ===================================================
+  // ESCAPE XML
+  // ===================================================
+
   function escapeXml(text) {
+
     return String(text)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&apos;');
+
   }
+
+  // ===================================================
+  // WRAP TEXT
+  // ===================================================
 
   function wrapText(text, maxChars) {
 
@@ -976,6 +986,7 @@ async function addStoryTextToImage(
         .split(/\s+/);
 
     const lines = [];
+
     let line = '';
 
     for (const word of words) {
@@ -998,6 +1009,7 @@ async function addStoryTextToImage(
         line = test;
 
       }
+
     }
 
     if (line) {
@@ -1005,20 +1017,95 @@ async function addStoryTextToImage(
     }
 
     return lines;
+
   }
 
-  const lines =
+  // ===================================================
+  // TEXT LAYOUT
+  // ===================================================
+
+  let fontSize = 42;
+  let lineHeight = 52;
+
+  let lines =
     wrapText(
       storyText,
-      42
+      38
     );
 
-  // Big readable text
-  const fontSize = 42;
-  const lineHeight = 52;
+  // Make longer stories smaller automatically
+  if (lines.length >= 6) {
 
-  // Keep text near the top of the illustration
-  const startY = 75;
+    fontSize = 36;
+    lineHeight = 45;
+
+    lines =
+      wrapText(
+        storyText,
+        43
+      );
+
+  }
+
+  if (lines.length >= 8) {
+
+    fontSize = 32;
+    lineHeight = 40;
+
+    lines =
+      wrapText(
+        storyText,
+        48
+      );
+
+  }
+
+  // ===================================================
+  // CLOUD SIZE
+  // ===================================================
+
+  const horizontalPadding = 55;
+  const verticalPadding = 42;
+
+  const textHeight =
+    lines.length * lineHeight;
+
+  const cloudHeight =
+    textHeight +
+    verticalPadding * 2;
+
+  // Keep cloud safely inside image
+  const maxCloudHeight = 410;
+
+  const finalCloudHeight =
+    Math.min(
+      cloudHeight,
+      maxCloudHeight
+    );
+
+  const cloudX = 35;
+  const cloudWidth = 954;
+
+  const cloudY = 28;
+
+  // ===================================================
+  // TEXT START POSITION
+  // ===================================================
+
+  const actualTextHeight =
+    lines.length * lineHeight;
+
+  const startY =
+    cloudY +
+    (
+      finalCloudHeight -
+      actualTextHeight
+    ) / 2 +
+    fontSize * 0.78;
+
+  // ===================================================
+  // TEXT
+  // ===================================================
 
   const svgText =
     lines
@@ -1034,13 +1121,12 @@ async function addStoryTextToImage(
               x="512"
               y="${y}"
               text-anchor="middle"
-              font-family="Arial, Helvetica, sans-serif"
+              font-family="Arial Rounded MT Bold, Arial, Helvetica, sans-serif"
               font-size="${fontSize}px"
-              font-weight="700"
-              fill="#ffffff"
-              stroke="#222222"
-              stroke-width="3"
-              stroke-linejoin="round"
+              font-weight="800"
+              fill="#21145f"
+              stroke="#ffffff"
+              stroke-width="1"
               paint-order="stroke"
             >
               ${escapeXml(line)}
@@ -1051,17 +1137,162 @@ async function addStoryTextToImage(
       )
       .join('');
 
+  // ===================================================
+  // CLOUD SHAPE
+  // ===================================================
+
+  const cloudBottom =
+    cloudY +
+    finalCloudHeight;
+
   const svg = `
     <svg
       width="${width}"
       height="${height}"
+      viewBox="0 0 ${width} ${height}"
       xmlns="http://www.w3.org/2000/svg"
     >
+
+      <defs>
+
+        <filter
+          id="cloudShadow"
+          x="-20%"
+          y="-20%"
+          width="140%"
+          height="150%"
+        >
+
+          <feDropShadow
+            dx="0"
+            dy="5"
+            stdDeviation="8"
+            flood-color="#000000"
+            flood-opacity="0.22"
+          />
+
+        </filter>
+
+      </defs>
+
+      <!-- =========================================
+           SOFT CLOUD BACKGROUND
+           ========================================= -->
+
+      <g
+        filter="url(#cloudShadow)"
+      >
+
+        <!-- Main cloud body -->
+
+        <rect
+          x="${cloudX + 45}"
+          y="${cloudY + 25}"
+          width="${cloudWidth - 90}"
+          height="${Math.max(80, finalCloudHeight - 50)}"
+          rx="70"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+        <!-- Top cloud bubbles -->
+
+        <circle
+          cx="150"
+          cy="${cloudY + 45}"
+          r="58"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+        <circle
+          cx="245"
+          cy="${cloudY + 28}"
+          r="72"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+        <circle
+          cx="350"
+          cy="${cloudY + 20}"
+          r="62"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+        <circle
+          cx="455"
+          cy="${cloudY + 35}"
+          r="78"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+        <circle
+          cx="565"
+          cy="${cloudY + 25}"
+          r="68"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+        <circle
+          cx="680"
+          cy="${cloudY + 32}"
+          r="76"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+        <circle
+          cx="790"
+          cy="${cloudY + 22}"
+          r="65"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+        <circle
+          cx="885"
+          cy="${cloudY + 45}"
+          r="58"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+        <!-- Bottom cloud softness -->
+
+        <circle
+          cx="145"
+          cy="${cloudBottom - 28}"
+          r="42"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+        <circle
+          cx="880"
+          cy="${cloudBottom - 28}"
+          r="42"
+          fill="#ffffff"
+          fill-opacity="0.88"
+        />
+
+      </g>
+
+      <!-- =========================================
+           STORY TEXT
+           ========================================= -->
 
       ${svgText}
 
     </svg>
   `;
+
+  // ===================================================
+  // COMPOSITE ON ORIGINAL ILLUSTRATION
+  // ===================================================
 
   const finalImage =
     await sharp(imageBuffer)
@@ -1077,12 +1308,13 @@ async function addStoryTextToImage(
       .toBuffer();
 
   console.log(
-    `STORY TEXT DIRECTLY ADDED TO IMAGE ${pageNumber}`
+    `CLOUD STORY TEXT ADDED TO IMAGE ${pageNumber}`
   );
 
   return finalImage;
+
 }
-        
+              
 // =====================================================
 // CREATE PDF
 // ILLUSTRATION + TEXT ON ILLUSTRATION

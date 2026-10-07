@@ -272,38 +272,6 @@
 
 
     /* =================================================
-       STORY TEXT
-       ================================================= */
-
-    .story-text {
-      max-width: 850px;
-
-      margin: 20px auto 18px;
-
-      padding: 18px 22px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #fff8dc,
-          #fff1f7
-        );
-
-      border-radius: 20px;
-
-      text-align: center;
-
-      font-size: 20px;
-
-      line-height: 1.65;
-
-      color: #30264d;
-
-      font-weight: 700;
-    }
-
-
-    /* =================================================
        NARRATION
        ================================================= */
 
@@ -939,24 +907,6 @@
         image
       );
 
-
-      // -----------------------------------------------
-      // STORY TEXT
-      // -----------------------------------------------
-
-      const storyText =
-        document.createElement(
-          'div'
-        );
-
-      storyText.className =
-        'story-text';
-
-      storyText.textContent =
-        page.text ||
-        '';
-
-
       // -----------------------------------------------
       // NARRATION BOX
       // -----------------------------------------------
@@ -1050,10 +1000,6 @@
 
       card.appendChild(
         imageWrapper
-      );
-
-      card.appendChild(
-        storyText
       );
 
       card.appendChild(

@@ -887,13 +887,28 @@
         page.title ||
         `Story illustration ${pageNumber}`;
 
+      
+if (page.imageUrl) {
+  image.src = new URL(
+    page.imageUrl,
+    window.location.origin
+  ).href;
 
-      if (
-        page.imageUrl
-      ) {
+  image.onerror = function () {
+    console.error(
+      "Image failed to load:",
+      image.src
+    );
 
-        image.src =
-          page.imageUrl;
+    image.alt =
+      "Illustration unavailable for page " +
+      pageNumber;
+  };
+} else {
+  image.alt =
+    "Illustration URL missing for page " +
+    pageNumber;
+}
 
       }
 
@@ -954,8 +969,10 @@
         audio.preload =
           'metadata';
 
-        audio.src =
-          page.audioUrl;
+        audio.src = new URL(
+page.audioUrl,
+window.location.origin
+).href;
 
 
         narration.appendChild(

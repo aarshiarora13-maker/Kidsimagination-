@@ -239,36 +239,26 @@
     /* =================================================
        ILLUSTRATION
        ================================================= */
+    
 
-    .illustration-wrapper {
-      width: 100%;
+.illustration-wrapper {
+  width: 100%;
+  display: block;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+}
 
-      display: flex;
+.illustration {
+  display: block;
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
+  margin: 0 auto;
+}
 
-      justify-content: center;
-
-      align-items: center;
-
-      background: #f7f3ff;
-
-      border-radius: 22px;
-
-      overflow: hidden;
-    }
-
-    .illustration {
-      display: block;
-
-      width: 100%;
-
-      max-width: 900px;
-
-      height: auto;
-
-      aspect-ratio: 1 / 1;
-
-      object-fit: cover;
-    }
 
 
     /* =================================================
@@ -909,8 +899,7 @@ if (page.imageUrl) {
     "Illustration URL missing for page " +
     pageNumber;
 }
-
-      imageWrapper.appendChild(
+ imageWrapper.appendChild(
         image
       );
 
